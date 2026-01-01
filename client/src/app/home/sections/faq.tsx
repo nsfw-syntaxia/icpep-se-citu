@@ -13,10 +13,10 @@ interface FAQ {
 export function FAQSection() {
   const router = useRouter();
   const [openIndex, setOpenIndex] = useState<number | null>(0);
-  
+
   const staticFaqs: FAQ[] = [
     {
-      question: "What is the ICpEP.SE CIT-U website for?",
+      question: "What is the ICpEP SE CIT-U website for?",
       answer:
         "The website serves as the official platform for membership registration, announcements, events, and organization updates—making it easier for students to stay informed and connected.",
     },
@@ -27,7 +27,8 @@ export function FAQSection() {
     },
     {
       question: "How do I check my membership status?",
-      answer: "After registering, you can view your membership status on your profile page. Status updates (Pending, Verified, or Expired) are handled by the officers.",
+      answer:
+        "After registering, you can view your membership status on your profile page. Status updates (Pending, Verified, or Expired) are handled by the officers.",
     },
     {
       question: "Can I still join events even if I’m not a member?",
@@ -47,7 +48,6 @@ export function FAQSection() {
         }
       } catch (error) {
         console.error("Failed to fetch FAQs:", error);
-        // Fallback to static FAQs is already handled by initial state
       }
     };
 
@@ -95,7 +95,6 @@ export function FAQSection() {
 
       {/* Content Layer */}
       <div className="relative z-20 max-w-7xl mx-auto px-6 md:px-12 py-40 pb-56 flex flex-col md:flex-row justify-between items-start w-full">
-        {/* Left Content Block */}
         <div className="w-full md:w-1/2 mb-10 md:mb-0 text-center md:text-left">
           <h1 className="font-rubik text-4xl sm:text-5xl font-bold text-primary3 mb-4 leading-tight">
             Any questions? <br /> We got you.
@@ -117,7 +116,6 @@ export function FAQSection() {
           </div>
         </div>
 
-        {/* Right Accordion Block */}
         <div className="w-full md:w-1/2 min-h-[340px]">
           <div className="space-y-4">
             {faqs.map((faq, index) => (
