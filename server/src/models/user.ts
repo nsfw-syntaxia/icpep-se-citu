@@ -10,8 +10,9 @@ export interface IUser extends Document {
   email?: string;
   middleName?: string;
   password: string;
-  role: 'student' | 'council-officer' | 'committee-officer' | 'faculty';
+  role: "student" | "council-officer" | "committee-officer" | "faculty";
   position?: string;
+  department?: string;
   yearLevel?: number;
   membershipStatus: {
     isMember: boolean;
@@ -84,10 +85,6 @@ const userSchema = new Schema<IUser>(
       type: String,
       default: null,
     },
-    position: {
-      type: String,
-      default: null,
-    },
     yearLevel: {
       type: Number,
       min: 1,
@@ -146,9 +143,8 @@ userSchema.virtual("registeredByName").get(function (this: IUser) {
 });
 
 // Pre-save middleware to hash password
-userSchema.pre("save", async function (next) {
+userSchema.pre("save", async function (this: IUser, next) {
   if (!this.isModified("password")) return next();
-
   this.password = await bcrypt.hash(this.password, 10);
   next();
 });
