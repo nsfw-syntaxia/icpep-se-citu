@@ -78,7 +78,11 @@ export function EventsSection() {
         </div>
 
         {/* Content Area */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 justify-center items-stretch min-h-[450px]">
+        <div
+          className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 justify-center items-stretch ${
+            loading || events.length > 0 ? "min-h-[450px]" : "min-h-0"
+          }`}
+        >
           {loading ? (
             [1, 2, 3].map((i) => (
               <div
@@ -89,7 +93,7 @@ export function EventsSection() {
               </div>
             ))
           ) : events.length === 0 ? (
-            <div className="col-span-full text-center py-12">
+            <div className="col-span-full text-center py-10">
               <p className="text-gray-500 font-raleway text-lg">
                 No events available at the moment.
               </p>
@@ -101,7 +105,11 @@ export function EventsSection() {
           )}
         </div>
 
-        <div className="mt-16 flex justify-center">
+        <div
+          className={`flex justify-center ${
+            !loading && events.length === 0 ? "mt-10" : "mt-16"
+          }`}
+        >
           <button
             onClick={() => router.push("/events")}
             className="bg-primary1 hover:bg-primary2 text-white font-raleway font-semibold px-8 py-3 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg cursor-pointer"
