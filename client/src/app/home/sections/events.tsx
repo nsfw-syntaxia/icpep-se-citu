@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import { Event, events as staticEvents } from "@/app/events/utils/event";
+import { Event } from "@/app/events/utils/event";
 import EventCard from "@/app/home/components/event-card";
 import ParticleNetwork from "@/app/home/components/particle";
 import eventService from "@/app/services/event";
@@ -15,51 +15,43 @@ export function EventsSection() {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await eventService.getEvents({ 
-            isPublished: true, 
-            limit: 3, 
-            sort: 'eventDate',
-            startDate: new Date().toISOString() 
+        const response = await eventService.getEvents({
+          isPublished: true,
+          limit: 3,
+          sort: "-eventDate",
         });
-        
-        if (response.success && Array.isArray(response.data) && response.data.length > 0) {
-             const mapped: Event[] = response.data.map((item: any) => ({
-                 id: item.id || item._id,
-                 title: item.title,
-                 status: "Upcoming" as const,
-                 date: item.eventDate || item.date || new Date().toISOString(),
-                 endDate: item.endDate,
-                 mode: (item.mode === "Online" ? "Online" : "Onsite") as "Online" | "Onsite",
-                 location: item.location || "TBA",
-                 organizer: {
-                     name: typeof item.organizer === 'string' ? item.organizer : (item.organizer?.name || "ICpEP.SE CIT-U"),
-                     avatarImageUrl: "/icpep logo.png"
-                 },
-                 tags: item.tags || [],
-                 bannerImageUrl: item.coverImage || item.imageUrl || "/placeholder.png",
-                 description: item.description || "",
-                 content: item.content,
-                 details: [],
-                 galleryImageUrls: item.galleryImages || []
-             }));
-             setEvents(mapped);
-        } else {
-            // Fallback to static data
-            const now = new Date();
-            const latestUpcomingEvents = staticEvents
-                .filter((event) => new Date(event.date) > now)
-                .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-                .slice(0, 3);
-            setEvents(latestUpcomingEvents);
+
+        if (response.success && Array.isArray(response.data)) {
+          const mapped: Event[] = response.data.map((item: any) => ({
+            id: item.id || item._id,
+            title: item.title,
+            status:
+              new Date(item.eventDate) > new Date() ? "Upcoming" : "Ended",
+            date: item.eventDate || item.date || new Date().toISOString(),
+            endDate: item.endDate,
+            mode: (item.mode === "Online" ? "Online" : "Onsite") as
+              | "Online"
+              | "Onsite",
+            location: item.location || "TBA",
+            organizer: {
+              name:
+                typeof item.organizer === "string"
+                  ? item.organizer
+                  : item.organizer?.name || "ICpEP.SE CIT-U",
+              avatarImageUrl: "/icpep logo.png",
+            },
+            tags: item.tags || [],
+            bannerImageUrl:
+              item.coverImage || item.imageUrl || "/placeholder.png",
+            description: item.description || "",
+            content: item.content,
+            details: [],
+            galleryImageUrls: item.galleryImages || [],
+          }));
+          setEvents(mapped);
         }
       } catch (error) {
-        console.error("Failed to fetch events, using static data", error);
-        const now = new Date();
-        const latestUpcomingEvents = staticEvents
-            .filter((event) => new Date(event.date) > now)
-            .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-            .slice(0, 3);
-        setEvents(latestUpcomingEvents);
+        console.error("Failed to fetch events", error);
       } finally {
         setLoading(false);
       }
@@ -67,20 +59,10 @@ export function EventsSection() {
     fetchEvents();
   }, []);
 
-  if (loading) {
-      return (
-        <section className="light-dark-background relative min-h-screen flex items-center justify-center overflow-hidden px-4 sm:px-6 py-16 sm:py-20">
-            <div className="relative z-10 w-full max-w-7xl mx-auto transform -translate-y-8 text-center">
-                <p className="text-gray-500 font-raleway">Loading events...</p>
-            </div>
-        </section>
-      );
-  }
-
   return (
     <section className="light-dark-background relative min-h-screen flex items-center justify-center overflow-hidden px-4 sm:px-6 py-16 sm:py-20">
-      <div className="absolute inset-0 flex items-center justify-center top-[60px] hidden sm:flex">
-        <ParticleNetwork className="[mask-image:radial-gradient(ellipse_45%_50%_at_50%_55%,transparent_35%,white_100%)]" />
+      <div className="absolute inset-0 items-center justify-center top-[60px] hidden sm:flex">
+        <ParticleNetwork className="mask-[radial-gradient(ellipse_45%_50%_at_50%_55%,transparent_35%,white_100%)]" />
       </div>
 
       <div className="relative z-10 w-full max-w-7xl mx-auto transform -translate-y-8">
@@ -88,24 +70,36 @@ export function EventsSection() {
           <div className="absolute left-1/2 top-[58%] -translate-x-1/2 -translate-y-1/2 w-[220px] h-[130px] rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.07)_0%,transparent_70%)] pointer-events-none" />
 
           <h1 className="relative font-rubik text-4xl sm:text-5xl font-bold text-primary3 leading-tight">
-            Upcoming Events
+            Featured Events
           </h1>
           <p className="relative font-raleway text-base sm:text-lg text-bodytext mt-2 max-w-lg mx-auto">
             Join the network and explore what’s next.
           </p>
         </div>
 
-        {events.length === 0 ? (
-            <div className="text-center py-12">
-                <p className="text-gray-500 font-raleway text-lg">No upcoming events scheduled.</p>
+        {/* Content Area */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 justify-center items-stretch min-h-[450px]">
+          {loading ? (
+            [1, 2, 3].map((i) => (
+              <div
+                key={i}
+                className="h-[480px] w-full rounded-2xl bg-white/5 animate-pulse border border-white/10 relative overflow-hidden"
+              >
+                <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent" />
+              </div>
+            ))
+          ) : events.length === 0 ? (
+            <div className="col-span-full text-center py-12">
+              <p className="text-gray-500 font-raleway text-lg">
+                No events available at the moment.
+              </p>
             </div>
-        ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 justify-center items-stretch">
-            {events.map((event) => (
-                <EventCard key={event.id} event={event} />
-            ))}
-            </div>
-        )}
+          ) : (
+            events.map((event) => (
+              <EventCard key={event.id} event={event} hideRSVP={true} />
+            ))
+          )}
+        </div>
 
         <div className="mt-16 flex justify-center">
           <button
