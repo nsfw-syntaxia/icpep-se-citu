@@ -13,6 +13,8 @@ interface FAQ {
 export function FAQSection() {
   const router = useRouter();
   const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const [faqs, setFaqs] = useState<FAQ[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const staticFaqs: FAQ[] = [
     {
@@ -33,21 +35,28 @@ export function FAQSection() {
     {
       question: "Can I still join events even if I’m not a member?",
       answer:
-        "Some events are open to all, while others are exclusive to verified ICpEP.SE members. Event details will indicate whether membership is required.",
+        "Some events are open to all, while others are exclusive to verified ICpEP SE members. Event details will indicate whether membership is required.",
     },
   ];
-
-  const [faqs, setFaqs] = useState<FAQ[]>(staticFaqs);
 
   useEffect(() => {
     const fetchFAQs = async () => {
       try {
         const response = await faqService.getFAQs();
-        if (response.data && response.data.length > 0) {
+        if (
+          response.data &&
+          Array.isArray(response.data) &&
+          response.data.length > 0
+        ) {
           setFaqs(response.data);
+        } else {
+          setFaqs(staticFaqs);
         }
       } catch (error) {
-        console.error("Failed to fetch FAQs:", error);
+        console.error("Failed to fetch FAQs, using static data:", error);
+        setFaqs(staticFaqs);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -104,11 +113,14 @@ export function FAQSection() {
             here to help you.
           </p>
           <div className="flex flex-col sm:flex-row justify-center md:justify-start gap-4">
-            <button className="bg-primary1 hover:bg-primary2 text-white font-raleway font-semibold px-8 py-3 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg cursor-pointer">
+            <button
+              onClick={() => router.push("/contact")}
+              className="bg-primary1 hover:bg-primary2 text-white font-raleway font-semibold px-8 py-3 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg cursor-pointer"
+            >
               Contact Us
             </button>
             <button
-              onClick={() => router.push("./faq")}
+              onClick={() => router.push("/contact")}
               className="bg-transparent border-2 border-gray-300 text-gray-700 hover:bg-buttonbg1 hover:border-primary1 hover:text-primary1 font-raleway font-semibold px-8 py-3 rounded-full transition-all duration-300 cursor-pointer"
             >
               More FAQs
@@ -118,37 +130,48 @@ export function FAQSection() {
 
         <div className="w-full md:w-1/2 min-h-[340px]">
           <div className="space-y-4">
-            {faqs.map((faq, index) => (
-              <div
-                key={index}
-                className="border-b border-gray-300/80 pb-4 cursor-pointer"
-                onClick={() => toggleFAQ(index)}
-              >
-                <div className="flex justify-between items-center">
-                  <h3 className="font-rubik text-primary3 text-xl font-semibold">
-                    {faq.question}
-                  </h3>
-                  <span
-                    className={`text-2xl font-bold text-primary1 transition-transform duration-300 ease-in-out ${
-                      openIndex === index ? "rotate-45" : "rotate-0"
-                    }`}
+            {loading
+              ? [1, 2, 3, 4].map((i) => (
+                  <div
+                    key={i}
+                    className="border-b border-gray-300/80 pb-6 animate-pulse"
                   >
-                    +
-                  </span>
-                </div>
-                <div
-                  className={`grid transition-[grid-template-rows] duration-500 ease-in-out ${
-                    openIndex === index ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
-                  }`}
-                >
-                  <div className="overflow-hidden">
-                    <p className="font-raleway text-bodytext text-sm md:text-base leading-relaxed pt-3">
-                      {faq.answer}
-                    </p>
+                    <div className="h-7 w-3/4 bg-primary3/10 rounded-md" />
                   </div>
-                </div>
-              </div>
-            ))}
+                ))
+              : faqs.map((faq, index) => (
+                  <div
+                    key={index}
+                    className="border-b border-gray-300/80 pb-4 cursor-pointer"
+                    onClick={() => toggleFAQ(index)}
+                  >
+                    <div className="flex justify-between items-center">
+                      <h3 className="font-rubik text-primary3 text-xl font-semibold">
+                        {faq.question}
+                      </h3>
+                      <span
+                        className={`text-2xl font-bold text-primary1 transition-transform duration-300 ease-in-out ${
+                          openIndex === index ? "rotate-45" : "rotate-0"
+                        }`}
+                      >
+                        +
+                      </span>
+                    </div>
+                    <div
+                      className={`grid transition-[grid-template-rows] duration-500 ease-in-out ${
+                        openIndex === index
+                          ? "grid-rows-[1fr]"
+                          : "grid-rows-[0fr]"
+                      }`}
+                    >
+                      <div className="overflow-hidden">
+                        <p className="font-raleway text-bodytext text-sm md:text-base leading-relaxed pt-3">
+                          {faq.answer}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
           </div>
         </div>
       </div>
