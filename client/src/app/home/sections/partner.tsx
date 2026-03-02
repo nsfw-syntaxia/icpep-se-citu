@@ -45,13 +45,16 @@ export function PartnersSection() {
 
   const groupedPartners = useMemo(
     () =>
-      partners.reduce((acc, partner) => {
-        const tier = partner.tier;
-        if (!acc[tier]) acc[tier] = [];
-        acc[tier].push(partner);
-        return acc;
-      }, {} as Record<Tier, Partner[]>),
-    [partners]
+      partners.reduce(
+        (acc, partner) => {
+          const tier = partner.tier;
+          if (!acc[tier]) acc[tier] = [];
+          acc[tier].push(partner);
+          return acc;
+        },
+        {} as Record<Tier, Partner[]>,
+      ),
+    [partners],
   );
 
   const tierOrder: Tier[] = ["platinum", "gold", "silver", "bronze"];

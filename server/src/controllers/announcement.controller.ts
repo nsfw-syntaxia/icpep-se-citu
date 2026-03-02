@@ -6,7 +6,7 @@ import {
   deleteFromCloudinary,
 } from "../utils/cloudinary";
 import mongoose from "mongoose";
-import { notifyAllUsers } from "../utils/notification";
+import { notifyTargetAudience } from "../utils/notification";
 
 // Local Multer file shape (avoid relying on global Express.Multer augmentation)
 type MulterFile = MulterLocal.MulterFile;
@@ -63,7 +63,6 @@ export const createAnnouncement = async (
       attendees,
       agenda,
       awardees,
-      attachments,
     } = req.body;
 
     // Get author from authenticated user
@@ -149,12 +148,11 @@ export const createAnnouncement = async (
     }
 
     // Parse arrays if sent as strings with error handling
-    let parsedAgenda, parsedAwardees, parsedAttachments, parsedTargetAudience;
+    let parsedAgenda, parsedAwardees, parsedTargetAudience;
 
     try {
       parsedAgenda = agenda ? JSON.parse(agenda) : undefined;
       parsedAwardees = awardees ? JSON.parse(awardees) : undefined;
-      parsedAttachments = attachments ? JSON.parse(attachments) : undefined;
       parsedTargetAudience = targetAudience
         ? JSON.parse(targetAudience)
         : ["all"];
@@ -216,7 +214,6 @@ export const createAnnouncement = async (
       awardees: parsedAwardees,
       imageUrl,
       galleryImages,
-      attachments: parsedAttachments,
     };
 
     // If a publishDate exists and it's in the future, ensure announcement remains unpublished until scheduler runs
@@ -271,11 +268,12 @@ export const createAnnouncement = async (
 
     // Send notification if published
     if (announcement.isPublished) {
-      await notifyAllUsers(
+      await notifyTargetAudience(
+        announcement.targetAudience || ["all"],
         `[ANNOUNCEMENT] ${announcement.title}`,
         `New announcement: ${announcement.title}`,
         "announcement",
-        announcement._id,
+        announcement._id as any,
         "Announcement"
       );
     }
