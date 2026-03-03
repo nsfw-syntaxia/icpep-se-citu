@@ -59,6 +59,11 @@ export default function AnnouncementsPage() {
   const [selectedYears, setSelectedYears] = useState<number[]>([]);
   const [selectedMonths, setSelectedMonths] = useState<number[]>([]);
 
+  const ITEMS_PER_PAGE = 10;
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const listTopRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     const fetchAnnouncements = async () => {
       try {
@@ -165,6 +170,28 @@ export default function AnnouncementsPage() {
         new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime(),
     );
 
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [activeTab, searchQuery, selectedYears, selectedMonths]);
+
+  const totalPages = Math.ceil(filteredAnnouncements.length / ITEMS_PER_PAGE);
+
+  const paginatedAnnouncements = filteredAnnouncements.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE,
+  );
+
+  useEffect(() => {
+    if (!listTopRef.current) return;
+
+    const offset = window.innerWidth >= 768 ? 200 : 160;
+
+    window.scrollTo({
+      top: listTopRef.current.offsetTop - offset,
+      behavior: "smooth",
+    });
+  }, [currentPage]);
+
   const tabs = ["All", "News", "Meeting", "Achievement"];
 
   return (
@@ -175,10 +202,18 @@ export default function AnnouncementsPage() {
           <Header />
           <div className="max-w-7xl mx-auto px-6 pt-38 pb-12 w-full grow">
             {/* back */}
-            <div className="mb-8">
+            <div className="mb-8 flex justify-start">
               <button
-                onClick={() => router.push("/home")}
-                className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-primary1 text-primary1 hover:bg-primary1/5 transition-all"
+                onClick={() => router.push("/")}
+                title="Back to Home"
+                className="relative flex h-12 w-12 cursor-pointer items-center justify-center 
+               rounded-full border-2 border-primary1 text-primary1 
+               overflow-hidden transition-all duration-300 ease-in-out 
+               active:scale-95 before:absolute before:inset-0 
+               before:bg-gradient-to-r before:from-transparent 
+               before:via-white/40 before:to-transparent 
+               before:translate-x-[-100%] hover:before:translate-x-[100%] 
+               before:transition-transform before:duration-700"
               >
                 <Home className="h-6 w-6" />
               </button>
@@ -334,11 +369,14 @@ export default function AnnouncementsPage() {
               <div className="font-raleway text-sm text-gray-400">
                 Showing{" "}
                 <span className="font-bold text-primary3">
-                  {filteredAnnouncements.length}
+                  {Math.min(
+                    currentPage * ITEMS_PER_PAGE,
+                    filteredAnnouncements.length,
+                  )}
                 </span>{" "}
                 out of{" "}
                 <span className="font-bold text-primary3">
-                  {announcements.length}
+                  {filteredAnnouncements.length}
                 </span>{" "}
                 results
               </div>
@@ -393,10 +431,10 @@ export default function AnnouncementsPage() {
                 Loading...
               </div>
             ) : (
-              <div className="pb-14 max-w-4xl mx-auto">
+              <div ref={listTopRef} className="pb-14 max-w-4xl mx-auto">
                 {filteredAnnouncements.length > 0 ? (
                   <div className="space-y-12">
-                    {filteredAnnouncements.map((ann) => (
+                    {paginatedAnnouncements.map((ann) => (
                       <AnnouncementCard
                         key={ann._id}
                         id={ann._id}
@@ -413,6 +451,55 @@ export default function AnnouncementsPage() {
                 ) : (
                   <div className="text-center py-20 font-raleway text-gray-500">
                     No announcements match your filters.
+                  </div>
+                )}
+                {totalPages > 1 && (
+                  <div className="mt-12 flex flex-col items-center gap-6">
+                    <div className="flex items-center gap-2">
+                      {/* prev */}
+                      <button
+                        onClick={() =>
+                          setCurrentPage((prev) => Math.max(prev - 1, 1))
+                        }
+                        disabled={currentPage === 1}
+                        className="w-10 h-10 flex items-center justify-center rounded-xl border-2 border-primary1/20 text-primary1 disabled:opacity-40 disabled:cursor-not-allowed hover:border-primary1 transition-all"
+                      >
+                        <ChevronLeft className="h-5 w-5" />
+                      </button>
+
+                      {/* page nums */}
+                      <div className="flex gap-2">
+                        {Array.from(
+                          { length: totalPages },
+                          (_, i) => i + 1,
+                        ).map((pageNum) => (
+                          <button
+                            key={pageNum}
+                            onClick={() => setCurrentPage(pageNum)}
+                            className={`w-10 h-10 rounded-xl text-sm font-bold font-rubik transition-all border-2 ${
+                              currentPage === pageNum
+                                ? "bg-primary1 text-white border-primary1"
+                                : "border-primary1/20 text-primary1 hover:border-primary1 hover:bg-primary1/5"
+                            }`}
+                          >
+                            {pageNum}
+                          </button>
+                        ))}
+                      </div>
+
+                      {/* next */}
+                      <button
+                        onClick={() =>
+                          setCurrentPage((prev) =>
+                            Math.min(prev + 1, totalPages),
+                          )
+                        }
+                        disabled={currentPage === totalPages}
+                        className="w-10 h-10 flex items-center justify-center rounded-xl border-2 border-primary1/20 text-primary1 disabled:opacity-40 disabled:cursor-not-allowed hover:border-primary1 transition-all"
+                      >
+                        <ChevronRight className="h-5 w-5" />
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>
