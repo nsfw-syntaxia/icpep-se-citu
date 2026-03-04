@@ -14,6 +14,7 @@ import {
   X,
   Check,
   RotateCcw,
+  Filter,
 } from "lucide-react";
 import Grid from "../components/grid";
 import announcementService from "../services/announcement";
@@ -43,10 +44,12 @@ const SHORT_MONTHS = [
   "Dec",
 ];
 const YEARS = Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - i);
+const CATEGORIES = ["All", "News", "Meeting", "Achievement"];
 
 export default function AnnouncementsPage() {
   const router = useRouter();
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const dateDropdownRef = useRef<HTMLDivElement>(null);
+  const categoryDropdownRef = useRef<HTMLDivElement>(null);
 
   const [activeTab, setActiveTab] = useState<string>("All");
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
@@ -55,6 +58,7 @@ export default function AnnouncementsPage() {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [isCategoryFilterOpen, setIsCategoryFilterOpen] = useState(false);
   const [filterStep, setFilterStep] = useState<"year" | "month">("year");
   const [selectedYears, setSelectedYears] = useState<number[]>([]);
   const [selectedMonths, setSelectedMonths] = useState<number[]>([]);
@@ -87,10 +91,16 @@ export default function AnnouncementsPage() {
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
+        dateDropdownRef.current &&
+        !dateDropdownRef.current.contains(event.target as Node)
       )
         setIsFilterOpen(false);
+
+      if (
+        categoryDropdownRef.current &&
+        !categoryDropdownRef.current.contains(event.target as Node)
+      )
+        setIsCategoryFilterOpen(false);
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
@@ -183,6 +193,7 @@ export default function AnnouncementsPage() {
 
   useEffect(() => {
     if (!listTopRef.current) return;
+    if (currentPage === 1) return;
 
     const offset = window.innerWidth >= 768 ? 200 : 160;
 
@@ -191,8 +202,6 @@ export default function AnnouncementsPage() {
       behavior: "smooth",
     });
   }, [currentPage]);
-
-  const tabs = ["All", "News", "Meeting", "Achievement"];
 
   return (
     <div className="min-h-screen flex flex-col overflow-x-hidden bg-[#004e89]">
@@ -261,11 +270,13 @@ export default function AnnouncementsPage() {
                 </div>
               </div>
 
-              <div className="relative" ref={dropdownRef}>
+              {/* date filter */}
+              <div className="relative" ref={dateDropdownRef}>
                 <button
                   onClick={() => {
                     setIsFilterOpen(!isFilterOpen);
                     setFilterStep("year");
+                    setIsCategoryFilterOpen(false);
                   }}
                   className={`flex items-center justify-center h-[52px] w-[52px] bg-white border-2 rounded-2xl transition-all ${isFilterOpen || selectedYears.length > 0 || selectedMonths.length > 0 ? "border-primary1 bg-primary1/5" : "border-primary1/20"} hover:border-primary1`}
                 >
@@ -347,24 +358,56 @@ export default function AnnouncementsPage() {
                   </div>
                 )}
               </div>
-            </div>
 
-            {/* tabs */}
-            <div className="mb-12 flex justify-center">
-              <div className="flex space-x-1 rounded-xl bg-primary1/10 p-1">
-                {tabs.map((tab) => (
-                  <button
-                    key={tab}
-                    onClick={() => setActiveTab(tab)}
-                    className={`px-6 py-2.5 text-sm font-rubik font-semibold transition-all rounded-lg ${activeTab === tab ? "bg-white text-primary1 shadow" : "text-primary1/60 hover:bg-white/60"}`}
-                  >
-                    {tab}
-                  </button>
-                ))}
+              {/* category filter */}
+              <div className="relative" ref={categoryDropdownRef}>
+                <button
+                  onClick={() => {
+                    setIsCategoryFilterOpen(!isCategoryFilterOpen);
+                    setIsFilterOpen(false);
+                  }}
+                  className={`flex items-center justify-center h-[52px] w-[52px] bg-white border-2 rounded-2xl transition-all ${isCategoryFilterOpen || activeTab !== "All" ? "border-primary1 bg-primary1/5" : "border-primary1/20"} hover:border-primary1`}
+                >
+                  <Filter className="h-5 w-5 text-primary1" />
+                </button>
+
+                {isCategoryFilterOpen && (
+                  <div className="absolute top-[115%] right-0 w-64 bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-gray-100 z-50 p-6 animate-in fade-in zoom-in-95 duration-200">
+                    <div className="flex items-center justify-between mb-5">
+                      <span className="font-rubik font-bold text-primary3">
+                        Category
+                      </span>
+                      <button
+                        onClick={() => setActiveTab("All")}
+                        className="flex items-center gap-1.5 px-3 py-1 bg-red-50 hover:bg-red-100 rounded-full transition-colors group"
+                      >
+                        <RotateCcw className="h-3 w-3 text-red-500 group-hover:-rotate-45 transition-transform" />
+                        <span className="font-raleway text-[10px] font-bold text-red-500 uppercase tracking-wider">
+                          Reset
+                        </span>
+                      </button>
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      {CATEGORIES.map((cat) => (
+                        <button
+                          key={cat}
+                          onClick={() => {
+                            setActiveTab(cat);
+                            setIsCategoryFilterOpen(false);
+                          }}
+                          className={`w-full py-3 px-4 rounded-xl text-sm font-bold font-rubik transition-all border-2 text-left flex items-center justify-between ${activeTab === cat ? "bg-primary1 text-white border-primary1" : "bg-white text-gray-500 border-gray-50 hover:border-primary1/30 hover:bg-primary1/5"}`}
+                        >
+                          {cat}
+                          {activeTab === cat && <Check className="h-4 w-4" />}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 
-            {/* pagination */}
+            {/* pagination & filter pills */}
             <div className="max-w-4xl mx-auto mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div className="font-raleway text-sm text-gray-400">
                 Showing{" "}
@@ -382,6 +425,17 @@ export default function AnnouncementsPage() {
               </div>
 
               <div className="flex flex-wrap md:justify-end gap-2">
+                {activeTab !== "All" && (
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 bg-primary1/10 text-primary1 rounded-full text-[10px] font-bold font-rubik border border-primary1/20">
+                    Category: {activeTab}
+                    <button
+                      onClick={() => setActiveTab("All")}
+                      className="hover:text-primary3 transition-colors"
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </div>
+                )}
                 {getGroupedRanges(selectedYears, (y) => y.toString()).map(
                   (range, i) => (
                     <div
