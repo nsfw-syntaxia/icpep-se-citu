@@ -132,18 +132,36 @@ const Header = () => {
     try {
       const response = await notificationService.getAll(page, 5);
       if (response?.success) {
-        const mapped = response.data.map((n: any) => ({
-          id: n._id,
-          title: n.title,
-          date: new Date(n.createdAt).toLocaleDateString("en-US", {
-            month: "long",
-            day: "numeric",
-            year: "numeric",
-          }),
-          type: n.type,
-          read: n.isRead,
-          link: n.link || "/notifications",
-        }));
+        const mapped = response.data.map((n: any) => {
+          // Logic to determine redirect link directly in dropdown
+          let link = n.link || "/home";
+
+          if (!n.link) {
+            if (n.type === "announcement" && n.relatedId)
+              link = `/announcements/${n.relatedId}`;
+            else if (n.type === "announcement") link = "/announcements";
+            else if (n.type === "event" && n.relatedId)
+              link = `/events/${n.relatedId}`;
+            else if (n.type === "event") link = "/events";
+            else if (n.type === "membership") link = "/profile";
+            else if (n.type === "rsvp") link = "/commeet";
+            else if (n.type === "system" || n.title.includes("Password"))
+              link = "/profile";
+          }
+
+          return {
+            id: n._id,
+            title: n.title,
+            date: new Date(n.createdAt).toLocaleDateString("en-US", {
+              month: "long",
+              day: "numeric",
+              year: "numeric",
+            }),
+            type: n.type,
+            read: n.isRead,
+            link: link,
+          };
+        });
 
         setNotifications((prev) => (append ? [...prev, ...mapped] : mapped));
         setHasMore(mapped.length === 5);
@@ -189,6 +207,19 @@ const Header = () => {
     } catch (error) {
       console.error(error);
     }
+  };
+
+  const handleNotifClick = async (n: any) => {
+    if (!n.read) {
+      try {
+        await notificationService.markAsRead(n.id);
+        setUnreadCount((prev) => Math.max(0, prev - 1));
+      } catch (error) {
+        console.error("Failed to mark as read on click", error);
+      }
+    }
+    router.push(n.link);
+    setNotifDropdownOpen(false);
   };
 
   const toggleNotifDropdown = () => {
@@ -412,10 +443,7 @@ const Header = () => {
                             {notifications.map((n) => (
                               <div
                                 key={n.id}
-                                onClick={() => {
-                                  router.push(n.link);
-                                  setNotifDropdownOpen(false);
-                                }}
+                                onClick={() => handleNotifClick(n)}
                                 className={`group relative flex gap-4 px-6 py-4 border-b border-gray-50 cursor-pointer transition-all duration-200 ${!n.read ? "bg-blue-50/30" : "hover:bg-gray-50/80"}`}
                               >
                                 <div className="shrink-0 flex items-center">
