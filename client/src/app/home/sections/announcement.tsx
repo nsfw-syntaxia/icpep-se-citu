@@ -69,14 +69,11 @@ export function AnnouncementsSection() {
           </div>
         </div>
 
-        {/* Content Area */}
         {loading ? (
           <>
-            {/* Skeleton Featured */}
             <GlassCard>
               <div className="h-[400px] w-full animate-pulse bg-white/5 rounded-xl" />
             </GlassCard>
-            {/* Skeleton Grid */}
             <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-flow-col lg:auto-cols-fr">
               {[1, 2, 3].map((i) => (
                 <GlassCard key={i}>
@@ -93,14 +90,12 @@ export function AnnouncementsSection() {
           </div>
         ) : (
           <>
-            {/* Featured Announcement */}
             {latestAnnouncement && (
               <GlassCard>
                 <FeaturedAnnouncementCard announcement={latestAnnouncement} />
               </GlassCard>
             )}
 
-            {/* Grid of Smaller Cards */}
             {otherAnnouncements.length > 0 && (
               <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-flow-col lg:auto-cols-fr items-stretch content-stretch">
                 {otherAnnouncements.map((announcement) => (
@@ -113,7 +108,6 @@ export function AnnouncementsSection() {
           </>
         )}
 
-        {/* Mobile View All */}
         <div className="mt-8 flex justify-center sm:hidden">
           <button
             onClick={() => router.push("/announcements")}

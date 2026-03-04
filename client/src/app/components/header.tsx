@@ -7,7 +7,6 @@ import Menu from "./menu";
 import { useRouter } from "next/navigation";
 import { notificationService } from "@/app/services/notification";
 
-// UserRole types
 type UserRole =
   | "guest"
   | "student"
@@ -27,7 +26,6 @@ const Header = () => {
   const router = useRouter();
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // --- NEW: Prevent Body Scroll when Menu is Open ---
   useEffect(() => {
     if (open) {
       document.body.style.overflow = "hidden";
@@ -128,7 +126,6 @@ const Header = () => {
     setProfileDropdownOpen(!profileDropdownOpen);
   };
 
-  // Helper for Dropdown Items
   const DropdownItem = ({
     icon,
     text,
@@ -188,7 +185,6 @@ const Header = () => {
         }`}
       >
         <div className="flex items-center justify-between py-3 px-4 md:max-w-[88%] md:mx-auto md:px-8 lg:px-10">
-          {/* Logo Section */}
           <div className="flex min-w-0 items-center gap-3 sm:gap-4">
             <Link
               href="/home"
@@ -274,7 +270,6 @@ const Header = () => {
           </div>
 
           <div className="flex items-center gap-1.5 sm:gap-5">
-            {/* Guest View - Login Only */}
             {role === "guest" && (
               <>
                 <Button
@@ -293,9 +288,51 @@ const Header = () => {
               </>
             )}
 
-            {/* Logged In View */}
             {isLoggedIn && (
-              <div className="flex items-center gap-2 sm:gap-3">
+              <div className="flex items-center gap-1.5 sm:gap-2">
+                {/* NOTIFICATION BUTTON */}
+                <div
+                  onClick={() => router.push("/notifications")}
+                  aria-label="Notifications"
+                  className="relative cursor-pointer select-none group"
+                >
+                  <style>{`
+                    @keyframes bell-ring {
+                      0%   { transform: rotate(0deg); }
+                      10%  { transform: rotate(18deg); }
+                      30%  { transform: rotate(-16deg); }
+                      50%  { transform: rotate(12deg); }
+                      70%  { transform: rotate(-8deg); }
+                      85%  { transform: rotate(4deg); }
+                      100% { transform: rotate(0deg); }
+                    }
+                    .bell-ring:hover svg {
+                      animation: bell-ring 0.6s ease-in-out;
+                      transform-origin: top center;
+                      drop-shadow: 0 0 10px rgba(0,167,238,0.75);
+                    }
+                  `}</style>
+                  <div className="relative flex items-center justify-center h-10 w-10 sm:h-11 sm:w-11 bell-ring">
+                    <svg
+                      width="34"
+                      height="34"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      className="text-[#00a7ee] transition-colors duration-300 ease-in-out group-hover:text-[#0096d6] group-hover:drop-shadow-[0_0_10px_rgba(0,167,238,0.75)]"
+                    >
+                      <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z" />
+                    </svg>
+                  </div>
+
+                  {/* unread */}
+                  {unreadCount > 0 && (
+                    <span className="absolute top-[2px] right-[1px] flex items-center justify-center min-w-[18px] h-[18px] px-[3px] bg-[#ef4444] text-white text-[10px] font-normal font-rubik rounded-full shadow-sm pointer-events-none border-[1px] border-white leading-none">
+                      {unreadCount > 99 ? "99+" : unreadCount}
+                    </span>
+                  )}
+                </div>
+
+                {/* PROFILE BUTTON */}
                 <div className="relative" ref={dropdownRef}>
                   <div
                     className="cursor-pointer outline-none select-none tap-highlight-transparent p-1"
@@ -387,60 +424,16 @@ const Header = () => {
                     </div>
                   )}
                 </div>
-
-                {/* ── NOTIFICATION BUTTON ── */}
-                <div
-                  onClick={() => router.push("/notifications")}
-                  aria-label="Notifications"
-                  className="relative cursor-pointer select-none group"
-                >
-                  <style>{`
-                    @keyframes bell-ring {
-                      0%   { transform: rotate(0deg); }
-                      10%  { transform: rotate(18deg); }
-                      30%  { transform: rotate(-16deg); }
-                      50%  { transform: rotate(12deg); }
-                      70%  { transform: rotate(-8deg); }
-                      85%  { transform: rotate(4deg); }
-                      100% { transform: rotate(0deg); }
-                    }
-                    .bell-ring:hover svg {
-                      animation: bell-ring 0.6s ease-in-out;
-                      transform-origin: top center;
-                      drop-shadow: 0 0 10px rgba(0,167,238,0.75);
-                    }
-                  `}</style>
-                  <div className="relative flex items-center justify-center h-10 w-10 sm:h-11 sm:w-11 bell-ring">
-                    <svg
-                      width="34"
-                      height="34"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                      className="text-[#00a7ee] transition-colors duration-300 ease-in-out group-hover:text-[#0096d6] group-hover:drop-shadow-[0_0_10px_rgba(0,167,238,0.75)]"
-                    >
-                      <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z" />
-                    </svg>
-                  </div>
-
-                  {/* Badge */}
-                  {unreadCount > 0 && (
-                    <span className="absolute top-0.5 right-[-2.5] flex items-center justify-center min-w-[20px] h-[20px] px-1.5 bg-[#ef4444] text-white text-[10px] font-bold rounded-full shadow-sm pointer-events-none border-2 border-white">
-                      {unreadCount > 99 ? "99+" : unreadCount}
-                    </span>
-                  )}
-                </div>
-                {/* ───────────────────────── */}
               </div>
             )}
 
-            {/* MENU TOGGLE WRAPPER */}
+            {/* MENU TOGGLE */}
             <div
               aria-label="Open menu"
               aria-expanded={open}
               onClick={() => setOpen((v) => !v)}
               className="cursor-pointer"
             >
-              {/* DESKTOP TOGGLE (9 DOTS) */}
               <div
                 className={`hidden md:grid grid-cols-3 gap-1 transition-transform duration-500 ease-in-out hover:rotate-90 ${
                   open ? "rotate-[360deg]" : ""
@@ -454,7 +447,6 @@ const Header = () => {
                 ))}
               </div>
 
-              {/* MOBILE TOGGLE */}
               <div className="md:hidden flex flex-col items-end justify-center gap-[6px] w-9 h-9">
                 <div
                   className={`h-[4px] bg-[#00a7ee] rounded-full transition-all duration-300 ${open ? "w-6" : "w-[26px]"}`}
@@ -471,7 +463,6 @@ const Header = () => {
         </div>
       </header>
 
-      {/* FULL SCREEN MENU OVERLAY - MOVED OUTSIDE HEADER */}
       <div
         className={`fixed inset-0 z-50 overflow-y-auto transition-transform duration-700 ease-in-out 
           ${

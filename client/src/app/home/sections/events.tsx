@@ -7,7 +7,6 @@ import EventCard from "@/app/home/components/event-card";
 import ParticleNetwork from "@/app/home/components/particle";
 import eventService from "@/app/services/event";
 
-// Shimmer animation style
 const shimmerStyle = `
   @keyframes shimmer {
     0% { background-position: -800px 0; }
@@ -34,40 +33,33 @@ function SkeletonBlock({ className = "" }: { className?: string }) {
 function EventCardSkeleton() {
   return (
     <div className="rounded-2xl overflow-hidden border border-white/10 bg-white/5 flex flex-col">
-      {/* Banner image placeholder */}
       <SkeletonBlock className="w-full h-48 rounded-none" />
 
       <div className="flex flex-col gap-3 p-5 flex-1">
-        {/* Status badge + mode badge row */}
         <div className="flex items-center gap-2">
           <SkeletonBlock className="w-20 h-5 rounded-full" />
           <SkeletonBlock className="w-16 h-5 rounded-full" />
         </div>
 
-        {/* Title */}
         <SkeletonBlock className="w-full h-6 rounded-md" />
         <SkeletonBlock className="w-3/4 h-6 rounded-md" />
 
-        {/* Date row */}
         <div className="flex items-center gap-2 mt-1">
           <SkeletonBlock className="w-4 h-4 rounded-sm" />
           <SkeletonBlock className="w-36 h-4 rounded-md" />
         </div>
 
-        {/* Location row */}
         <div className="flex items-center gap-2">
           <SkeletonBlock className="w-4 h-4 rounded-sm" />
           <SkeletonBlock className="w-28 h-4 rounded-md" />
         </div>
 
-        {/* Tags row */}
         <div className="flex items-center gap-2 mt-1">
           <SkeletonBlock className="w-14 h-5 rounded-full" />
           <SkeletonBlock className="w-18 h-5 rounded-full" />
           <SkeletonBlock className="w-12 h-5 rounded-full" />
         </div>
 
-        {/* Organizer row at bottom */}
         <div className="flex items-center gap-3 mt-auto pt-4 border-t border-white/10">
           <SkeletonBlock className="w-8 h-8 rounded-full flex-shrink-0" />
           <SkeletonBlock className="w-32 h-4 rounded-md" />
@@ -83,20 +75,17 @@ function EventsSkeleton() {
       <style>{shimmerStyle}</style>
 
       <div className="relative z-10 w-full max-w-7xl mx-auto transform -translate-y-8">
-        {/* Header skeleton */}
         <div className="mb-12 md:mb-16 flex flex-col items-center gap-3">
           <SkeletonBlock className="w-56 h-10 rounded-md" />
           <SkeletonBlock className="w-72 h-5 rounded-md" />
         </div>
 
-        {/* 3-column card skeletons */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           <EventCardSkeleton />
           <EventCardSkeleton />
           <EventCardSkeleton />
         </div>
 
-        {/* CTA button skeleton */}
         <div className="mt-16 flex justify-center">
           <SkeletonBlock className="w-40 h-11 rounded-full" />
         </div>
@@ -159,7 +148,7 @@ export function EventsSection() {
 
   return (
     <section className="light-dark-background relative min-h-screen flex items-center justify-center overflow-hidden px-4 sm:px-6 py-16 sm:py-20">
-      <div className="absolute inset-0 items-center justify-center top-[60px] hidden sm:flex">
+      <div className="absolute inset-0 items-center justify-center top-[40px] hidden sm:flex">
         <ParticleNetwork className="mask-[radial-gradient(ellipse_45%_50%_at_50%_55%,transparent_35%,white_100%)]" />
       </div>
 
@@ -174,7 +163,6 @@ export function EventsSection() {
           </p>
         </div>
 
-        {/* Content Area */}
         <div
           className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 justify-center items-stretch ${
             loading || events.length > 0 ? "min-h-[450px]" : "min-h-0"
