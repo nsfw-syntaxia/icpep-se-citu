@@ -17,8 +17,12 @@ import {
   Check,
   RotateCcw,
   Filter,
+  LayoutGrid,
+  CalendarClock,
+  History,
 } from "lucide-react";
 import eventService from "../services/event";
+import clsx from "clsx";
 
 type ProcessedEvent = Event & {
   status: "Upcoming" | "Ongoing" | "Ended";
@@ -39,7 +43,12 @@ const SHORT_MONTHS = [
   "Dec",
 ];
 const YEARS = Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - i);
-const CATEGORIES = ["All", "Upcoming", "Past"];
+
+const CATEGORIES = [
+  { name: "All", icon: <LayoutGrid size={16} /> },
+  { name: "Upcoming", icon: <CalendarClock size={16} /> },
+  { name: "Past", icon: <History size={16} /> },
+];
 
 export default function EventsListPage() {
   const router = useRouter();
@@ -372,25 +381,34 @@ export default function EventsListPage() {
                     setFilterStep("year");
                     setIsCategoryFilterOpen(false);
                   }}
-                  className={`flex items-center justify-center h-[52px] w-[52px] bg-white border-2 rounded-2xl transition-all ${isDateFilterOpen || selectedYears.length > 0 || selectedMonths.length > 0 ? "border-primary1 bg-primary1/5" : "border-primary1/20"} hover:border-primary1`}
+                  className={clsx(
+                    "flex items-center justify-center h-[52px] w-[52px] bg-white border-2 rounded-2xl transition-all hover:border-primary1",
+                    isDateFilterOpen ||
+                      selectedYears.length > 0 ||
+                      selectedMonths.length > 0
+                      ? "border-primary1 bg-primary1/5 shadow-sm shadow-primary1/10"
+                      : "border-primary1/20",
+                  )}
                 >
                   <Calendar className="h-5 w-5 text-primary1" />
                 </button>
 
                 {isDateFilterOpen && (
-                  <div className="absolute top-[115%] right-0 w-72 bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-gray-100 z-50 p-6 animate-in fade-in zoom-in-95 duration-200">
-                    <div className="flex items-center justify-between mb-5">
-                      <div className="flex items-center gap-2">
+                  <div className="absolute top-[125%] right-0 w-64 bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-gray-100 z-50 p-5 animate-in fade-in zoom-in-95 duration-200">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-1.5">
                         {filterStep === "month" && (
                           <button
                             onClick={() => setFilterStep("year")}
-                            className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+                            className="p-1 hover:bg-gray-100 rounded-full transition-colors text-primary1"
                           >
-                            <ChevronLeft className="h-4 w-4 text-primary1" />
+                            <ChevronLeft className="h-4 w-4" />
                           </button>
                         )}
-                        <span className="font-rubik font-bold text-primary3">
-                          {filterStep === "year" ? "Years" : "Months"}
+                        <span className="font-rubik font-bold text-primary3 text-sm">
+                          {filterStep === "year"
+                            ? "Select Year"
+                            : "Select Month"}
                         </span>
                       </div>
                       <button
@@ -398,14 +416,15 @@ export default function EventsListPage() {
                           setSelectedYears([]);
                           setSelectedMonths([]);
                         }}
-                        className="flex items-center gap-1.5 px-3 py-1 bg-red-50 hover:bg-red-100 rounded-full transition-colors group"
+                        className="flex items-center gap-1 px-2 py-1 bg-red-50 hover:bg-red-100 rounded-full transition-colors group"
                       >
                         <RotateCcw className="h-3 w-3 text-red-500 group-hover:-rotate-45 transition-transform" />
-                        <span className="font-raleway text-[10px] font-bold text-red-500 uppercase tracking-wider">
+                        <span className="font-raleway text-[9px] font-bold text-red-500 uppercase tracking-wider">
                           Clear
                         </span>
                       </button>
                     </div>
+
                     <div className="grid grid-cols-3 gap-2">
                       {(filterStep === "year" ? YEARS : SHORT_MONTHS).map(
                         (item, idx) => {
@@ -421,29 +440,38 @@ export default function EventsListPage() {
                                   ? toggleYear(item as number)
                                   : toggleMonth(idx)
                               }
-                              className={`py-2.5 rounded-xl text-xs font-bold font-rubik transition-all border-2 ${isSelected ? "bg-primary1 text-white border-primary1" : "bg-white text-gray-500 border-gray-50 hover:border-primary1/30 hover:bg-primary1/5"}`}
+                              className={clsx(
+                                "relative py-2.5 rounded-xl text-xs font-bold font-rubik transition-all duration-200 border-2 overflow-hidden",
+                                isSelected
+                                  ? "bg-primary1 text-white border-primary1 shadow-md shadow-primary1/30 scale-[0.96]"
+                                  : "bg-white text-gray-500 border-gray-50 hover:border-primary1/30 hover:bg-primary1/5 hover:text-primary1",
+                              )}
                             >
                               {item}
+                              {isSelected && (
+                                <span className="absolute top-1 right-1 w-1 h-1 bg-white rounded-full" />
+                              )}
                             </button>
                           );
                         },
                       )}
                     </div>
+
                     <button
                       onClick={() =>
                         filterStep === "year"
                           ? setFilterStep("month")
                           : setIsDateFilterOpen(false)
                       }
-                      className="w-full mt-6 py-3.5 bg-primary3 text-white rounded-xl font-rubik font-bold text-sm flex items-center justify-center gap-2 hover:opacity-90 active:scale-[0.97] transition-all shadow-lg shadow-primary3/10"
+                      className="w-full mt-5 py-2.5 bg-primary3 text-white rounded-xl font-rubik font-bold text-xs flex items-center justify-center gap-2 hover:opacity-90 active:scale-[0.97] transition-all shadow-lg shadow-primary3/10"
                     >
                       {filterStep === "year" ? (
                         <>
-                          Next <ChevronRight className="h-4 w-4" />
+                          Next <ChevronRight className="h-3.5 w-3.5" />
                         </>
                       ) : (
                         <>
-                          Apply <Check className="h-4 w-4" />
+                          Apply <Check className="h-3.5 w-3.5" />
                         </>
                       )}
                     </button>
@@ -458,40 +486,59 @@ export default function EventsListPage() {
                     setIsCategoryFilterOpen(!isCategoryFilterOpen);
                     setIsDateFilterOpen(false);
                   }}
-                  className={`flex items-center justify-center h-[52px] w-[52px] bg-white border-2 rounded-2xl transition-all ${isCategoryFilterOpen || activeCategory !== "All" ? "border-primary1 bg-primary1/5" : "border-primary1/20"} hover:border-primary1`}
+                  className={clsx(
+                    "flex items-center justify-center h-[52px] w-[52px] bg-white border-2 rounded-2xl transition-all hover:border-primary1",
+                    isCategoryFilterOpen || activeCategory !== "All"
+                      ? "border-primary1 bg-primary1/5 shadow-sm shadow-primary1/10"
+                      : "border-primary1/20",
+                  )}
                 >
                   <Filter className="h-5 w-5 text-primary1" />
                 </button>
 
                 {isCategoryFilterOpen && (
-                  <div className="absolute top-[115%] right-0 w-64 bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-gray-100 z-50 p-6 animate-in fade-in zoom-in-95 duration-200">
-                    <div className="flex items-center justify-between mb-5">
-                      <span className="font-rubik font-bold text-primary3">
+                  <div className="absolute top-[125%] right-0 w-64 bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-gray-100 z-50 p-5 animate-in fade-in zoom-in-95 duration-200">
+                    <div className="flex items-center justify-between mb-4 px-1">
+                      <span className="font-rubik font-bold text-primary3 text-sm">
                         Category
                       </span>
                       <button
                         onClick={() => setActiveCategory("All")}
-                        className="flex items-center gap-1.5 px-3 py-1 bg-red-50 hover:bg-red-100 rounded-full transition-colors group"
+                        className="flex items-center gap-1 px-2 py-1 bg-red-50 hover:bg-red-100 rounded-full transition-colors group"
                       >
                         <RotateCcw className="h-3 w-3 text-red-500 group-hover:-rotate-45 transition-transform" />
-                        <span className="font-raleway text-[10px] font-bold text-red-500 uppercase tracking-wider">
+                        <span className="font-raleway text-[9px] font-bold text-red-500 uppercase tracking-wider">
                           Reset
                         </span>
                       </button>
                     </div>
-                    <div className="flex flex-col gap-2">
+                    <div className="flex flex-col gap-1.5">
                       {CATEGORIES.map((cat) => (
                         <button
-                          key={cat}
+                          key={cat.name}
                           onClick={() => {
-                            setActiveCategory(cat);
+                            setActiveCategory(cat.name);
                             setIsCategoryFilterOpen(false);
                           }}
-                          className={`w-full py-3 px-4 rounded-xl text-sm font-bold font-rubik transition-all border-2 text-left flex items-center justify-between ${activeCategory === cat ? "bg-primary1 text-white border-primary1" : "bg-white text-gray-500 border-gray-50 hover:border-primary1/30 hover:bg-primary1/5"}`}
+                          className={clsx(
+                            "w-full py-2.5 px-4 rounded-xl text-sm transition-all duration-200 text-left flex items-center gap-3 font-rubik cursor-pointer transform-gpu backface-hidden",
+                            activeCategory === cat.name
+                              ? "bg-primary1 text-white shadow-md shadow-primary1/25 font-semibold"
+                              : "text-gray-600 hover:bg-primary1/5 hover:text-primary1 hover:translate-x-1",
+                          )}
                         >
-                          {cat}
-                          {activeCategory === cat && (
-                            <Check className="h-4 w-4" />
+                          <span
+                            className={clsx(
+                              activeCategory === cat.name
+                                ? "text-white"
+                                : "text-primary1",
+                            )}
+                          >
+                            {cat.icon}
+                          </span>
+                          {cat.name}
+                          {activeCategory === cat.name && (
+                            <Check className="h-3.5 w-3.5 ml-auto" />
                           )}
                         </button>
                       ))}
@@ -651,9 +698,9 @@ export default function EventsListPage() {
                   )}
                 </>
               ) : (
-                <div className="text-center py-16">
-                  <p className="font-raleway text-lg text-gray-500">
-                    No events found matching your criteria.
+                <div className="text-center py-20">
+                  <p className="font-raleway text-gray-500">
+                    No events found matching your filters.
                   </p>
                 </div>
               )}
