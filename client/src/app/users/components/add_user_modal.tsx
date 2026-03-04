@@ -33,7 +33,7 @@ export default function AddUserModal({
     middleName: "",
     yearLevel: undefined,
     password: "123456",
-    role: "member",
+    role: "student",
     membershipStatus: "non-member",
   });
 
@@ -58,9 +58,6 @@ export default function AddUserModal({
       (formData.yearLevel < 1 || formData.yearLevel > 5)
     ) {
       newErrors.yearLevel = "Year level must be between 1 and 5";
-    }
-    if (!formData.password.trim() || formData.password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters";
     }
 
     setErrors(newErrors);
@@ -112,7 +109,7 @@ export default function AddUserModal({
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col animate-scale-in">
         {/* Header */}
         <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between bg-gradient-to-r from-primary1/5 to-secondary2/5">
           <div className="flex items-center gap-3">
@@ -130,7 +127,7 @@ export default function AddUserModal({
           </div>
           <button
             onClick={handleClose}
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+            className="p-2 hover:bg-gray-100 rounded-full transition-colors cursor-pointer"
           >
             <X className="w-5 h-5 text-gray-500" />
           </button>
@@ -249,27 +246,17 @@ export default function AddUserModal({
               </div>
 
               <div>
-                <label className="block font-raleway text-sm font-semibold text-gray-700 mb-2">
-                  Password <span className="text-red-500">*</span>
+                <label className="block font-raleway text-sm font-semibold text-gray-500 mb-2">
+                  Password <span className="text-gray-400 font-normal">(Default)</span>
                 </label>
                 <input
                   type="text"
                   name="password"
                   value={formData.password}
-                  onChange={handleChange}
-                  placeholder="123456"
-                  className={`w-full px-4 py-2 border rounded-lg font-raleway text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary1/50 ${
-                    errors.password ? "border-red-500" : "border-gray-300"
-                  }`}
+                  readOnly
+                  disabled
+                  className="w-full px-4 py-2 border border-gray-200 rounded-lg font-raleway text-gray-400 bg-gray-50 cursor-not-allowed select-none"
                 />
-                {errors.password && (
-                  <p className="mt-1 text-sm text-red-600 font-raleway">
-                    {errors.password}
-                  </p>
-                )}
-                <p className="mt-1 text-xs text-gray-500 font-raleway">
-                  Default: 123456
-                </p>
               </div>
             </div>
 
@@ -289,6 +276,7 @@ export default function AddUserModal({
                   <option value="council-officer">Council Officer</option>
                   <option value="committee-officer">Committee Officer</option>
                   <option value="faculty">Faculty</option>
+                  <option value="admin">Admin</option>
                 </select>
               </div>
 
@@ -326,13 +314,13 @@ export default function AddUserModal({
           <button
             type="button"
             onClick={handleClose}
-            className="px-6 py-2 border-2 border-gray-300 text-gray-700 font-raleway font-semibold rounded-lg hover:bg-gray-100 transition-colors"
+            className="px-6 py-2 border-2 border-gray-300 text-gray-700 font-raleway font-semibold rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
           >
             Cancel
           </button>
           <button
             onClick={handleSubmit}
-            className="px-6 py-2 bg-gradient-to-r from-primary1 to-primary1/90 text-white font-raleway font-semibold rounded-lg hover:shadow-lg hover:scale-105 transition-all"
+            className="px-6 py-2 bg-gradient-to-r from-primary1 to-primary1/90 text-white font-raleway font-semibold rounded-lg hover:shadow-lg hover:scale-105 transition-all cursor-pointer"
           >
             Add User
           </button>

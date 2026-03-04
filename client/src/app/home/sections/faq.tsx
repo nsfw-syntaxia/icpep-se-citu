@@ -120,7 +120,7 @@ export function FAQSection() {
               Contact Us
             </button>
             <button
-              onClick={() => router.push("/contact")}
+              onClick={() => router.push("/faq")}
               className="bg-transparent border-2 border-gray-300 text-gray-700 hover:bg-buttonbg1 hover:border-primary1 hover:text-primary1 font-raleway font-semibold px-8 py-3 rounded-full transition-all duration-300 cursor-pointer"
             >
               More FAQs
