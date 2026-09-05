@@ -172,7 +172,7 @@ export default function OfficerDashboardPage() {
                     
                     <button
   onClick={() => router.push("/events")}
-  className="flex items-center justify-center gap-2 border-2 border-primary1 text-primary1 hover:bg-primary1 hover:text-white text-xs font-raleway font-semibold px-6 py-2 rounded-full transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg cursor-pointer w-[220px] sm:w-auto"
+  className="flex items-center justify-center gap-2 border-2 border-primary1 text-primary1 hover:bg-primary1 hover:text-white text-xs font-raleway font-semibold px-6 py-2 rounded-full transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg cursor-pointer w-55 sm:w-auto"
 >
   <span>View All Events</span>
   <ChevronRight className="h-4 w-4" />
@@ -207,7 +207,7 @@ export default function OfficerDashboardPage() {
                     </h3>
                     <button
   onClick={() => router.push("/announcements")}
-  className="flex items-center justify-center gap-2 border-2 border-primary1 text-primary1 hover:bg-primary1 hover:text-white text-xs font-raleway font-semibold px-6 py-2 rounded-full transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg cursor-pointer w-[220px] sm:w-auto"
+  className="flex items-center justify-center gap-2 border-2 border-primary1 text-primary1 hover:bg-primary1 hover:text-white text-xs font-raleway font-semibold px-6 py-2 rounded-full transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg cursor-pointer w-55 sm:w-auto"
 >
   <span>View All</span>
   <ChevronRight className="h-4 w-4" />
@@ -234,12 +234,12 @@ export default function OfficerDashboardPage() {
                 variants={fadeUp}
                 initial="hidden"
                 animate="visible"
-                className="lg:col-span-1 flex flex-col gap-4 bg-white/70 border border-slate-100 rounded-3xl p-6 shadow-sm min-h-[500px] mt-5"
+                className="lg:col-span-1 flex flex-col gap-4 bg-white/70 border border-slate-100 rounded-3xl p-6 shadow-sm min-h-125 mt-5"
               >
                 <h3 className="font-rubik text-lg font-bold text-primary3 tracking-tight">
                   Recent Activities
                 </h3>
-                <div className="flex flex-col gap-3 overflow-y-auto themed-scrollbar max-h-[580px] pr-1">
+                <div className="flex flex-col gap-3 overflow-y-auto themed-scrollbar max-h-145 pr-1">
                   {recentActivities.map((activity) => (
                     <ActivityCard
                       key={activity.id}
@@ -258,7 +258,7 @@ export default function OfficerDashboardPage() {
         </div>
       </main>
 
-      <div className="mt-[-35px] md:-mt-20 relative z-0">
+      <div className="-mt-8.75 md:-mt-20 relative z-0">
         <Footer />
       </div>
     </div>

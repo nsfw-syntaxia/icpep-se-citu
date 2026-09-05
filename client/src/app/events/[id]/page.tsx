@@ -302,7 +302,7 @@ export default function EventDetailPage() {
         </div>
       </main>
 
-      <div className="mt-[-35px] md:-mt-20 relative z-0">
+      <div className="-mt-8.75 md:-mt-20 relative z-0">
         <Footer />
       </div>
     </div>

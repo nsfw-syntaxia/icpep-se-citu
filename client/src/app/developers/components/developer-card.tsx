@@ -34,7 +34,7 @@ export default function DeveloperCard({
 
   return (
     <div
-      className="w-[310px] h-[330px] sm:w-[320px] sm:h-[360px] md:w-[360px] md:h-[360px]"
+      className="w-77.5 h-82.5 sm:w-80 sm:h-90 md:w-90 md:h-90"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -45,7 +45,7 @@ export default function DeveloperCard({
       >
         {/* front */}
         <div className="absolute w-full h-full rounded-2xl overflow-hidden shadow-lg backface-hidden bg-linear-to-b from-sky-400 to-blue-600 flex flex-col justify-between">
-          <div className="absolute top-[-60px] sm:top-[-19px] lg:top-[-38px] left-0 w-full h-full z-0 hidden md:block">
+          <div className="absolute -top-15 sm:-top-4.75 lg:-top-9.5 left-0 w-full h-full z-0 hidden md:block">
             <Image
               src={bgSrc}
               alt={`${name}`}
@@ -55,7 +55,7 @@ export default function DeveloperCard({
             />
           </div>
 
-          <div className="absolute top-[-15px] left-[20px] w-[120%] h-[120%] z-0 md:hidden">
+          <div className="absolute -top-3.75 left-5 w-[120%] h-[120%] z-0 md:hidden">
             <Image
               src="/icpep logo.png"
               alt={`${name}`}
@@ -106,7 +106,7 @@ export default function DeveloperCard({
             </ul>
           </div>
 
-          <div className="self-end flex items-center gap-4 mr-[-20px] mt-5 py-2 px-4">
+          <div className="self-end flex items-center gap-4 -mr-5 mt-5 py-2 px-4">
             {githubLink && githubLink !== "#" && (
               <a
                 href={githubLink}

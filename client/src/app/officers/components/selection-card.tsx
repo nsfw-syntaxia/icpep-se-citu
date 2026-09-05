@@ -66,7 +66,7 @@ const SelectionCard: FC<SelectionCardProps> = ({
           <ChevronRight className="w-5 h-5 sm:w-8 sm:h-8" />
         </button>
 
-        <span className="font-rubik font-bold text-2xl sm:text-3xl md:text-4xl text-white drop-shadow-lg text-center leading-tight tracking-tight break-words max-w-full sm:max-w-[90%] pointer-events-none">
+        <span className="font-rubik font-bold text-2xl sm:text-3xl md:text-4xl text-white drop-shadow-lg text-center leading-tight tracking-tight wrap-break-words max-w-full sm:max-w-[90%] pointer-events-none">
           {title}
         </span>
       </div>

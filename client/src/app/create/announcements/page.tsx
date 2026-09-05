@@ -707,7 +707,7 @@ export default function AnnouncementsPage() {
 
   // --- Custom Time Picker Render (matching meet-information) ---
   const dropdownContainerStyle =
-    "absolute z-30 w-full min-w-[5rem] mt-2 bg-white border border-gray-100 rounded-2xl shadow-xl overflow-x-hidden flex flex-col gap-1 p-2 max-h-56 overflow-y-auto themed-scrollbar";
+    "absolute z-30 w-full min-w-20 mt-2 bg-white border border-gray-100 rounded-2xl shadow-xl overflow-x-hidden flex flex-col gap-1 p-2 max-h-56 overflow-y-auto themed-scrollbar";
   const dropdownItemStyle =
     "flex items-center justify-between px-3 py-2 rounded-xl cursor-pointer transition-colors font-rubik text-sm font-medium";
   const dropdownItemSelectedStyle = "bg-primary1/5 text-primary1";
@@ -1392,7 +1392,7 @@ export default function AnnouncementsPage() {
                             onChange={handleInputChange}
                             rows={7}
                             placeholder="Add full details, links, and information..."
-                            className={`${inputCls(errors.body)} resize-y min-h-[180px]`}
+                            className={`${inputCls(errors.body)} resize-y min-h-45`}
                           />
                           {errors.body && (
                             <p className="text-red-500 text-xs mt-1 ml-2 font-raleway">Body is required</p>
@@ -1775,7 +1775,7 @@ export default function AnnouncementsPage() {
                       </div>
                     ) : (
                       <div className="overflow-x-auto themed-scrollbar">
-                        <table className="w-full text-left min-w-[680px]">
+                        <table className="w-full text-left min-w-170">
                           <thead>
                             <tr className="bg-gray-50/80">
                               <th className="px-8 py-3.5 text-[10px] font-bold uppercase tracking-widest text-gray-400 font-rubik">
@@ -1811,11 +1811,11 @@ export default function AnnouncementsPage() {
                                         <span className="w-1.5 h-1.5 rounded-full bg-primary1 animate-pulse shrink-0" />
                                       )}
                                       <div>
-                                        <span className="font-bold text-sm text-gray-800 font-rubik truncate max-w-[200px] block">
+                                        <span className="font-bold text-sm text-gray-800 font-rubik truncate max-w-50 block">
                                           {item.title}
                                         </span>
                                         {item.description && (
-                                          <p className="text-xs text-gray-400 font-raleway mt-0.5 max-w-[200px] truncate">
+                                          <p className="text-xs text-gray-400 font-raleway mt-0.5 max-w-50 truncate">
                                             {item.description}
                                           </p>
                                         )}
@@ -1883,7 +1883,7 @@ export default function AnnouncementsPage() {
         </div>
       </main>
 
-      <div className="mt-[-35px] md:-mt-20 relative z-0">
+      <div className="-mt-8.75 md:-mt-20 relative z-0">
         <Footer />
       </div>
 

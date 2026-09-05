@@ -884,7 +884,7 @@ export default function UsersListPage() {
         <Grid />
         <div className="relative z-10 flex flex-col min-h-screen">
           <Header />
-          <div className="grow w-full max-w-[1600px] mx-auto px-8 pt-38 pb-12">
+          <div className="grow w-full max-w-400 mx-auto px-8 pt-38 pb-12">
             <div className="mb-8 flex justify-start">
               <BackButton onClick={() => router.push("/")} title="Back to Home" />
             </div>
@@ -989,10 +989,10 @@ export default function UsersListPage() {
                       <ChevronLeft className="w-5 h-5" />
                     </button>
                   ) : (
-                    <div className="w-[42px]"></div>
+                    <div className="w-10.5"></div>
                   )}
 
-                  <div className="flex items-center gap-2 min-w-[100px] justify-center">
+                  <div className="flex items-center gap-2 min-w-25 justify-center">
                     <span className="font-raleway text-base text-gray-700">
                       <span className="font-bold text-primary1">
                         {currentPage}
@@ -1013,7 +1013,7 @@ export default function UsersListPage() {
                       <ChevronRight className="w-5 h-5" />
                     </button>
                   ) : (
-                    <div className="w-[42px]"></div>
+                    <div className="w-10.5"></div>
                   )}
                 </div>
               </div>
@@ -1022,7 +1022,7 @@ export default function UsersListPage() {
         </div>
       </main>
 
-      <div className="mt-[-35px] md:-mt-20 relative z-0">
+      <div className="-mt-8.75 md:-mt-20 relative z-0">
         <Footer />
       </div>
 

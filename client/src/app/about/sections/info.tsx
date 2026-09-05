@@ -91,7 +91,7 @@ const InfoSection: FC = () => {
                     text-[0.65rem] xs:text-xs sm:text-sm
                     
                     /* PREVENT WRAPPING ISSUES DURING ANIMATION */
-                    min-w-[80px] sm:min-w-0
+                    min-w-20 sm:min-w-0
                     
                     ${
                       isActive
@@ -124,7 +124,7 @@ const InfoSection: FC = () => {
 
       <section
         className="rounded-3xl mt-2 sm:mt-8 bg-linear-to-br from-primary3 to-secondary1
-    px-6 sm:px-16 py-10 sm:py-20 shadow-2xl text-white flex flex-col justify-center min-h-[30rem] sm:min-h-[40rem]"
+    px-6 sm:px-16 py-10 sm:py-20 shadow-2xl text-white flex flex-col justify-center min-h-120 sm:min-h-160"
       >
         <div key={activeIndex} className="animate-fade-in">
           {activeSection.id === "org" && <OrgLayout section={activeSection} />}

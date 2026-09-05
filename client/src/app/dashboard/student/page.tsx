@@ -76,7 +76,7 @@ export default function StudentDashboardPage() {
             
                   <button
   onClick={() => router.push("/events")}
-  className="flex items-center justify-center gap-2 border-2 border-primary1 text-primary1 hover:bg-primary1 hover:text-white text-xs font-raleway font-semibold px-6 py-2 rounded-full transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg cursor-pointer w-[220px] sm:w-auto"
+  className="flex items-center justify-center gap-2 border-2 border-primary1 text-primary1 hover:bg-primary1 hover:text-white text-xs font-raleway font-semibold px-6 py-2 rounded-full transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg cursor-pointer w-55 sm:w-auto"
 >
   <span>Explore More Events</span>
   <ChevronRight className="h-4 w-4" />
@@ -130,7 +130,7 @@ export default function StudentDashboardPage() {
                   
                   <button
   onClick={() => router.push("/announcements")}
-  className="flex items-center justify-center gap-2 border-2 border-primary1 text-primary1 hover:bg-primary1 hover:text-white text-xs font-raleway font-semibold px-6 py-2 rounded-full transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg cursor-pointer w-[220px] sm:w-auto"
+  className="flex items-center justify-center gap-2 border-2 border-primary1 text-primary1 hover:bg-primary1 hover:text-white text-xs font-raleway font-semibold px-6 py-2 rounded-full transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg cursor-pointer w-55 sm:w-auto"
 >
   <span>View All Announcements</span>
   <ChevronRight className="h-4 w-4" />
@@ -189,7 +189,7 @@ export default function StudentDashboardPage() {
         </div>
       </main>
 
-      <div className="mt-[-35px] md:-mt-20 relative z-0">
+      <div className="-mt-8.75 md:-mt-20 relative z-0">
         <Footer />
       </div>
     </div>

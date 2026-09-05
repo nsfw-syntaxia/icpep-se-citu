@@ -109,7 +109,7 @@ export function WhyJoinSection() {
            bg-linear-to-br from-primary3 to-secondary1 
            px-10 sm:px-16 py-16 sm:py-20 shadow-2xl 
            transition-transform duration-300 ease-out 
-           transform-style-preserve-3d -translate-y-[1.5rem]"
+           transform-style-preserve-3d -translate-y-6"
         style={{
           transform:
             "rotateX(var(--card-rotate-x, 0deg)) rotateY(var(--card-rotate-y, 0deg))",
@@ -128,7 +128,7 @@ export function WhyJoinSection() {
             </div>
 
             <div className="grid grid-cols-1 gap-8 lg:gap-6 lg:grid-cols-2">
-              <div className="aspect-square w-full lg:h-[475px] lg:aspect-auto">
+              <div className="aspect-square w-full lg:h-118.75 lg:aspect-auto">
                 <CardStack imageUrls={galleryImages} />
               </div>
 

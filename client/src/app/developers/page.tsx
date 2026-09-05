@@ -90,7 +90,7 @@ export default function DevelopersPage() {
               }
             />
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-0 gap-y-14 justify-items-center max-w-[845px] mx-auto mb-16">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-0 gap-y-14 justify-items-center max-w-211.25 mx-auto mb-16">
               {developers.map((dev, index) => (
                 <DeveloperCard key={index} {...dev} />
               ))}
@@ -99,7 +99,7 @@ export default function DevelopersPage() {
         </div>
       </main>
 
-      <div className="mt-[-35px] md:-mt-20 relative z-0">
+      <div className="-mt-8.75 md:-mt-20 relative z-0">
         <Footer />
       </div>
     </div>

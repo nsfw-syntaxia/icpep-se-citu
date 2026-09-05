@@ -55,7 +55,7 @@ export default function LandingPage() {
         </section>
       </main>
 
-      <div className="mt-[-35px] md:-mt-20">
+      <div className="-mt-8.75 md:-mt-20">
         <Footer />
       </div>
     </div>

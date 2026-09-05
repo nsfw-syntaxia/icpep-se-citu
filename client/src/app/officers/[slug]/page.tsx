@@ -37,7 +37,7 @@ const OfficersPage = () => {
             </button>
           </div>
         </main>
-        <div className="mt-[-35px] md:-mt-20 relative z-0">
+        <div className="-mt-8.75 md:-mt-20 relative z-0">
           <Footer />
         </div>
       </div>
@@ -50,8 +50,8 @@ const OfficersPage = () => {
         {/* Background Grid */}
         <Grid />
 
-        <div className="absolute top-[-10rem] left-[-15rem] w-[35rem] h-[35rem] bg-primary1/10 rounded-full filter blur-3xl opacity-60"></div>
-        <div className="absolute top-1/4 right-[-18rem] w-[35rem] h-[35rem] bg-secondary2/10 rounded-full filter blur-3xl opacity-60"></div>
+        <div className="absolute -top-40 -left-60 w-140 h-140 bg-primary1/10 rounded-full filter blur-3xl opacity-60"></div>
+        <div className="absolute top-1/4 -right-72 w-140 h-140 bg-secondary2/10 rounded-full filter blur-3xl opacity-60"></div>
 
         <div className="relative z-10 flex flex-col">
           <Header />
@@ -94,7 +94,7 @@ const OfficersPage = () => {
         </div>
       </main>
 
-      <div className="mt-[-35px] md:-mt-20 relative z-0">
+      <div className="-mt-8.75 md:-mt-20 relative z-0">
         <Footer />
       </div>
     </div>

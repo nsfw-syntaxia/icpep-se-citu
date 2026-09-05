@@ -742,7 +742,7 @@ export default function MerchPage() {
                       </div>
                     ) : (
                       <div className="overflow-x-auto themed-scrollbar">
-                        <table className="w-full text-left min-w-[680px]">
+                        <table className="w-full text-left min-w-170">
                           <thead>
                             <tr className="bg-gray-50/80">
                               <th className="px-6 sm:px-8 py-3.5 text-[10px] font-bold uppercase tracking-widest text-gray-400 font-rubik">
@@ -803,7 +803,7 @@ export default function MerchPage() {
                                       </span>
                                     </div>
                                     {item.description && (
-                                      <p className="text-xs text-gray-400 font-raleway mt-0.5 max-w-[200px] truncate">
+                                      <p className="text-xs text-gray-400 font-raleway mt-0.5 max-w-50 truncate">
                                         {item.description}
                                       </p>
                                     )}
@@ -829,7 +829,7 @@ export default function MerchPage() {
                                       href={item.orderLink}
                                       target="_blank"
                                       rel="noreferrer"
-                                      className="text-xs font-bold text-primary2 hover:underline font-rubik truncate max-w-[140px] block"
+                                      className="text-xs font-bold text-primary2 hover:underline font-rubik truncate max-w-35 block"
                                     >
                                       View Form ↗
                                     </a>
@@ -868,7 +868,7 @@ export default function MerchPage() {
         </div>
       </main>
 
-      <div className="mt-[-35px] md:-mt-20 relative z-0">
+      <div className="-mt-8.75 md:-mt-20 relative z-0">
         <Footer />
       </div>
 

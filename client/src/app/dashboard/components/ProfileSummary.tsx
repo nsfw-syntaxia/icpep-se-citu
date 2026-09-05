@@ -71,7 +71,7 @@ export const ProfileSummary: FC<ProfileSummaryProps> = ({
       </div>
       <button
   onClick={onEdit}
-  className="flex items-center justify-center gap-2 bg-transparent border-2 border-gray-300 text-gray-700 hover:bg-buttonbg1 hover:border-primary1 hover:text-primary1 font-raleway font-semibold px-8 py-3 rounded-full transition-all duration-300 cursor-pointer w-[220px] sm:w-auto"
+  className="flex items-center justify-center gap-2 bg-transparent border-2 border-gray-300 text-gray-700 hover:bg-buttonbg1 hover:border-primary1 hover:text-primary1 font-raleway font-semibold px-8 py-3 rounded-full transition-all duration-300 cursor-pointer w-55 sm:w-auto"
 >
   <Edit2 className="h-4 w-4" />
   <span>Edit Profile</span>

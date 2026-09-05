@@ -377,7 +377,7 @@ export default function EventsListPage() {
                     setIsCategoryFilterOpen(false);
                   }}
                   className={clsx(
-                    "flex items-center justify-center h-[52px] w-[52px] bg-white border-2 rounded-2xl transition-all hover:border-primary1 cursor-pointer",
+                    "flex items-center justify-center h-13 w-13 bg-white border-2 rounded-2xl transition-all hover:border-primary1 cursor-pointer",
                     isDateFilterOpen ||
                       selectedYears.length > 0 ||
                       selectedMonths.length > 0
@@ -482,7 +482,7 @@ export default function EventsListPage() {
                     setIsDateFilterOpen(false);
                   }}
                   className={clsx(
-                    "flex items-center justify-center h-[52px] w-[52px] bg-white border-2 rounded-2xl transition-all hover:border-primary1 cursor-pointer",
+                    "flex items-center justify-center h-13 w-13 bg-white border-2 rounded-2xl transition-all hover:border-primary1 cursor-pointer",
                     isCategoryFilterOpen || activeCategory !== "All"
                       ? "border-primary1 bg-primary1/5 shadow-sm shadow-primary1/10"
                       : "border-primary1/20",
@@ -705,7 +705,7 @@ export default function EventsListPage() {
       </main>
 
       {/* footer */}
-      <div className="-mt-[35px] md:-mt-20 relative z-0">
+      <div className="-mt-8.75 md:-mt-20 relative z-0">
         <Footer />
       </div>
     </div>

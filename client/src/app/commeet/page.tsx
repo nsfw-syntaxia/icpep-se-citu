@@ -451,7 +451,7 @@ const CommeetPage: FunctionComponent = () => {
                   </div>
                 ) : (
                   /* --- EMPTY STATE --- */
-                  <div className="flex flex-col items-center justify-center h-full min-h-[300px] bg-gray-50/50 rounded-3xl border-2 border-dashed border-gray-200 text-center p-8">
+                  <div className="flex flex-col items-center justify-center h-full min-h-75 bg-gray-50/50 rounded-3xl border-2 border-dashed border-gray-200 text-center p-8">
                     <div className="p-4 bg-white rounded-full shadow-sm mb-4">
                       <CalendarX className="w-8 h-8 text-gray-400" />
                     </div>
@@ -470,7 +470,7 @@ const CommeetPage: FunctionComponent = () => {
         </div>
       </main>
 
-      <div className="mt-[-35px] md:-mt-20 relative z-0">
+      <div className="-mt-8.75 md:-mt-20 relative z-0">
         <Footer />
       </div>
     </div>

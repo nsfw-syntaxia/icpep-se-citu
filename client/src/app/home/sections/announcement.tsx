@@ -64,7 +64,7 @@ export function AnnouncementsSection() {
             <Button
               variant="hero"
               onClick={() => router.push("/announcements")}
-              className="w-[220px] px-8 py-3 sm:w-auto"
+              className="w-55 px-8 py-3 sm:w-auto"
             >
               View All
             </Button>
@@ -74,7 +74,7 @@ export function AnnouncementsSection() {
         {loading ? (
           <>
             <GlassCard>
-              <div className="h-[400px] w-full animate-pulse bg-white/5 rounded-xl" />
+              <div className="h-100 w-full animate-pulse bg-white/5 rounded-xl" />
             </GlassCard>
             <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-flow-col lg:auto-cols-fr">
               {[1, 2, 3].map((i) => (

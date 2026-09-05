@@ -76,22 +76,22 @@ const MerchCard: FC<MerchCardProps> = ({
         </p>
 
         {/* Button */}
-        <div className="relative mt-auto w-full h-[48px] font-rubik font-semibold text-base overflow-hidden rounded-lg">
+        <div className="relative mt-auto w-full h-12 font-rubik font-semibold text-base overflow-hidden rounded-lg">
           {!isAvailable ? (
             <div className="w-full h-full flex items-center justify-center bg-slate-200 text-slate-500 select-none">
               <span>{status}</span>
             </div>
           ) : (
             <div className="relative w-full h-full">
-              <div className="absolute top-0 left-0 h-full w-[calc(100%-56px)] rounded-lg bg-primary1 text-white flex items-center transform group-hover:translate-x-[56px] transition-transform duration-500 ease-out">
+              <div className="absolute top-0 left-0 h-full w-[calc(100%-56px)] rounded-lg bg-primary1 text-white flex items-center transform group-hover:translate-x-14 transition-transform duration-500 ease-out">
                 <span className="px-5 text-left w-full">Buy Merch</span>
               </div>
-              <div className="absolute top-0 right-0 h-full w-[48px] rounded-lg bg-primary1 text-white flex items-center justify-center transform group-hover:translate-x-[56px] transition-transform duration-500 ease-out overflow-hidden">
+              <div className="absolute top-0 right-0 h-full w-12 rounded-lg bg-primary1 text-white flex items-center justify-center transform group-hover:translate-x-14 transition-transform duration-500 ease-out overflow-hidden">
                 <div className="w-full h-full flex items-center justify-center bg-black/10">
                   <ShoppingBag size={18} />
                 </div>
               </div>
-              <div className="absolute top-0 left-0 h-full w-[48px] rounded-lg bg-primary1 text-white flex items-center justify-center transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-out overflow-hidden">
+              <div className="absolute top-0 left-0 h-full w-12 rounded-lg bg-primary1 text-white flex items-center justify-center transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-out overflow-hidden">
                 <div className="w-full h-full flex items-center justify-center bg-black/10">
                   <ShoppingBag size={18} />
                 </div>

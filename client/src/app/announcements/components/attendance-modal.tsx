@@ -129,7 +129,7 @@ export default function AttendanceModal({
                   key={index}
                   className="font-raleway flex items-center justify-between rounded-lg bg-black/20 p-2 sm:p-2.5"
                 >
-                  <span className="text-xs sm:text-sm font-medium text-white min-w-[90px]">
+                  <span className="text-xs sm:text-sm font-medium text-white min-w-22.5">
                     {officer.title}
                   </span>
                   <span className="text-right text-xs sm:text-sm">
@@ -161,7 +161,7 @@ export default function AttendanceModal({
                     key={index}
                     className="font-raleway flex items-center justify-between rounded-lg bg-black/20 p-2 sm:p-2.5"
                   >
-                    <span className="text-xs sm:text-sm font-medium text-white min-w-[90px]">
+                    <span className="text-xs sm:text-sm font-medium text-white min-w-22.5">
                       {member.title}
                     </span>
                     <span className="text-right text-xs sm:text-sm">

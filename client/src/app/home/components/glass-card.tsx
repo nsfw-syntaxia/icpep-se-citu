@@ -24,7 +24,7 @@ export function GlassCard({ children, className = "" }: GlassCardProps) {
           }}
         />
         <div
-          className="absolute inset-[2px] rounded-[22px]"
+          className="absolute inset-0.5 rounded-[22px]"
           style={{ backgroundColor: "rgba(255,255,255,0.9)" }}
         />
       </div>

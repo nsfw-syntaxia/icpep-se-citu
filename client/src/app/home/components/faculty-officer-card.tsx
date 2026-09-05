@@ -25,14 +25,14 @@ export default function FacultyOfficerCard({
     <div
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      className={`relative rounded-2xl p-[2px] 
+      className={`relative rounded-2xl p-0.5 
         bg-linear-to-br from-(--secondary2) to-(--primary1) 
         shadow-md transition-all duration-500 ease-in-out
-        h-[240px] sm:h-[280px]
+        h-60 sm:h-70
         ${
           isExpanded
-            ? "w-[240px] sm:w-[280px] shadow-xl"
-            : "w-[120px] sm:w-[150px]"
+            ? "w-60 sm:w-70 shadow-xl"
+            : "w-30 sm:w-37.5"
         }`}
     >
       <div className="relative w-full h-full flex items-center justify-start overflow-hidden rounded-[14px] bg-linear-to-br from-(--primary1) to-(--primary3)">
@@ -55,7 +55,7 @@ export default function FacultyOfficerCard({
             alt={name}
             width={200}
             height={300}
-            className="rounded-xl -mb-10 object-cover h-[260px] w-[180px] sm:h-[320px] sm:w-[220px]"
+            className="rounded-xl -mb-10 object-cover h-65 w-45 sm:h-80 sm:w-55"
           />
         </div>
         <div
@@ -76,7 +76,7 @@ export default function FacultyOfficerCard({
           </p>
         </div>
         <div
-          className={`absolute left-4 bottom-4 sm:left-6 sm:bottom-6 text-left w-48 h-[70px] sm:w-52 sm:h-[80px] flex flex-col justify-end z-20
+          className={`absolute left-4 bottom-4 sm:left-6 sm:bottom-6 text-left w-48 h-17.5 sm:w-52 sm:h-20 flex flex-col justify-end z-20
             transition-all duration-500 ease-in-out ${
               isExpanded
                 ? "opacity-100 translate-x-0"

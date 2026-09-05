@@ -103,7 +103,7 @@ const Sidebar = () => {
       <nav className="lg:hidden w-full">
         <div
           className="flex gap-2 overflow-x-auto hide-scrollbar pb-2 px-1
-          [mask-image:linear-gradient(90deg,transparent_0%,black_5%,black_95%,transparent_100%)]"
+          mask-[linear-gradient(90deg,transparent_0%,black_5%,black_95%,transparent_100%)]"
         >
           {allLinks.map((link) => {
             const Icon = link.icon;

@@ -78,28 +78,28 @@ export function FAQSection() {
           alt="question mark"
           width={300}
           height={300}
-          className="hidden sm:block absolute top-[10%] left-[-4%] rotate-[-15deg] blur-[6px] opacity-60"
+          className="hidden sm:block absolute top-[10%] left-[-4%] -rotate-15 blur-[6px] opacity-60"
         />
         <Image
           src="/question.svg"
           alt="question mark"
           width={100}
           height={100}
-          className="hidden sm:block absolute top-[15%] right-[10%] sm:top-[3%] sm:right-[50%] rotate-[7deg] blur-[7px] opacity-40"
+          className="hidden sm:block absolute top-[15%] right-[10%] sm:top-[3%] sm:right-[50%] rotate-7 blur-[7px] opacity-40"
         />
         <Image
           src="/question.svg"
           alt="question mark"
           width={350}
           height={350}
-          className="hidden sm:block absolute bottom-[-10%] right-[-1%] rotate-[15deg] blur-[6px] opacity-70"
+          className="hidden sm:block absolute bottom-[-10%] right-[-1%] rotate-15 blur-[6px] opacity-70"
         />
         <Image
           src="/question.svg"
           alt="question mark"
           width={150}
           height={150}
-          className="hidden sm:block absolute bottom-[-5%] left-[30%] rotate-[-30deg] blur-[7px] opacity-50"
+          className="hidden sm:block absolute bottom-[-5%] left-[30%] -rotate-30 blur-[7px] opacity-50"
         />
       </div>
 
@@ -113,17 +113,14 @@ export function FAQSection() {
             Explore our FAQs or reach out for personalized support—our team is
             here to help you.
           </p>
-          <div className="flex flex-col sm:flex-row justify-center md:justify-start gap-4">
+          <div className="flex justify-center md:justify-start">
             <Button variant="hero" onClick={() => router.push("/contact")}>
               Contact Us
-            </Button>
-            <Button variant="heroOutline" onClick={() => router.push("/faq")}>
-              More FAQs
             </Button>
           </div>
         </div>
 
-        <div className="w-full md:w-1/2 min-h-[340px]">
+        <div className="w-full md:w-1/2 min-h-85">
           <div className="space-y-4">
             {loading
               ? [1, 2, 3, 4].map((i) => (

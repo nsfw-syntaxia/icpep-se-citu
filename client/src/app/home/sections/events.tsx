@@ -160,14 +160,14 @@ export function EventsSection() {
 
         <div
           className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 justify-center items-stretch ${
-            loading || events.length > 0 ? "min-h-[450px]" : "min-h-0"
+            loading || events.length > 0 ? "min-h-112.5" : "min-h-0"
           }`}
         >
           {loading ? (
             [1, 2, 3].map((i) => (
               <div
                 key={i}
-                className="h-[480px] w-full rounded-2xl bg-white/5 animate-pulse border border-white/10 relative overflow-hidden"
+                className="h-120 w-full rounded-2xl bg-white/5 animate-pulse border border-white/10 relative overflow-hidden"
               >
                 <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent" />
               </div>

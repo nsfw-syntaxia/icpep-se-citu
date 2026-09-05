@@ -69,7 +69,7 @@ export default function UserContextMenu({
       {/* Context Menu */}
       <div
         ref={menuRef}
-        className="absolute z-50 bg-white rounded-lg shadow-2xl border border-gray-200 py-2 min-w-[200px] animate-in fade-in duration-100"
+        className="absolute z-50 bg-white rounded-lg shadow-2xl border border-gray-200 py-2 min-w-50 animate-in fade-in duration-100"
         style={{
           top: `${y}px`,
           left: `${x}px`,

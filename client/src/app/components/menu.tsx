@@ -60,7 +60,6 @@ const Menu: React.FC<MenuProps> = ({ userRole, onExit }) => {
           { label: "Sponsors", href: "/create/sponsors" },
           { label: "Officers", href: "/create/officers" },
           { label: "Users", href: "/users" },
-          { label: "FAQ", href: "/faq" },
         ],
       });
     }
@@ -118,11 +117,11 @@ const Menu: React.FC<MenuProps> = ({ userRole, onExit }) => {
             alt="ICPEP Logo"
             width={56}
             height={56}
-            className="w-12 h-12 md:w-[54px] md:h-[54px] object-contain"
+            className="w-12 h-12 md:w-13.5 md:h-13.5 object-contain"
           />
 
-          <div className="flex flex-col justify-center gap-[2px]">
-            <div className="flex items-start gap-[1px] h-[26px] md:h-[34px]">
+          <div className="flex flex-col justify-center gap-0.5">
+            <div className="flex items-start gap-px h-6.5 md:h-8.5">
               <Image
                 src="/Vector-ifooter.svg"
                 alt="I"
@@ -163,7 +162,7 @@ const Menu: React.FC<MenuProps> = ({ userRole, onExit }) => {
                 alt="."
                 width={0}
                 height={8}
-                className="h-[30%] w-auto -ml-[2px] mr-[2px] self-end"
+                className="h-[30%] w-auto -ml-0.5 mr-0.5 self-end"
               />
               <Image
                 src="/Vector-sfooter.svg"
@@ -293,7 +292,7 @@ const Menu: React.FC<MenuProps> = ({ userRole, onExit }) => {
                     onClick={() => onExit()}
                     className="group flex items-center gap-4 cursor-pointer w-fit"
                   >
-                    <div className="w-12 h-[1px] bg-white/30 group-hover:w-20 group-hover:bg-[#00a7ee] transition-all duration-300"></div>
+                    <div className="w-12 h-px bg-white/30 group-hover:w-20 group-hover:bg-[#00a7ee] transition-all duration-300"></div>
                     <span className="text-2xl font-raleway font-light text-white group-hover:text-[#00a7ee] transition-colors">
                       {child.label}
                     </span>
@@ -361,7 +360,7 @@ const Menu: React.FC<MenuProps> = ({ userRole, onExit }) => {
                       alt="Social"
                       width={20}
                       height={20}
-                      className="opacity-70 group-hover:opacity-100 group-hover:[filter:invert(28%)_sepia(95%)_saturate(1985%)_hue-rotate(186deg)_brightness(93%)_contrast(101%)] transition-all"
+                      className="opacity-70 group-hover:opacity-100 group-hover:filter-[invert(28%)_sepia(95%)_saturate(1985%)_hue-rotate(186deg)_brightness(93%)_contrast(101%)] transition-all"
                     />
                   </a>
                 ))}

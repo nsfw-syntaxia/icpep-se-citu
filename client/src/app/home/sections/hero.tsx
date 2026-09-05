@@ -81,14 +81,14 @@ const Hero = () => {
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
           <Button
             variant="hero"
-            className="px-8 py-3 w-[220px] sm:w-auto"
+            className="px-8 py-3 w-55 sm:w-auto"
             onClick={() => router.push("/login")}
           >
             Join Community
           </Button>
           <Button
             variant="heroOutline"
-            className="px-8 py-3 w-[220px] sm:w-auto"
+            className="px-8 py-3 w-55 sm:w-auto"
             onClick={() => router.push("/about")}
           >
             Learn More

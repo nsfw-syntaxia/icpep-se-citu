@@ -199,7 +199,7 @@ export default function ProfilePage() {
             />
 
             {/* --- Hero Profile Card (RESIZED & SCALED DOWN) --- */}
-            <div className="relative mb-8 rounded-4xl overflow-hidden shadow-2xl shadow-blue-900/10 group transition-all duration-500 hover:shadow-3xl hover:translate-y-[-2px]">
+            <div className="relative mb-8 rounded-4xl overflow-hidden shadow-2xl shadow-blue-900/10 group transition-all duration-500 hover:shadow-3xl hover:-translate-y-0.5">
               {/* Card Background & Noise */}
               <div className="absolute inset-0 bg-linear-to-br from-[#0066CC] via-[#0088EE] to-[#00A8FF]">
                 <div className="absolute inset-0 noise-bg mix-blend-overlay opacity-20"></div>
@@ -290,7 +290,7 @@ export default function ProfilePage() {
                 </div>
 
                 {/* Watermark Logo - REDUCED SIZE */}
-                <div className="absolute right-[-30px] top-1/2 -translate-y-1/2 w-[300px] h-[300px] opacity-[0.08] pointer-events-none hidden lg:block mix-blend-overlay">
+                <div className="absolute -right-7.5 top-1/2 -translate-y-1/2 w-75 h-75 opacity-[0.08] pointer-events-none hidden lg:block mix-blend-overlay">
                   <Image
                     src="/icpep logo.png"
                     alt="Logo"
@@ -305,7 +305,7 @@ export default function ProfilePage() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8 items-start">
               {/* Left Column (Personal & Role) */}
               <div className="lg:col-span-2 flex flex-col gap-6">
-                <div className="transform transition-all duration-300 hover:translate-y-[-2px]">
+                <div className="transform transition-all duration-300 hover:-translate-y-0.5">
                   <PersonalInformation
                     fullName={
                       loading
@@ -321,7 +321,7 @@ export default function ProfilePage() {
                   />
                 </div>
 
-                <div className="transform transition-all duration-300 hover:translate-y-[-2px]">
+                <div className="transform transition-all duration-300 hover:-translate-y-0.5">
                   <RolenMembershipInformation
                     role={loading ? undefined : user?.role}
                     position={loading ? undefined : user?.position}
@@ -333,7 +333,7 @@ export default function ProfilePage() {
 
               {/* Right Column (Security & Actions) */}
               <div className="flex flex-col gap-6 h-full">
-                <div className="transform transition-all duration-300 hover:translate-y-[-2px]">
+                <div className="transform transition-all duration-300 hover:-translate-y-0.5">
                   <SecuritySection loading={loading} />
                 </div>
 
@@ -491,7 +491,7 @@ export default function ProfilePage() {
         </div>
       </main>
 
-      <div className="mt-[-35px] md:-mt-20 relative z-0">
+      <div className="-mt-8.75 md:-mt-20 relative z-0">
         <Footer />
       </div>
     </section>

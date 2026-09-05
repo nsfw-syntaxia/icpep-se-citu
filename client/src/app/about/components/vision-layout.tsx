@@ -45,7 +45,7 @@ const VisionLayout: FC<{ section: SectionType }> = ({ section }) => {
                        p-3 md:p-0 rounded-xl md:rounded-none border border-white/10 md:border-0
                        bg-white/5 md:bg-transparent transition-all duration-300
                        hover:bg-white/10 md:hover:bg-transparent
-                       bg-[radial-gradient(circle,transparent_1px,rgba(255,255,255,0.05)_1px)] [background-size:1rem_1rem] md:bg-none"
+                       bg-[radial-gradient(circle,transparent_1px,rgba(255,255,255,0.05)_1px)] bg-size-[1rem_1rem] md:bg-none"
           >
             <div
               className="w-12 h-12 md:w-full md:h-40 shrink-0 rounded-xl md:rounded-2xl overflow-hidden md:bg-white/5 md:mb-4 md:border md:border-white/10 transition-colors duration-300 md:group-hover:bg-white/10

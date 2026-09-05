@@ -41,7 +41,7 @@ const ValuesLayout: FC<{ section: SectionType }> = ({ section }) => {
 
   return (
     <div className="content-fade grid md:grid-cols-2 gap-8 md:gap-24 items-start">
-      <div className="relative w-full max-w-[18rem] sm:max-w-sm mx-auto h-64 sm:h-96 group order-last md:order-first mt-4 md:mt-0">
+      <div className="relative w-full max-w-72 sm:max-w-sm mx-auto h-64 sm:h-96 group order-last md:order-first mt-4 md:mt-0">
         <svg
           viewBox="0 0 400 400"
           className="absolute inset-0 z-0 opacity-70 md:hidden"
@@ -209,7 +209,7 @@ const ValuesLayout: FC<{ section: SectionType }> = ({ section }) => {
           <div
             key={value.name}
             className={`absolute ${value.position} ${value.animationClass} z-20
-              w-[74px] h-[74px] sm:w-32 sm:h-32 rounded-xl sm:rounded-2xl border border-white/10 bg-white/5
+              w-18.5 h-18.5 sm:w-32 sm:h-32 rounded-xl sm:rounded-2xl border border-white/10 bg-white/5
               flex flex-col items-center justify-center gap-0.5 sm:gap-2 p-1 sm:p-4
               transition-colors duration-300 hover:bg-white/10`}
             style={{

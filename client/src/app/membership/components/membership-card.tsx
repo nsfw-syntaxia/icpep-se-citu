@@ -102,14 +102,14 @@ const MembershipCard: FC<MembershipCardProps> = ({
       </div>
 
       {isOpen ? (
-        <div className="text-center mb-2 h-[68px]">
+        <div className="text-center mb-2 h-17">
           <span className="font-rubik text-5xl font-bold text-slate-900">
             {price}
           </span>
           <span className="font-raleway text-slate-500 text-lg">/ year</span>
         </div>
       ) : (
-        <div className="text-center mb-2 h-[68px] flex items-center justify-center">
+        <div className="text-center mb-2 h-17 flex items-center justify-center">
           <span className="font-rubik text-xl font-bold text-gray-400">
             Not Available
           </span>

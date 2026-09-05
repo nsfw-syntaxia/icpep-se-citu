@@ -86,13 +86,13 @@ function TestimonialsSkeleton() {
           <SkeletonBlock className="w-64 h-5 rounded-md" />
         </div>
 
-        <div className="lg:hidden z-20 w-full h-[450px] flex justify-center items-start pt-16 px-4">
+        <div className="lg:hidden z-20 w-full h-112.5 flex justify-center items-start pt-16 px-4">
           <div className="w-full max-w-md h-[90%]">
             <TestimonialCardSkeleton />
           </div>
         </div>
 
-        <div className="relative z-20 h-[420px] w-full max-w-7xl overflow-visible hidden lg:flex items-center justify-center">
+        <div className="relative z-20 h-105 w-full max-w-7xl overflow-visible hidden lg:flex items-center justify-center">
           <div
             className="absolute top-0 w-full h-full flex items-center justify-center"
             style={{ transform: "translateX(-40%) scale(0.85)", opacity: 0.4 }}
@@ -203,7 +203,7 @@ export function TestimonialsSection() {
 
         <div className="w-full flex flex-col items-center justify-center">
           {loading ? (
-            <div className="relative z-20 h-[420px] w-full max-w-2xl bg-white/10 animate-pulse rounded-3xl border border-white/20 backdrop-blur-md" />
+            <div className="relative z-20 h-105 w-full max-w-2xl bg-white/10 animate-pulse rounded-3xl border border-white/20 backdrop-blur-md" />
           ) : testimonials.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-gray-500 font-raleway text-lg">
@@ -215,7 +215,7 @@ export function TestimonialsSection() {
               {/* mobile carousel */}
               <div
                 ref={scrollContainerRef}
-                className="lg:hidden z-20 w-full h-[450px] flex overflow-x-auto hide-scrollbar snap-x snap-mandatory scroll-smooth"
+                className="lg:hidden z-20 w-full h-112.5 flex overflow-x-auto hide-scrollbar snap-x snap-mandatory scroll-smooth"
                 style={
                   {
                     scrollbarWidth: "none",
@@ -236,7 +236,7 @@ export function TestimonialsSection() {
               </div>
 
               {/* desktop carousel */}
-              <div className="relative z-20 h-[420px] w-full max-w-7xl overflow-visible hidden lg:block">
+              <div className="relative z-20 h-105 w-full max-w-7xl overflow-visible hidden lg:block">
                 {testimonials.map((testimonial, index) => {
                   const position = index - currentIndex;
                   let animateProps = {

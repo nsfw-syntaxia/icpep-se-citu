@@ -17,7 +17,7 @@ const AdvisorCard: FC<AdvisorCardProps> = ({
   return (
     <div className="relative w-full h-full rounded-[1.25rem] shadow-lg">
       {/* Gradient border layer */}
-      <div className="absolute inset-0 rounded-[1.25rem] bg-linear-to-b from-primary1/60 to-primary2/60 p-[2px]">
+      <div className="absolute inset-0 rounded-[1.25rem] bg-linear-to-b from-primary1/60 to-primary2/60 p-0.5">
         {/* Content layer */}
         <div className="relative w-full h-full rounded-[1.1rem] overflow-hidden bg-primary3 text-white cursor-pointer group">
           <Image

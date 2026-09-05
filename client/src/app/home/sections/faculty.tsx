@@ -29,10 +29,10 @@ function SkeletonBlock({ className = "" }: { className?: string }) {
 
 function FacultyOfficerCardSkeleton() {
   return (
-    <div className="shrink-0 flex flex-col items-center gap-2 w-[120px]">
-      <SkeletonBlock className="w-[80px] h-[80px] rounded-full" />
-      <SkeletonBlock className="w-[90px] h-3 rounded-md" />
-      <SkeletonBlock className="w-[70px] h-3 rounded-md" />
+    <div className="shrink-0 flex flex-col items-center gap-2 w-30">
+      <SkeletonBlock className="w-20 h-20 rounded-full" />
+      <SkeletonBlock className="w-22.5 h-3 rounded-md" />
+      <SkeletonBlock className="w-17.5 h-3 rounded-md" />
     </div>
   );
 }

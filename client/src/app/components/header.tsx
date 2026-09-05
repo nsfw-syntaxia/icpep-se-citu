@@ -421,14 +421,14 @@ const Header = () => {
                       <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z" />
                     </svg>
                     {unreadCount > 0 && (
-                      <span className="absolute top-[2px] right-[1px] flex items-center justify-center min-w-[18px] h-[18px] px-[3px] bg-[#ef4444] text-white text-[10px] font-normal font-rubik rounded-full shadow-sm border-[1px] border-white leading-none">
+                      <span className="absolute top-0.5 right-px flex items-center justify-center min-w-4.5 h-4.5 px-0.75 bg-[#ef4444] text-white text-[10px] font-normal font-rubik rounded-full shadow-sm border border-white leading-none">
                         {unreadCount > 99 ? "99+" : unreadCount}
                       </span>
                     )}
                   </div>
 
                   {notifDropdownOpen && (
-                    <div className="absolute top-[125%] right-[-60px] sm:right-0 w-[320px] sm:w-[400px] bg-white rounded-2xl shadow-[0_15px_50px_-12px_rgba(0,0,0,0.15)] border border-gray-100 z-50 animate-in fade-in slide-in-from-top-3 duration-200 origin-top-right overflow-hidden">
+                    <div className="absolute top-[125%] -right-15 sm:right-0 w-80 sm:w-100 bg-white rounded-2xl shadow-[0_15px_50px_-12px_rgba(0,0,0,0.15)] border border-gray-100 z-50 animate-in fade-in slide-in-from-top-3 duration-200 origin-top-right overflow-hidden">
                       <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-white">
                         <h3 className="text-[#373d47] font-bold text-sm font-rubik tracking-tight">
                           Notifications
@@ -446,7 +446,7 @@ const Header = () => {
                       <div
                         ref={scrollContainerRef}
                         onScroll={handleNotifScroll}
-                        className="max-h-[380px] themed-scrollbar overflow-y-auto overflow-x-hidden bg-white"
+                        className="max-h-95 themed-scrollbar overflow-y-auto overflow-x-hidden bg-white"
                       >
                         {notifications.length > 0 ? (
                           <div className="flex flex-col">
@@ -607,7 +607,7 @@ const Header = () => {
               className="cursor-pointer"
             >
               <div
-                className={`hidden md:grid grid-cols-3 gap-1 transition-transform duration-500 ease-in-out hover:rotate-90 ${open ? "rotate-[360deg]" : ""}`}
+                className={`hidden md:grid grid-cols-3 gap-1 transition-transform duration-500 ease-in-out hover:rotate-90 ${open ? "rotate-360" : ""}`}
               >
                 {Array.from({ length: 9 }).map((_, i) => (
                   <div
@@ -616,15 +616,15 @@ const Header = () => {
                   />
                 ))}
               </div>
-              <div className="md:hidden flex flex-col items-end justify-center gap-[6px] w-9 h-9">
+              <div className="md:hidden flex flex-col items-end justify-center gap-1.5 w-9 h-9">
                 <div
-                  className={`h-[4px] bg-[#00a7ee] rounded-full transition-all duration-300 ${open ? "w-6" : "w-[26px]"}`}
+                  className={`h-1 bg-[#00a7ee] rounded-full transition-all duration-300 ${open ? "w-6" : "w-6.5"}`}
                 />
                 <div
-                  className={`h-[4px] bg-[#00a7ee] rounded-full transition-all duration-300 ${open ? "w-[26px]" : "w-[19px]"}`}
+                  className={`h-1 bg-[#00a7ee] rounded-full transition-all duration-300 ${open ? "w-6.5" : "w-4.75"}`}
                 />
                 <div
-                  className={`h-[4px] bg-[#00a7ee] rounded-full transition-all duration-300 ${open ? "w-6" : "w-[26px]"}`}
+                  className={`h-1 bg-[#00a7ee] rounded-full transition-all duration-300 ${open ? "w-6" : "w-6.5"}`}
                 />
               </div>
             </div>

@@ -730,7 +730,7 @@ export default function SponsorsPage() {
                       </div>
                     ) : (
                       <div className="overflow-x-auto themed-scrollbar">
-                        <table className="w-full text-left min-w-[580px]">
+                        <table className="w-full text-left min-w-145">
                           <thead>
                             <tr className="bg-gray-50/80">
                               <th className="px-6 sm:px-8 py-3.5 text-[10px] font-bold uppercase tracking-widest text-gray-400 font-rubik">
@@ -845,7 +845,7 @@ export default function SponsorsPage() {
         </div>
       </main>
 
-      <div className="mt-[-35px] md:-mt-20 relative z-0">
+      <div className="-mt-8.75 md:-mt-20 relative z-0">
         <Footer />
       </div>
 

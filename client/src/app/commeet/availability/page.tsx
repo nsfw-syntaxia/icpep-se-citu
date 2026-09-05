@@ -876,7 +876,7 @@ const AvailabilityPage: FunctionComponent = () => {
 
                 {/* RIGHT: Responders List (approx 43% width) */}
                 <div className="lg:col-span-3 flex flex-col gap-6">
-                  <div className="hidden lg:block h-[74px]"></div>
+                  <div className="hidden lg:block h-18.5"></div>
 
                   {/* FIXED CONTAINER: No scroll on this outer div to prevent overflow bug */}
                   <div
@@ -1057,7 +1057,7 @@ const AvailabilityPage: FunctionComponent = () => {
         </div>
       </main>
 
-      <div className="mt-[-35px] md:-mt-20 relative z-0">
+      <div className="-mt-8.75 md:-mt-20 relative z-0">
         <Footer />
       </div>
     </div>

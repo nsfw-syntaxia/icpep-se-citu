@@ -14,10 +14,10 @@ const Footer = () => {
 
   return (
     <div
-      className="relative w-full h-[520px] md:h-[415px]"
+      className="relative w-full h-130 md:h-103.75"
       style={{ clipPath: "inset(0 0 0 0)" }}
     >
-      <div className="fixed bottom-0 left-0 right-0 h-[520px] md:h-[380px] w-full -z-10 bg-[#00609c] text-white overflow-hidden flex flex-col justify-between font-raleway">
+      <div className="fixed bottom-0 left-0 right-0 h-130 md:h-95 w-full -z-10 bg-[#00609c] text-white overflow-hidden flex flex-col justify-between font-raleway">
         <div className="max-w-7xl mx-auto w-full px-6 grow flex flex-col justify-start pt-16 md:pt-20 gap-8">
           <div className="flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-0">
             <div className="flex flex-col sm:flex-row items-center gap-4">
@@ -33,7 +33,7 @@ const Footer = () => {
               <div className="flex flex-col items-center sm:items-start text-center sm:text-left gap-3">
                 <div className="flex flex-col sm:flex-row items-center sm:items-end justify-center sm:justify-start">
                   <div
-                    className="flex items-end gap-0.5 cursor-pointer h-[50px]"
+                    className="flex items-end gap-0.5 cursor-pointer h-12.5"
                     onClick={scrollToTop}
                   >
                     <Image
@@ -77,7 +77,7 @@ const Footer = () => {
                       alt="."
                       width={0}
                       height={16}
-                      className="h-[30%] w-auto ml-[-5px] mr-[1px]"
+                      className="h-[30%] w-auto -ml-1.25 mr-px"
                     />
 
                     <Image
@@ -97,7 +97,7 @@ const Footer = () => {
                   </div>
 
                   <div
-                    className="flex flex-row sm:flex-col gap-2 sm:gap-0 items-baseline sm:justify-between h-auto sm:h-[50px] sm:ml-3 font-rubik text-[#002231] cursor-pointer mt-2 sm:mt-0"
+                    className="flex flex-row sm:flex-col gap-2 sm:gap-0 items-baseline sm:justify-between h-auto sm:h-12.5 sm:ml-3 font-rubik text-[#002231] cursor-pointer mt-2 sm:mt-0"
                     onClick={scrollToTop}
                   >
                     <span className="text-[20px] sm:text-[23px] font-bold leading-none tracking-wide">
