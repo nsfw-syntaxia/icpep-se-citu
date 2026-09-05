@@ -3,9 +3,12 @@
 import Header from "../../components/header";
 import Footer from "../../components/footer";
 import Grid from "../../components/grid";
+import BackButton from "../../components/back-button";
+import PageHeader from "../../components/page-header";
+import Button from "../../components/button";
 import { FunctionComponent, useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowRight, Check, X, ChevronDown, ArrowLeft } from "lucide-react";
+import { ChevronRight, Check, X, ChevronDown } from "lucide-react";
 
 const departmentsList = [
   "All Officers",
@@ -280,46 +283,29 @@ const MeetInfoPage: FunctionComponent = () => {
           <Header />
 
           {/* Updated Width to max-w-7xl to match reference page layout */}
-          <div className="flex-grow w-full max-w-7xl mx-auto px-6 pt-[9.5rem] pb-24">
+          <div className="grow w-full max-w-7xl mx-auto px-6 pt-38 pb-24">
             {/* Back Button - Now aligned far left relative to the wider container */}
             <div className="mb-8 flex justify-start">
-              <button
-                onClick={() => router.back()}
-                title="Go Back"
-                className="relative flex h-12 w-12 cursor-pointer items-center justify-center 
-                           rounded-full border-2 border-primary1 text-primary1 
-                           overflow-hidden transition-all duration-300 ease-in-out 
-                           active:scale-95 before:absolute before:inset-0 
-                           before:bg-gradient-to-r before:from-transparent 
-                           before:via-white/40 before:to-transparent 
-                           before:translate-x-[-100%] hover:before:translate-x-[100%] 
-                           before:transition-transform before:duration-700"
-              >
-                <ArrowLeft className="h-6 w-6 animate-nudge-left translate-x-[2px]" />
-              </button>
+              <BackButton onClick={() => router.back()} title="Go Back" />
             </div>
 
             {/* Centered Content Container for Form */}
             <div className="max-w-4xl mx-auto">
               {/* Header Section */}
-              <div className="text-center mb-12">
-                <div className="inline-flex items-center gap-2 rounded-full bg-primary1/10 px-3 py-1 mb-4">
-                  <div className="h-2 w-2 rounded-full bg-primary1"></div>
-                  <span className="font-raleway text-sm font-semibold text-primary1">
-                    New Meeting
-                  </span>
-                </div>
-                <h1 className="font-rubik text-4xl sm:text-5xl font-bold text-primary3 leading-tight mb-4">
-                  Meeting Details
-                </h1>
-                <p className="font-raleway text-gray-600 text-base sm:text-lg max-w-2xl mx-auto">
-                  Set up the agenda, participants, and schedule for your upcoming
-                  session.
-                </p>
-              </div>
+              <PageHeader
+                className="text-center mb-12"
+                badge="New Meeting"
+                title="Meeting Details"
+                subtitle={
+                  <>
+                    Set up the agenda, participants, and schedule for your
+                    upcoming session.
+                  </>
+                }
+              />
 
               {/* Form Container */}
-              <div className="bg-white rounded-[2rem] border border-gray-200 shadow-lg p-8 sm:p-12 transition-all duration-300 hover:shadow-primary1/40 hover:-translate-y-2">
+              <div className="bg-white rounded-4xl border border-gray-200 shadow-lg p-8 sm:p-12 transition-all duration-300 hover:shadow-primary1/40 hover:-translate-y-2">
                 {authHint && (
                   <div className="mb-4 p-3 rounded-xl bg-yellow-50 text-yellow-700 text-sm font-raleway border border-yellow-100">
                     {authHint}
@@ -405,7 +391,7 @@ const MeetInfoPage: FunctionComponent = () => {
                           minutes,
                           "minute"
                         )}
-                        <div className="w-[1px] h-6 bg-gray-200 mx-2"></div>
+                        <div className="w-px h-6 bg-gray-200 mx-2"></div>
                         {renderTimeInput(
                           "startPeriod",
                           startPeriod,
@@ -445,7 +431,7 @@ const MeetInfoPage: FunctionComponent = () => {
                           minutes,
                           "minute"
                         )}
-                        <div className="w-[1px] h-6 bg-gray-200 mx-2"></div>
+                        <div className="w-px h-6 bg-gray-200 mx-2"></div>
                         {renderTimeInput(
                           "endPeriod",
                           endPeriod,
@@ -464,7 +450,7 @@ const MeetInfoPage: FunctionComponent = () => {
                     </label>
 
                     <div
-                      className={`w-full min-h-[3rem] bg-gray-50 border rounded-2xl px-4 py-3 cursor-pointer relative transition-all hover:bg-gray-100 ${
+                      className={`w-full min-h-12 bg-gray-50 border rounded-2xl px-4 py-3 cursor-pointer relative transition-all hover:bg-gray-100 ${
                         errors.department ? errorStyle : "border-gray-200"
                       } ${
                         activeDropdown === "dept"
@@ -626,13 +612,14 @@ const MeetInfoPage: FunctionComponent = () => {
 
                   {/* Action Button */}
                   <div className="mt-4 flex justify-end">
-                    <button
-                      className="group relative px-8 py-3.5 bg-gradient-to-r from-primary3 to-primary1 rounded-2xl font-rubik font-bold text-white shadow-lg shadow-primary1/20 hover:shadow-primary1/40 transition-all duration-300 flex items-center gap-3 cursor-pointer"
+                    <Button
+                      variant="hero"
+                      className="group flex items-center gap-3 px-8 py-3.5"
                       onClick={onCreateMeetingClick}
                     >
                       <span>Create Meeting</span>
-                      <ArrowRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
-                    </button>
+                      <ChevronRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
+                    </Button>
                   </div>
                 </div>
               </div>
@@ -641,7 +628,7 @@ const MeetInfoPage: FunctionComponent = () => {
         </div>
       </main>
 
-      <div className="mt-[-35px] md:mt-[-80px] relative z-0">
+      <div className="mt-[-35px] md:-mt-20 relative z-0">
         <Footer />
       </div>
     </div>

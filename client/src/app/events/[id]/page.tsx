@@ -15,7 +15,8 @@ import EventTags from "../components/tags";
 import RsvpCard from "../components/rsvp";
 import EventDetails from "../components/details";
 import EventGallery from "../components/gallery";
-import { ArrowLeft } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
+import BackButton from "../../components/back-button";
 
 type ProcessedEvent = Event & {
   status: "Upcoming" | "Ongoing" | "Ended";
@@ -191,7 +192,7 @@ export default function EventDetailPage() {
     return (
       <div className="min-h-screen bg-white flex flex-col">
         <Header />
-        <main className="flex flex-grow w-full max-w-6xl mx-auto px-4 sm:px-6 pt-[9.5rem] pb-12">
+        <main className="flex grow w-full max-w-6xl mx-auto px-4 sm:px-6 pt-38 pb-12">
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12 items-start w-full">
             <div className="lg:col-span-2 lg:sticky lg:top-28 h-fit space-y-6 order-2 lg:order-1">
               <div className="rounded-xl bg-gray-100 w-full h-64 animate-pulse" />
@@ -229,7 +230,7 @@ export default function EventDetailPage() {
     return (
       <div className="min-h-screen bg-white flex flex-col">
         <Header />
-        <main className="flex flex-grow flex-col items-center justify-center text-center px-4 pt-[9.5rem] pb-12">
+        <main className="flex grow flex-col items-center justify-center text-center px-4 pt-38 pb-12">
           <h1 className="font-rubik text-4xl font-bold text-primary3 mb-4">
             {fetchError || "Event Not Found"}
           </h1>
@@ -241,7 +242,7 @@ export default function EventDetailPage() {
             onClick={() => router.push("/events")}
             className="group inline-flex items-center justify-center gap-2 rounded-full bg-primary1 px-6 py-3 font-rubik font-semibold text-white shadow-lg transition-all duration-300 ease-in-out hover:bg-primary2"
           >
-            <ArrowLeft className="h-5 w-5 transition-transform duration-300 group-hover:-translate-x-1" />
+            <ChevronLeft className="h-5 w-5 transition-transform duration-300 group-hover:-translate-x-1" />
             <span>Back to Events</span>
           </button>
         </main>
@@ -257,22 +258,9 @@ export default function EventDetailPage() {
 
         <div className="relative z-10 flex flex-col min-h-screen">
           <Header />
-          <div className="flex-grow w-full max-w-6xl mx-auto px-4 sm:px-6 pt-[9.5rem] pb-16">
+          <div className="grow w-full max-w-6xl mx-auto px-4 sm:px-6 pt-38 pb-16">
             <div className="mb-8 flex justify-start">
-              <button
-                onClick={handleBackToEvents}
-                title="Back to Events"
-                className="relative flex h-12 w-12 cursor-pointer items-center justify-center 
-                         rounded-full border-2 border-primary1 text-primary1 
-                         overflow-hidden transition-all duration-300 ease-in-out 
-                         active:scale-95 before:absolute before:inset-0 
-                         before:bg-gradient-to-r before:from-transparent 
-                         before:via-white/40 before:to-transparent 
-                         before:translate-x-[-100%] hover:before:translate-x-[100%] 
-                         before:transition-transform before:duration-700"
-              >
-                <ArrowLeft className="h-6 w-6 animate-nudge-left translate-x-[2px]" />
-              </button>
+              <BackButton onClick={handleBackToEvents} title="Back to Events" />
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12 items-start">
@@ -314,7 +302,7 @@ export default function EventDetailPage() {
         </div>
       </main>
 
-      <div className="mt-[-35px] md:mt-[-80px] relative z-0">
+      <div className="mt-[-35px] md:-mt-20 relative z-0">
         <Footer />
       </div>
     </div>

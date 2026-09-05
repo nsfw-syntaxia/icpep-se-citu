@@ -280,7 +280,7 @@ const Header = () => {
           {text}
         </span>
         {badge !== undefined && badge > 0 && (
-          <span className="flex items-center justify-center min-w-[20px] h-5 px-1.5 bg-[#ef4444]/90 text-white text-[10px] font-bold rounded-full shadow-sm">
+          <span className="flex items-center justify-center min-w-5 h-5 px-1.5 bg-[#ef4444]/90 text-white text-[10px] font-bold rounded-full shadow-sm">
             {badge > 99 ? "99+" : badge}
           </span>
         )}

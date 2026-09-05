@@ -3,16 +3,16 @@
 import Header from "../../components/header";
 import Footer from "../../components/footer";
 import Grid from "../../components/grid";
+import BackButton from "../../components/back-button";
+import Button from "../../components/button";
 import { FunctionComponent, useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import {
-  ArrowLeft,
   Check,
   Plus,
   ChevronLeft,
   ChevronRight,
   X,
-  ArrowRight,
   Pencil,
 } from "lucide-react";
 
@@ -248,23 +248,10 @@ const CommeetPage: FunctionComponent = () => {
         <div className="relative z-10 flex flex-col min-h-screen">
           <Header />
 
-          <div className="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 pt-[9.5rem] pb-24">
+          <div className="grow w-full max-w-7xl mx-auto px-4 sm:px-6 pt-38 pb-24">
             {/* Back Button */}
             <div className="mb-8 flex justify-start">
-              <button
-                onClick={() => router.back()}
-                title="Go Back"
-                className="relative flex h-12 w-12 cursor-pointer items-center justify-center 
-                                         rounded-full border-2 border-primary1 text-primary1 
-                                         overflow-hidden transition-all duration-300 ease-in-out 
-                                         active:scale-95 before:absolute before:inset-0 
-                                         before:bg-gradient-to-r before:from-transparent 
-                                         before:via-white/40 before:to-transparent 
-                                         before:translate-x-[-100%] hover:before:translate-x-[100%] 
-                                         before:transition-transform before:duration-700"
-              >
-                <ArrowLeft className="h-6 w-6 animate-nudge-left translate-x-[2px]" />
-              </button>
+              <BackButton onClick={() => router.back()} title="Go Back" />
             </div>
 
             {/* Centered Content Container */}
@@ -311,8 +298,9 @@ const CommeetPage: FunctionComponent = () => {
                 {/* Action Buttons */}
                 <div className="shrink-0">
                   {!isEditing ? (
-                    <button
-                      className="group p-2.5 sm:px-6 sm:py-2.5 bg-gradient-to-r from-primary3 to-primary1 rounded-xl font-rubik text-white font-bold text-sm shadow-md shadow-primary1/20 hover:shadow-lg hover:shadow-primary1/30 hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer sm:min-w-[11.5rem]"
+                    <Button
+                      variant="hero"
+                      className="group flex items-center justify-center gap-2 p-2.5 sm:px-6 sm:py-2.5 sm:min-w-46"
                       onClick={onAddAvailabilityClick}
                     >
                       {hasConfirmedSlots ? (
@@ -325,37 +313,34 @@ const CommeetPage: FunctionComponent = () => {
                           ? "Edit Availability"
                           : "Add Availability"}
                       </span>
-                    </button>
+                    </Button>
                   ) : (
                     <div className="flex gap-2">
-                      <button
-                        className="p-2.5 sm:px-6 sm:py-2.5 bg-white border border-gray-200 rounded-xl font-rubik text-gray-500 font-bold text-sm hover:bg-gray-50 hover:text-red-500 hover:border-red-100 transition-all duration-300 flex items-center justify-center cursor-pointer"
+                      <Button
+                        variant="cancel"
+                        className="flex items-center justify-center p-2.5 sm:px-6 sm:py-2.5"
                         onClick={onCancelClick}
                       >
                         <X className="w-5 h-5" />
                         <span className="hidden sm:inline ml-2">Cancel</span>
-                      </button>
+                      </Button>
 
-                      <button
-                        className={`p-2.5 sm:px-6 sm:py-2.5 rounded-xl font-rubik text-white font-bold text-sm shadow-md transition-all duration-300 flex items-center justify-center cursor-pointer
-                                                  ${
-                                                    draftSlots.length > 0
-                                                      ? "bg-sky-500 shadow-sky-200 hover:bg-sky-600 hover:shadow-lg hover:-translate-y-0.5"
-                                                      : "bg-gray-300 shadow-gray-200 cursor-not-allowed"
-                                                  }`}
+                      <Button
+                        variant="confirm"
+                        className="flex items-center justify-center p-2.5 sm:px-6 sm:py-2.5"
                         onClick={onConfirmClick}
                         disabled={draftSlots.length === 0}
                       >
                         <Check className="w-5 h-5 stroke-[3px]" />
                         <span className="hidden sm:inline ml-2">Confirm</span>
-                      </button>
+                      </Button>
                     </div>
                   )}
                 </div>
               </div>
 
               {/* 3. Timeline Grid Container */}
-              <div className="w-full bg-white rounded-[2rem] border border-gray-200 shadow-lg p-4 sm:p-8 transition-all duration-300 hover:shadow-primary1/40 hover:-translate-y-2 relative z-20">
+              <div className="w-full bg-white rounded-4xl border border-gray-200 shadow-lg p-4 sm:p-8 transition-all duration-300 hover:shadow-primary1/40 hover:-translate-y-2 relative z-20">
                 {/* Header Row 1: [Month Year] ... [ < > ] */}
                 <div className="flex justify-between items-center mb-6">
                   <div className="text-xl sm:text-2xl text-gray-900 font-bold font-rubik">
@@ -541,13 +526,14 @@ const CommeetPage: FunctionComponent = () => {
                   }`}
                 >
                   <div className="flex justify-center p-6">
-                    <button
+                    <Button
+                      variant="hero"
                       onClick={onContinueClick}
-                      className="group relative px-8 py-3.5 bg-gradient-to-r from-primary3 to-primary1 rounded-2xl font-rubik font-bold text-white shadow-lg shadow-primary1/20 hover:shadow-primary1/40 transition-all duration-300 flex items-center gap-3 cursor-pointer"
+                      className="group flex items-center gap-3 px-8 py-3.5"
                     >
                       <span>Continue</span>
-                      <ArrowRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
-                    </button>
+                      <ChevronRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
+                    </Button>
                   </div>
                 </div>
               </div>
@@ -556,7 +542,7 @@ const CommeetPage: FunctionComponent = () => {
         </div>
       </main>
 
-      <div className="mt-[-35px] md:mt-[-80px] relative z-0">
+      <div className="mt-[-35px] md:-mt-20 relative z-0">
         <Footer />
       </div>
     </div>

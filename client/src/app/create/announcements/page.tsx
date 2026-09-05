@@ -6,6 +6,7 @@ import Sidebar from "../components/sidebar";
 import Header from "@/app/components/header";
 import Footer from "@/app/components/footer";
 import Grid from "@/app/components/grid";
+import Button from "@/app/components/button";
 import { GlassCard } from "../../components/glass-card";
 import {
   Pencil,
@@ -838,7 +839,7 @@ export default function AnnouncementsPage() {
     return (
       <div className="relative w-full">
         <div
-          className={`w-full min-h-[3rem] bg-gray-50 border rounded-2xl px-4 py-3 cursor-pointer relative transition-all hover:bg-gray-100 flex items-center justify-between ${
+          className={`w-full min-h-12 bg-gray-50 border rounded-2xl px-4 py-3 cursor-pointer relative transition-all hover:bg-gray-100 flex items-center justify-between ${
             hasError ? errorInputStyle : "border-gray-200"
           } ${
             isOpen ? "bg-white border-primary1 ring-4 ring-primary1/10" : ""
@@ -855,7 +856,7 @@ export default function AnnouncementsPage() {
           }}
         >
           <div className="flex items-center gap-2.5 text-gray-700 font-rubik text-base font-medium">
-            <Calendar className="w-5 h-5 text-gray-400 flex-shrink-0" />
+            <Calendar className="w-5 h-5 text-gray-400 shrink-0" />
             <span className={value ? "text-gray-800" : "text-gray-400 font-normal"}>
               {value ? formatDateLabel(value) : placeholder}
             </span>
@@ -988,7 +989,7 @@ export default function AnnouncementsPage() {
     <div className="min-h-screen flex flex-col overflow-x-hidden bg-[#004e89]">
       {/* LOADING OVERLAY */}
       {isSubmitting && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-white/90 backdrop-blur-md">
+        <div className="fixed inset-0 z-100 flex items-center justify-center bg-white/90 backdrop-blur-md">
           <div className="flex flex-col items-center gap-5">
             <div className="relative w-16 h-16">
               <div className="absolute inset-0 rounded-full border-4 border-primary2/20" />
@@ -1016,7 +1017,7 @@ export default function AnnouncementsPage() {
         <div className="relative z-10 flex flex-col min-h-screen">
           <Header />
 
-          <div className="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 pt-40 sm:pt-48 pb-20">
+          <div className="grow w-full max-w-7xl mx-auto px-4 sm:px-6 pt-40 sm:pt-48 pb-20">
             {/* PAGE HEADER */}
             <div className="mb-16 text-left">
               <h1 className="font-rubik text-4xl sm:text-5xl font-bold text-primary3 leading-tight mb-4">
@@ -1028,18 +1029,18 @@ export default function AnnouncementsPage() {
             </div>
 
             <div className="flex flex-col lg:flex-row gap-8 items-start">
-              <aside className="w-full lg:w-64 flex-shrink-0">
+              <aside className="w-full lg:w-64 shrink-0">
   <Sidebar />
 </aside>
 
               <div className="flex-1 min-w-0 space-y-8">
                 {/* FORM CARD */}
-                <div className={`bg-white rounded-[2rem] border transition-all duration-300 shadow-lg p-6 sm:p-10 lg:p-12 hover:shadow-primary1/40 hover:-translate-y-2 ${
+                <div className={`bg-white rounded-4xl border transition-all duration-300 shadow-lg p-6 sm:p-10 lg:p-12 hover:shadow-primary1/40 hover:-translate-y-2 ${
                   editingId ? "border-primary1 ring-2 ring-primary1/20" : "border-gray-200"
                 }`}>
                     {/* Edit Banner */}
                     {editingId && (
-                      <div className="-mx-6 sm:-mx-10 lg:-mx-12 -mt-6 sm:-mt-10 lg:-mt-12 mb-8 bg-gradient-to-r from-primary1 to-primary3 px-6 sm:px-10 py-5 flex items-center justify-between rounded-t-[2rem]">
+                      <div className="-mx-6 sm:-mx-10 lg:-mx-12 -mt-6 sm:-mt-10 lg:-mt-12 mb-8 bg-linear-to-r from-primary1 to-primary3 px-6 sm:px-10 py-5 flex items-center justify-between rounded-t-4xl">
                         <div className="flex items-center gap-2 text-white">
                           <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
                           <span className="text-sm font-bold font-rubik tracking-wide">
@@ -1261,7 +1262,7 @@ export default function AnnouncementsPage() {
                               {renderTimeInput("ann-hour", timeHour, setTimeHour, timeHours, "hour")}
                               <span className="text-gray-400 font-bold">:</span>
                               {renderTimeInput("ann-minute", timeMinute, setTimeMinute, timeMinutes, "minute")}
-                              <div className="w-[1px] h-6 bg-gray-200 mx-2" />
+                              <div className="w-px h-6 bg-gray-200 mx-2" />
                               {renderTimeInput("ann-period", timePeriod, setTimePeriod, timePeriods, "period")}
                             </div>
                           </div>
@@ -1325,7 +1326,7 @@ export default function AnnouncementsPage() {
           setOrganizer("");
           setShowOrganizerInput(false);
         }}
-        className="w-8 h-8 flex-shrink-0 flex items-center justify-center rounded-xl border-2 border-red-100 text-red-400 hover:bg-red-50 transition-all"
+        className="w-8 h-8 shrink-0 flex items-center justify-center rounded-xl border-2 border-red-100 text-red-400 hover:bg-red-50 transition-all"
         title="Remove Organizer"
       >
         <X size={13} />
@@ -1536,7 +1537,7 @@ export default function AnnouncementsPage() {
                                     key={i}
                                     className="flex items-center gap-2"
                                   >
-                                    <span className="text-xs font-black text-gray-300 font-rubik w-5 text-right flex-shrink-0">
+                                    <span className="text-xs font-black text-gray-300 font-rubik w-5 text-right shrink-0">
                                       {i + 1}.
                                     </span>
                                     <input
@@ -1594,7 +1595,7 @@ export default function AnnouncementsPage() {
                                 className={`flex items-center gap-3 rounded-2xl px-4 py-3.5 text-left border-2 transition-all duration-200 ${isActive ? `${opt.bg} ${opt.color} ${opt.border} shadow-sm ring-4 ring-primary1/10 scale-[1.02]` : "bg-gray-50 text-gray-400 border-gray-200 hover:bg-white hover:border-gray-300 hover:text-gray-600"}`}
                               >
                                 <span
-                                  className={`w-2 h-2 rounded-full flex-shrink-0 ${isActive ? opt.dot : "bg-gray-200"}`}
+                                  className={`w-2 h-2 rounded-full shrink-0 ${isActive ? opt.dot : "bg-gray-200"}`}
                                 />
                                 <div className="flex-1 min-w-0">
                                   <p className="text-xs font-bold font-rubik leading-tight">
@@ -1609,7 +1610,7 @@ export default function AnnouncementsPage() {
                                 {isActive && (
                                   <Check
                                     size={12}
-                                    className="flex-shrink-0 opacity-70"
+                                    className="shrink-0 opacity-70"
                                   />
                                 )}
                               </button>
@@ -1670,7 +1671,7 @@ export default function AnnouncementsPage() {
                                 {renderTimeInput("sched-hour", scheduleTimeHour, setScheduleTimeHour, timeHours, "hour")}
                                 <span className="text-gray-400 font-bold">:</span>
                                 {renderTimeInput("sched-minute", scheduleTimeMinute, setScheduleTimeMinute, timeMinutes, "minute")}
-                                <div className="w-[1px] h-6 bg-gray-200 mx-2" />
+                                <div className="w-px h-6 bg-gray-200 mx-2" />
                                 {renderTimeInput("sched-period", scheduleTimePeriod, setScheduleTimePeriod, timePeriods, "period")}
                               </div>
                             </div>
@@ -1707,25 +1708,26 @@ export default function AnnouncementsPage() {
                               {editingId ? "Update Draft" : "Save Draft"}
                             </button>
                           )}
-                          <button
+                          <Button
                             type="button"
+                            variant="hero"
                             onClick={handlePublish}
                             disabled={isSubmitting}
-                            className="group relative px-8 py-3 bg-gradient-to-r from-primary3 to-primary1 rounded-2xl font-rubik font-bold text-white shadow-lg shadow-primary1/20 hover:shadow-primary1/40 transition-all duration-300 flex items-center gap-3 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="group flex items-center gap-3 px-8 py-3"
                           >
                             <span>
                               {editingId && !isEditingDraft
                                 ? "Update Announcement"
                                 : "Publish Announcement"}
                             </span>
-                          </button>
+                          </Button>
                         </div>
                       </div>
                     </div>
                 </div>
 
                 {/* MANAGE LIST */}
-                  <div className="bg-white rounded-[2rem] border transition-all duration-300 shadow-md hover:shadow-primary1/40 hover:-translate-y-2 border-gray-200">
+                  <div className="bg-white rounded-4xl border transition-all duration-300 shadow-md hover:shadow-primary1/40 hover:-translate-y-2 border-gray-200">
                     <div className="px-6 sm:px-8 py-6 border-b border-gray-100 flex flex-wrap justify-between items-center gap-4">
                       <div>
                         <h2 className="text-xl font-black font-rubik text-primary3">
@@ -1806,7 +1808,7 @@ export default function AnnouncementsPage() {
                                   <td className="px-8 py-4">
                                     <div className="flex items-center gap-2">
                                       {isEditing && (
-                                        <span className="w-1.5 h-1.5 rounded-full bg-primary1 animate-pulse flex-shrink-0" />
+                                        <span className="w-1.5 h-1.5 rounded-full bg-primary1 animate-pulse shrink-0" />
                                       )}
                                       <div>
                                         <span className="font-bold text-sm text-gray-800 font-rubik truncate max-w-[200px] block">
@@ -1881,13 +1883,13 @@ export default function AnnouncementsPage() {
         </div>
       </main>
 
-      <div className="mt-[-35px] md:mt-[-80px] relative z-0">
+      <div className="mt-[-35px] md:-mt-20 relative z-0">
         <Footer />
       </div>
 
       {/* DELETE MODAL */}
       {showDeleteModal && (
-        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-110 flex items-center justify-center p-4">
           <div
             className="absolute inset-0 bg-black/50 backdrop-blur-sm"
             onClick={() => setShowDeleteModal(false)}
@@ -1923,7 +1925,7 @@ export default function AnnouncementsPage() {
 
       {/* SUCCESS MODAL */}
       {showSuccessModal && (
-        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-110 flex items-center justify-center p-4">
           <div
             className="absolute inset-0 bg-black/50 backdrop-blur-sm"
             onClick={() => {
@@ -1935,7 +1937,7 @@ export default function AnnouncementsPage() {
             <div className="flex justify-center mb-6">
               <div className="relative">
                 <div className="absolute inset-0 bg-green-400/20 rounded-full animate-ping" />
-                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center shadow-xl relative">
+                <div className="w-20 h-20 rounded-full bg-linear-to-br from-green-400 to-emerald-500 flex items-center justify-center shadow-xl relative">
                   <svg
                     className="w-10 h-10 text-white"
                     fill="none"
@@ -1960,15 +1962,16 @@ export default function AnnouncementsPage() {
                 {successMessage.description}
               </p>
             </div>
-            <button
+            <Button
+              variant="hero"
               onClick={() => {
                 setShowSuccessModal(false);
                 setSubmitSuccess(false);
               }}
-              className="w-full py-3 text-sm font-bold font-rubik text-white bg-gradient-to-r from-primary1 to-primary2 rounded-xl shadow-lg hover:shadow-primary2/40 hover:-translate-y-0.5 transition-all duration-200"
+              className="w-full py-3 text-sm"
             >
               Continue
-            </button>
+            </Button>
           </div>
         </div>
       )}

@@ -44,7 +44,7 @@ export default function DeveloperCard({
         }`}
       >
         {/* front */}
-        <div className="absolute w-full h-full rounded-2xl overflow-hidden shadow-lg backface-hidden bg-gradient-to-b from-sky-400 to-blue-600 flex flex-col justify-between">
+        <div className="absolute w-full h-full rounded-2xl overflow-hidden shadow-lg backface-hidden bg-linear-to-b from-sky-400 to-blue-600 flex flex-col justify-between">
           <div className="absolute top-[-60px] sm:top-[-19px] lg:top-[-38px] left-0 w-full h-full z-0 hidden md:block">
             <Image
               src={bgSrc}
@@ -94,7 +94,7 @@ export default function DeveloperCard({
         </div>
 
         {/* back */}
-        <div className="absolute px-8 sm:px-12 lg:px-12 w-full h-full rounded-2xl overflow-hidden shadow-lg bg-gradient-to-br from-sky-400 to-blue-900 p-6 flex flex-col justify-between text-white rotate-y-180 backface-hidden">
+        <div className="absolute px-8 sm:px-12 lg:px-12 w-full h-full rounded-2xl overflow-hidden shadow-lg bg-linear-to-br from-sky-400 to-blue-900 p-6 flex flex-col justify-between text-white rotate-y-180 backface-hidden">
           <div>
             <h2 className="font-rubik text-[20.2px] sm:text-xl lg:text-2xl text-center font-bold mt-1 sm:mt-1 lg:mt-1 mb-2 sm:mb-3 lg:mb-3">
               {name}

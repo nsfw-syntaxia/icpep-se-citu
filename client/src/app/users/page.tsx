@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { User } from "./utils/user";
@@ -14,8 +13,9 @@ import ConfirmDialog from "./components/confirm_dialog";
 import ViewUserModal from "./components/view_user_modal";
 import EditUserModal from "./components/edit_user_modal";
 import Grid from "../components/grid";
+import BackButton from "../components/back-button";
+import PageHeader from "../components/page-header";
 import {
-  ArrowLeft,
   UserPlus,
   Download,
   Upload,
@@ -884,39 +884,21 @@ export default function UsersListPage() {
         <Grid />
         <div className="relative z-10 flex flex-col min-h-screen">
           <Header />
-          <div className="flex-grow w-full max-w-[1600px] mx-auto px-8 pt-[9.5rem] pb-12">
+          <div className="grow w-full max-w-[1600px] mx-auto px-8 pt-38 pb-12">
             <div className="mb-8 flex justify-start">
-              <Link
-                href="/"
-                title="Back to Home"
-                className="relative flex h-12 w-12 cursor-pointer items-center justify-center 
-                           rounded-full border-2 border-primary1 text-primary1 
-                           overflow-hidden transition-all duration-300 ease-in-out 
-                           active:scale-95 before:absolute before:inset-0 
-                           before:bg-gradient-to-r before:from-transparent 
-                           before:via-white/40 before:to-transparent 
-                           before:translate-x-[-100%] hover:before:translate-x-[100%] 
-                           before:transition-transform before:duration-700"
-              >
-                <ArrowLeft className="h-6 w-6 animate-nudge-left translate-x-[2px]" />
-              </Link>
+              <BackButton onClick={() => router.push("/")} title="Back to Home" />
             </div>
 
-            <div className="mb-12 text-center">
-              <div className="inline-flex items-center gap-2 rounded-full bg-primary1/10 px-3 py-1 mb-4">
-                <div className="h-2 w-2 rounded-full bg-primary1"></div>
-                <span className="font-raleway text-sm font-semibold text-primary1">
-                  User Management
-                </span>
-              </div>
-              <h1 className="font-rubik text-4xl sm:text-5xl font-bold text-primary3 leading-tight mb-4">
-                Registered Users
-              </h1>
-              <p className="font-raleway text-gray-600 text-base sm:text-lg max-w-2xl mx-auto">
-                Manage and view all registered users, members, officers, and
-                faculty.
-              </p>
-            </div>
+            <PageHeader
+              badge="User Management"
+              title="Registered Users"
+              subtitle={
+                <>
+                  Manage and view all registered users, members, officers, and
+                  faculty.
+                </>
+              }
+            />
 
             <UserStats users={allUsers} />
 
@@ -970,7 +952,7 @@ export default function UsersListPage() {
               </button>
               <button
                 onClick={handleAddUser}
-                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary1 to-primary1/90 text-white font-raleway font-semibold rounded-lg hover:shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer"
+                className="flex items-center gap-2 px-4 py-2 bg-primary1 hover:bg-primary2 text-white font-raleway font-semibold rounded-lg hover:shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer"
               >
                 <UserPlus className="w-4 h-4" />
                 Add User
@@ -1040,7 +1022,7 @@ export default function UsersListPage() {
         </div>
       </main>
 
-      <div className="mt-[-35px] md:mt-[-80px] relative z-0">
+      <div className="mt-[-35px] md:-mt-20 relative z-0">
         <Footer />
       </div>
 
@@ -1065,7 +1047,7 @@ export default function UsersListPage() {
 
               <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden mb-2">
                 <div
-                  className="h-full bg-gradient-to-r from-primary1 to-primary1/80 rounded-full transition-all duration-300 ease-out"
+                  className="h-full bg-linear-to-r from-primary1 to-primary1/80 rounded-full transition-all duration-300 ease-out"
                   style={{ width: `${progressPercentage}%` }}
                 ></div>
               </div>

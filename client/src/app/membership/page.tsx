@@ -5,7 +5,8 @@ import Footer from "../components/footer";
 import Grid from "../components/grid";
 import MembershipCard from "./components/membership-card";
 import InteractiveCta from "./components/cta";
-import { User, Globe, Zap, ArrowRight } from "lucide-react";
+import PageHeader from "../components/page-header";
+import { User, Globe, Zap, ChevronRight } from "lucide-react";
 import { type FC, type ReactNode } from "react";
 
 interface MembershipTier {
@@ -38,7 +39,7 @@ const MembershipPage: FC = () => {
       isHighlighted: false,
       accentColor: "steel",
       icon: <User size={24} />,
-      buttonIcon: <ArrowRight size={20} />,
+      buttonIcon: <ChevronRight size={20} />,
     },
     {
       planLabel: "All-Access",
@@ -70,7 +71,7 @@ const MembershipPage: FC = () => {
       isHighlighted: false,
       accentColor: "sky",
       icon: <Globe size={24} />,
-      buttonIcon: <ArrowRight size={20} />,
+      buttonIcon: <ChevronRight size={20} />,
     },
   ];
 
@@ -80,25 +81,20 @@ const MembershipPage: FC = () => {
         <Grid />
         <div className="relative z-10 flex flex-col min-h-screen">
           <Header />
-          <div className="w-full max-w-7xl mx-auto px-6 pt-[9.5rem] pb-24 flex-grow">
-            <div className="mb-20 text-center">
-              <div className="inline-flex items-center gap-2 rounded-full bg-primary1/10 px-3 py-1 mb-4">
-                <div className="h-2 w-2 rounded-full bg-primary1"></div>
-                <span className="font-raleway text-sm font-semibold text-primary1">
-                  {isMembershipOpen
-                    ? "Join Our Community"
-                    : "Membership Closed"}
-                </span>
-              </div>
-              <h1 className="font-rubik text-4xl sm:text-5xl font-bold text-primary3 leading-tight mb-4">
-                Unlock Your Potential
-              </h1>
-              <p className="font-raleway text-gray-600 text-base sm:text-lg max-w-3xl mx-auto">
-                Become a member and gain access to exclusive events, workshops,
-                and resources designed to boost your career in computer
-                engineering.
-              </p>
-            </div>
+          <div className="w-full max-w-7xl mx-auto px-6 pt-38 pb-24 grow">
+            <PageHeader
+              className="mb-20 text-center"
+              badge={isMembershipOpen ? "Join Our Community" : "Membership Closed"}
+              title="Unlock Your Potential"
+              subtitleClassName="max-w-3xl"
+              subtitle={
+                <>
+                  Become a member and gain access to exclusive events,
+                  workshops, and resources designed to boost your career in
+                  computer engineering.
+                </>
+              }
+            />
 
             <div className="w-full">
               <div className="group flex flex-col lg:flex-row justify-center items-center gap-16 lg:gap-8 lg:pt-12">
@@ -128,7 +124,7 @@ const MembershipPage: FC = () => {
         </div>
       </main>
 
-      <div className="mt-[-35px] md:mt-[-80px] relative z-0">
+      <div className="mt-[-35px] md:-mt-20 relative z-0">
         <Footer />
       </div>
     </div>

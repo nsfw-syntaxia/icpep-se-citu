@@ -59,7 +59,7 @@ export const TierCard = ({
 
   return (
     <div
-      className={`relative w-full overflow-hidden rounded-3xl backdrop-blur-xl border border-[var(--primary3)]/20 shadow-lg bg-gradient-to-br ${tierGradients[tier]}`}
+      className={`relative w-full overflow-hidden rounded-3xl backdrop-blur-xl border border-[var(--primary3)]/20 shadow-lg bg-linear-to-br ${tierGradients[tier]}`}
     >
       <div
         className="absolute inset-0 w-full h-full pointer-events-none"

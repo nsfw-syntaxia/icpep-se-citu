@@ -118,7 +118,7 @@ export default function UsersTable({
             >
               <span className="font-raleway text-sm truncate">{selectedRoleLabel}</span>
               <ChevronDown
-                className={`w-4 h-4 text-gray-400 ml-1 flex-shrink-0 transition-transform duration-300 ${
+                className={`w-4 h-4 text-gray-400 ml-1 shrink-0 transition-transform duration-300 ${
                   activeDropdown === "filterRole" ? "rotate-180" : ""
                 }`}
               />
@@ -175,7 +175,7 @@ export default function UsersTable({
             >
               <span className="font-raleway text-sm truncate">{selectedMembershipLabel}</span>
               <ChevronDown
-                className={`w-4 h-4 text-gray-400 ml-1 flex-shrink-0 transition-transform duration-300 ${
+                className={`w-4 h-4 text-gray-400 ml-1 shrink-0 transition-transform duration-300 ${
                   activeDropdown === "filterMembership" ? "rotate-180" : ""
                 }`}
               />

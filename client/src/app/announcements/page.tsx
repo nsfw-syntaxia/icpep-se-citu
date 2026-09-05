@@ -23,6 +23,8 @@ import {
 import Grid from "../components/grid";
 import announcementService from "../services/announcement";
 import clsx from "clsx";
+import BackButton from "../components/back-button";
+import PageHeader from "../components/page-header";
 
 interface Announcement {
   _id: string;
@@ -222,40 +224,24 @@ export default function AnnouncementsPage() {
           <div className="max-w-7xl mx-auto px-6 pt-38 pb-12 w-full grow">
             {/* back */}
             <div className="mb-8 flex justify-start">
-              <button
+              <BackButton
                 onClick={() => router.push("/")}
                 title="Back to Home"
-                className="relative flex h-12 w-12 cursor-pointer items-center justify-center 
-               rounded-full border-2 border-primary1 text-primary1 
-               overflow-hidden transition-all duration-300 ease-in-out 
-               active:scale-95 before:absolute before:inset-0 
-               before:bg-gradient-to-r before:from-transparent 
-               before:via-white/40 before:to-transparent 
-               before:translate-x-[-100%] hover:before:translate-x-[100%] 
-               before:transition-transform before:duration-700"
-              >
-                <Home className="h-6 w-6" />
-              </button>
+                icon={Home}
+              />
             </div>
 
             {/* title */}
-            <div className="mb-12 text-center">
-              <div className="inline-flex items-center gap-2 rounded-full bg-primary1/10 px-3 py-1 mb-4">
-                <div className="h-2 w-2 rounded-full bg-primary1"></div>
-                <span className="font-raleway text-sm font-semibold text-primary1">
-                  Latest Updates
-                </span>
-              </div>
-
-              <h1 className="font-rubik text-4xl sm:text-5xl font-bold text-primary3 leading-tight mb-4">
-                Announcements
-              </h1>
-
-              <p className="font-raleway text-gray-600 text-base sm:text-lg max-w-2xl mx-auto">
-                Stay in the know with the latest news, meetings, and
-                achievements from ICpEP Student Edition R7 CIT-U Chapter.
-              </p>
-            </div>
+            <PageHeader
+              badge="Latest Updates"
+              title="Announcements"
+              subtitle={
+                <>
+                  Stay in the know with the latest news, meetings, and
+                  achievements from ICpEP Student Edition R7 CIT-U Chapter.
+                </>
+              }
+            />
 
             {/* search & filters */}
             <div className="mb-10 max-w-4xl mx-auto flex gap-4 items-center">

@@ -42,7 +42,7 @@ export default function ViewUserModal({
       case "committee-officer":
         return "bg-indigo-100 text-indigo-700 border-indigo-200";
       case "admin":
-        return "bg-gradient-to-r from-amber-100 to-yellow-100 text-amber-800 border-amber-300 shadow-[0_0_8px_rgba(251,191,36,0.4)]";
+        return "bg-linear-to-r from-amber-100 to-yellow-100 text-amber-800 border-amber-300 shadow-[0_0_8px_rgba(251,191,36,0.4)]";
       case "member":
         return "bg-green-100 text-green-700 border-green-200";
       case "non-member":
@@ -56,7 +56,7 @@ export default function ViewUserModal({
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden animate-scale-in">
         {/* Header */}
-        <div className="bg-gradient-to-r from-primary1 to-primary1/90 px-6 py-5">
+        <div className="bg-linear-to-r from-primary1 to-primary1/90 px-6 py-5">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-white/20 rounded-full">
@@ -84,7 +84,7 @@ export default function ViewUserModal({
         <div className="p-6 overflow-y-auto max-h-[calc(90vh-100px)]">
           {/* Profile Section */}
           <div className="mb-6 text-center pb-6 border-b border-gray-200">
-            <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-gradient-to-br from-primary1 to-primary1/70 flex items-center justify-center">
+            <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-linear-to-br from-primary1 to-primary1/70 flex items-center justify-center">
               <span className="font-rubik text-3xl font-bold text-white">
                 {user.firstName.charAt(0)}
                 {user.lastName.charAt(0)}

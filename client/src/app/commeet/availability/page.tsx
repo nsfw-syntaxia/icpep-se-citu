@@ -3,11 +3,12 @@
 import Header from "../../components/header";
 import Footer from "../../components/footer";
 import Grid from "../../components/grid";
+import BackButton from "../../components/back-button";
+import Button from "../../components/button";
 import { FunctionComponent, useState, useEffect, useCallback } from "react";
 import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import {
-  ArrowLeft,
   Check,
   ChevronLeft,
   ChevronRight,
@@ -50,7 +51,7 @@ type Meeting = {
 
 // Unified Avatar Gradient
 const AVATAR_GRADIENT =
-  "bg-gradient-to-br from-blue-500 to-sky-400 shadow-sky-200";
+  "bg-linear-to-br from-blue-500 to-sky-400 shadow-sky-200";
 
 const AvailabilityPage: FunctionComponent = () => {
   const router = useRouter();
@@ -87,7 +88,7 @@ const AvailabilityPage: FunctionComponent = () => {
   // --- Configuration ---
   const timeColWidth = "w-14 sm:w-24";
   const sharedCardStyle =
-    "bg-white rounded-[2rem] border border-gray-200 shadow-lg p-6 sm:p-8 transition-all duration-300 hover:shadow-primary1/40 hover:-translate-y-2";
+    "bg-white rounded-4xl border border-gray-200 shadow-lg p-6 sm:p-8 transition-all duration-300 hover:shadow-primary1/40 hover:-translate-y-2";
 
   // --- Helpers ---
   const getLocalDateKey = (date: Date | null) => {
@@ -470,25 +471,12 @@ const AvailabilityPage: FunctionComponent = () => {
           <Header />
 
           <div
-            className="grow w-full max-w-7xl mx-auto px-4 sm:px-6 pt-[9.5rem] pb-24"
+            className="grow w-full max-w-7xl mx-auto px-4 sm:px-6 pt-38 pb-24"
             onClick={handleBgClick}
           >
             {/* Back Button */}
             <div className="mb-8 flex justify-start">
-              <button
-                onClick={() => router.push("/commeet")}
-                title="Go Back"
-                className="relative flex h-12 w-12 cursor-pointer items-center justify-center 
-                           rounded-full border-2 border-primary1 text-primary1 
-                           overflow-hidden transition-all duration-300 ease-in-out 
-                           active:scale-95 before:absolute before:inset-0 
-                           before:bg-gradient-to-r before:from-transparent 
-                           before:via-white/40 before:to-transparent 
-                           before:translate-x-[-100%] hover:before:translate-x-[100%] 
-                           before:transition-transform before:duration-700"
-              >
-                <ArrowLeft className="h-6 w-6 animate-nudge-left translate-x-[2px]" />
-              </button>
+              <BackButton onClick={() => router.push("/commeet")} title="Go Back" />
             </div>
 
             <div className="max-w-7xl mx-auto relative">
@@ -588,22 +576,17 @@ const AvailabilityPage: FunctionComponent = () => {
                     <div className="shrink-0">
                       {!isEditing &&
                         (!viewingId || viewingId === currentUserId) && (
-                          <button
+                          <Button
+                            variant="hero"
                             onClick={onEditClick}
                             disabled={!canEdit}
-                            className={`group p-2.5 sm:px-6 sm:py-2.5 rounded-xl font-rubik text-white font-bold text-sm flex items-center justify-center gap-2 sm:min-w-[11.5rem]
-                                          ${
-                                            canEdit
-                                              ? "bg-gradient-to-r from-primary3 to-primary1 shadow-md shadow-primary1/20 hover:shadow-lg hover:shadow-primary1/30 hover:-translate-y-0.5 cursor-pointer"
-                                              : "bg-gray-300 cursor-not-allowed"
-                                          }
-                                      `}
+                            className="group flex items-center justify-center gap-2 p-2.5 sm:px-6 sm:py-2.5 sm:min-w-46"
                           >
                             <Pencil className="w-5 h-5 stroke-[2.5px]" />
                             <span className="hidden sm:inline">
                               Update Availability
                             </span>
-                          </button>
+                          </Button>
                         )}
 
                       {isEditing && (
@@ -616,21 +599,23 @@ const AvailabilityPage: FunctionComponent = () => {
                             <Trash2 className="w-5 h-5" />
                           </button>
 
-                          <button
+                          <Button
+                            variant="cancel"
                             onClick={onCancelClick}
-                            className="p-2.5 sm:px-6 sm:py-2.5 bg-white border border-gray-200 rounded-xl font-rubik text-gray-500 font-bold text-sm hover:bg-gray-50 hover:text-red-500 hover:border-red-100 transition-all duration-300 flex items-center justify-center cursor-pointer"
+                            className="flex items-center justify-center p-2.5 sm:px-6 sm:py-2.5"
                           >
                             <X className="w-5 h-5" />
                             <span className="hidden sm:inline ml-2">Cancel</span>
-                          </button>
+                          </Button>
 
-                          <button
+                          <Button
+                            variant="confirm"
                             onClick={onConfirmClick}
-                            className="p-2.5 sm:px-6 sm:py-2.5 bg-sky-500 rounded-xl font-rubik text-white font-bold text-sm shadow-md shadow-sky-200 hover:bg-sky-600 hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-center cursor-pointer"
+                            className="flex items-center justify-center p-2.5 sm:px-6 sm:py-2.5"
                           >
                             <Check className="w-5 h-5 stroke-[3px]" />
                             <span className="hidden sm:inline ml-2">Save</span>
-                          </button>
+                          </Button>
                         </div>
                       )}
                     </div>
@@ -895,7 +880,7 @@ const AvailabilityPage: FunctionComponent = () => {
 
                   {/* FIXED CONTAINER: No scroll on this outer div to prevent overflow bug */}
                   <div
-                    className={`${sharedCardStyle} lg:sticky lg:top-32 max-h-[46rem] flex flex-col`}
+                    className={`${sharedCardStyle} lg:sticky lg:top-32 max-h-184 flex flex-col`}
                   >
                     <div className="flex items-center justify-between mb-6 shrink-0">
                       <h3 className="text-xl font-bold text-gray-800 font-rubik">
@@ -1072,7 +1057,7 @@ const AvailabilityPage: FunctionComponent = () => {
         </div>
       </main>
 
-      <div className="mt-[-35px] md:mt-[-80px] relative z-0">
+      <div className="mt-[-35px] md:-mt-20 relative z-0">
         <Footer />
       </div>
     </div>
@@ -1111,13 +1096,13 @@ const MeetingDetailsModal = ({
   if (!isOpen) return null;
 
   return createPortal(
-    <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-99999 flex items-center justify-center p-4">
       <div
         className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity"
         onClick={onClose}
       />
 
-      <div className="relative z-[100000] w-full max-w-lg bg-white rounded-[2rem] p-8 shadow-2xl border border-white/50 animate-scale-in">
+      <div className="relative z-100000 w-full max-w-lg bg-white rounded-4xl p-8 shadow-2xl border border-white/50 animate-scale-in">
         <div className="flex items-center justify-between mb-8 pb-4 border-b border-gray-100">
           <div>
             <h3 className="text-2xl font-rubik font-bold text-gray-800">
@@ -1184,18 +1169,16 @@ const MeetingDetailsModal = ({
         </div>
 
         <div className="flex justify-end gap-3 pt-6 mt-2 border-t border-gray-100">
-          <button
-            onClick={onClose}
-            className="px-6 py-2.5 rounded-xl border border-gray-200 font-rubik font-semibold text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-colors cursor-pointer"
-          >
+          <Button variant="cancel" onClick={onClose} className="px-6 py-2.5">
             Cancel
-          </button>
-          <button
+          </Button>
+          <Button
+            variant="confirm"
             onClick={() => onSave(formData)}
-            className="px-6 py-2.5 bg-sky-500 text-white rounded-xl font-rubik font-semibold shadow-lg shadow-sky-200 hover:bg-sky-600 hover:-translate-y-0.5 transition-all cursor-pointer flex items-center gap-2"
+            className="flex items-center gap-2 px-6 py-2.5"
           >
             Save Changes
-          </button>
+          </Button>
         </div>
       </div>
     </div>,
@@ -1229,13 +1212,13 @@ const DeleteConfirmationModal = ({
   if (!isOpen) return null;
 
   return createPortal(
-    <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-99999 flex items-center justify-center p-4">
       <div
         className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity"
         onClick={onClose}
       />
 
-      <div className="relative z-[100000] w-full max-w-md bg-white rounded-[2rem] p-8 shadow-2xl border border-white/50 animate-scale-in">
+      <div className="relative z-100000 w-full max-w-md bg-white rounded-4xl p-8 shadow-2xl border border-white/50 animate-scale-in">
         <div className="flex flex-col items-center text-center">
           <div className="w-16 h-16 rounded-full bg-red-50 flex items-center justify-center mb-4 text-red-500">
             <AlertTriangle className="w-8 h-8 stroke-[1.5px]" />
@@ -1252,18 +1235,16 @@ const DeleteConfirmationModal = ({
         </div>
 
         <div className="flex justify-center gap-3 pt-8 mt-2">
-          <button
-            onClick={onClose}
-            className="px-6 py-3 rounded-xl border border-gray-200 font-rubik font-semibold text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-colors cursor-pointer w-full"
-          >
+          <Button variant="cancel" onClick={onClose} className="w-full px-6 py-3">
             Cancel
-          </button>
-          <button
+          </Button>
+          <Button
+            variant="danger"
             onClick={onConfirm}
-            className="px-6 py-3 bg-red-500 text-white rounded-xl font-rubik font-semibold shadow-lg shadow-red-200 hover:bg-red-600 hover:-translate-y-0.5 transition-all cursor-pointer flex items-center justify-center gap-2 w-full"
+            className="flex w-full items-center justify-center gap-2 px-6 py-3"
           >
             Yes, Delete
-          </button>
+          </Button>
         </div>
       </div>
     </div>,

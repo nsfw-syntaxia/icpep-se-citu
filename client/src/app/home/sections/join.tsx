@@ -13,7 +13,7 @@ const BenefitCard = ({
 }) => (
   <div className="relative group rounded-2xl p-4 sm:p-6 overflow-hidden">
     <div
-      className="absolute -inset-0.5 rounded-2xl bg-gradient-to-r from-primary1/40 via-secondary2/40 to-primary1/40 
+      className="absolute -inset-0.5 rounded-2xl bg-linear-to-r from-primary1/40 via-secondary2/40 to-primary1/40 
                  bg-[length:200%_100%] blur-sm opacity-0 group-hover:opacity-50 
                  transition duration-1000 animate-shimmer-bg"
     ></div>
@@ -21,7 +21,7 @@ const BenefitCard = ({
     <div className="absolute inset-0 rounded-2xl border border-white/20 bg-white/5 backdrop-blur-lg"></div>
 
     <div className="relative flex items-center gap-4 sm:gap-5 text-left">
-      <div className="flex-shrink-0 flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-xl bg-white/10 text-primary1">
+      <div className="shrink-0 flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-xl bg-white/10 text-primary1">
         {icon}
       </div>
 
@@ -32,7 +32,7 @@ const BenefitCard = ({
         <p className="mt-1 font-raleway text-sm text-gray-300">{description}</p>
       </div>
 
-      <ArrowUpRight className="ml-auto h-6 w-6 flex-shrink-0 text-white/30" />
+      <ArrowUpRight className="ml-auto h-6 w-6 shrink-0 text-white/30" />
     </div>
   </div>
 );
@@ -106,7 +106,7 @@ export function WhyJoinSection() {
       <div
         ref={cardRef}
         className="relative mx-auto w-full max-w-[98%] sm:max-w-[96%] lg:max-w-[93%] rounded-3xl 
-           bg-gradient-to-br from-primary3 to-secondary1 
+           bg-linear-to-br from-primary3 to-secondary1 
            px-10 sm:px-16 py-16 sm:py-20 shadow-2xl 
            transition-transform duration-300 ease-out 
            transform-style-preserve-3d -translate-y-[1.5rem]"

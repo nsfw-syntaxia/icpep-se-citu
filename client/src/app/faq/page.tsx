@@ -6,7 +6,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import faqService from "../services/faq";
 import Image from "next/image";
-import { Search, ArrowLeft } from 'lucide-react';
+import { Search, ChevronLeft } from 'lucide-react';
 
 interface FAQ {
   id?: number; 
@@ -82,7 +82,7 @@ export default function FAQPage() {
         <div className="relative z-10 flex flex-col min-h-screen">
           <Header />
 
-          <div className="flex-grow relative">
+          <div className="grow relative">
             {/* Background Decoration */}
             <div className="light-dark-background absolute inset-0 z-0 pointer-events-none"></div>
 
@@ -100,11 +100,12 @@ export default function FAQPage() {
                 <div className="flex justify-center md:justify-start mb-12">
                   <button
                     onClick={() => router.back()}
-                    className="relative flex h-10 w-10 md:h-12 md:w-12 cursor-pointer items-center justify-center 
-                              rounded-full border-2 border-primary1 text-primary1 
-                              transition-all duration-300 ease-in-out active:scale-95 hover:bg-primary1/5"
+                    className="relative flex h-10 w-10 md:h-12 md:w-12 cursor-pointer items-center justify-center
+                              rounded-full border-2 border-primary1 text-primary1
+                              transition-all duration-300 ease-in-out active:scale-95 hover:bg-primary1/5
+                              focus:outline-none focus-visible:ring-2 focus-visible:ring-primary1 focus-visible:ring-offset-2"
                   >
-                    <ArrowLeft className="h-5 w-5 md:h-6 md:w-6 animate-nudge-left" />
+                    <ChevronLeft className="h-5 w-5 md:h-6 md:w-6 animate-nudge-left" />
                   </button>
                 </div>
 
@@ -148,7 +149,7 @@ export default function FAQPage() {
                             {faq.question}
                           </h3>
                           <span
-                            className={`text-2xl font-bold text-primary1 transition-transform duration-300 ease-in-out flex-shrink-0 ${
+                            className={`text-2xl font-bold text-primary1 transition-transform duration-300 ease-in-out shrink-0 ${
                               openIndex === index ? "rotate-45" : "rotate-0"
                             }`}
                           >
@@ -176,7 +177,7 @@ export default function FAQPage() {
         </div>
       </main>
 
-      <div className="mt-[-35px] md:mt-[-80px] relative z-0">
+      <div className="mt-[-35px] md:-mt-20 relative z-0">
         <Footer />
       </div>
     </div>

@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { TestimonialCard } from "@/app/home/components/testimonial-card";
 import testimonialService from "@/app/services/testimonial";
 
@@ -55,7 +55,7 @@ function TestimonialCardSkeleton({
       </div>
 
       <div className="flex items-center gap-4 w-full mt-2 pt-4 border-t border-white/10">
-        <SkeletonBlock className="w-14 h-14 rounded-full flex-shrink-0" />
+        <SkeletonBlock className="w-14 h-14 rounded-full shrink-0" />
         <div className="flex flex-col gap-2 flex-1">
           <SkeletonBlock className="w-32 h-4 rounded-md" />
           <SkeletonBlock className="w-24 h-3 rounded-md" />
@@ -226,7 +226,7 @@ export function TestimonialsSection() {
                 {testimonials.map((testimonial, index) => (
                   <div
                     key={index}
-                    className="w-full flex-shrink-0 snap-center flex justify-center pt-16 px-4 pb-4"
+                    className="w-full shrink-0 snap-center flex justify-center pt-16 px-4 pb-4"
                   >
                     <div className="w-full max-w-md h-[90%]">
                       <TestimonialCard {...testimonial} position={0} />
@@ -299,7 +299,7 @@ export function TestimonialsSection() {
             disabled={loading || currentIndex === 0}
             className="flex h-14 w-14 items-center justify-center rounded-full border border-primary1/40 bg-white/80 backdrop-blur-sm text-primary1 transition-all duration-300 hover:bg-primary1/10 active:scale-90 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
           >
-            <ArrowLeft size={24} />
+            <ChevronLeft size={24} />
           </button>
           <button
             onClick={handleNext}
@@ -310,7 +310,7 @@ export function TestimonialsSection() {
             }
             className="flex h-14 w-14 items-center justify-center rounded-full border border-primary1/40 bg-white/80 backdrop-blur-sm text-primary1 transition-all duration-300 hover:bg-primary1/10 active:scale-90 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
           >
-            <ArrowRight size={24} />
+            <ChevronRight size={24} />
           </button>
         </div>
       </div>

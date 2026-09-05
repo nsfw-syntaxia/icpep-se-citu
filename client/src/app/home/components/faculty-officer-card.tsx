@@ -26,7 +26,7 @@ export default function FacultyOfficerCard({
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       className={`relative rounded-2xl p-[2px] 
-        bg-gradient-to-br from-[var(--secondary2)] to-[var(--primary1)] 
+        bg-linear-to-br from-[var(--secondary2)] to-[var(--primary1)] 
         shadow-md transition-all duration-500 ease-in-out
         h-[240px] sm:h-[280px]
         ${
@@ -35,7 +35,7 @@ export default function FacultyOfficerCard({
             : "w-[120px] sm:w-[150px]"
         }`}
     >
-      <div className="relative w-full h-full flex items-center justify-start overflow-hidden rounded-[14px] bg-gradient-to-br from-[var(--primary1)] to-[var(--primary3)]">
+      <div className="relative w-full h-full flex items-center justify-start overflow-hidden rounded-[14px] bg-linear-to-br from-[var(--primary1)] to-[var(--primary3)]">
         <Image
           src="/icpep logo.png"
           alt="ICPEP Logo"
@@ -46,7 +46,7 @@ export default function FacultyOfficerCard({
           }`}
         />
         <div
-          className={`flex-shrink-0 transform transition-transform duration-500 ${
+          className={`shrink-0 transform transition-transform duration-500 ${
             isExpanded ? "translate-x-4 scale-105" : "translate-x-0 scale-100"
           }`}
         >
@@ -60,7 +60,7 @@ export default function FacultyOfficerCard({
         </div>
         <div
           className={`absolute inset-x-0 bottom-0 h-1/2 
-            bg-gradient-to-t from-[#002231] via-[#00223199] to-transparent 
+            bg-linear-to-t from-[#002231] via-[#00223199] to-transparent 
             z-10 transition-opacity duration-500 ease-in-out pointer-events-none ${
               isExpanded ? "opacity-100" : "opacity-0"
             }`}

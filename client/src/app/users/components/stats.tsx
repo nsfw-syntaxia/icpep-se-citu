@@ -92,7 +92,7 @@ export default function UserStats({ users }: UserStatsProps) {
               </div>
             </div>
             <div
-              className={`absolute bottom-0 left-0 h-1 w-full bg-gradient-to-r ${stat.color} transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300`}
+              className={`absolute bottom-0 left-0 h-1 w-full bg-linear-to-r ${stat.color} transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300`}
             ></div>
           </div>
         );

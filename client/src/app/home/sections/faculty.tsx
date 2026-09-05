@@ -29,7 +29,7 @@ function SkeletonBlock({ className = "" }: { className?: string }) {
 
 function FacultyOfficerCardSkeleton() {
   return (
-    <div className="flex-shrink-0 flex flex-col items-center gap-2 w-[120px]">
+    <div className="shrink-0 flex flex-col items-center gap-2 w-[120px]">
       <SkeletonBlock className="w-[80px] h-[80px] rounded-full" />
       <SkeletonBlock className="w-[90px] h-3 rounded-md" />
       <SkeletonBlock className="w-[70px] h-3 rounded-md" />
@@ -229,7 +229,7 @@ export function FacultyOfficersSection() {
           transition={{ repeat: Infinity, ease: "linear", duration: 35 }}
         >
           {duplicated.map((o, i) => (
-            <div key={`desktop-top-${i}`} className="flex-shrink-0">
+            <div key={`desktop-top-${i}`} className="shrink-0">
               <FacultyOfficerCard {...o} />
             </div>
           ))}
@@ -240,7 +240,7 @@ export function FacultyOfficersSection() {
           transition={{ repeat: Infinity, ease: "linear", duration: 60 }}
         >
           {duplicated.map((o, i) => (
-            <div key={`desktop-bottom-${i}`} className="flex-shrink-0">
+            <div key={`desktop-bottom-${i}`} className="shrink-0">
               <FacultyOfficerCard {...o} />
             </div>
           ))}

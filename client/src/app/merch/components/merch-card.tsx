@@ -63,7 +63,7 @@ const MerchCard: FC<MerchCardProps> = ({
       </div>
 
       {/* Content */}
-      <div className="p-6 flex flex-col flex-grow">
+      <div className="p-6 flex flex-col grow">
         <div className="flex justify-between items-start mb-2">
           <h3 className="font-rubik font-bold text-xl text-primary3">{name}</h3>
           <span className="font-rubik font-semibold text-lg text-primary1 whitespace-nowrap ml-4">
@@ -71,7 +71,7 @@ const MerchCard: FC<MerchCardProps> = ({
           </span>
         </div>
 
-        <p className="font-raleway text-gray-600 mb-4 text-sm flex-grow">
+        <p className="font-raleway text-gray-600 mb-4 text-sm grow">
           {description}
         </p>
 

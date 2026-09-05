@@ -103,7 +103,7 @@ export default function SecuritySection({
     <div className="w-full border border-primary1/10 rounded-3xl p-5 bg-white shadow-lg hover:shadow-xl transition-all duration-300">
       {/* Header - Styled to match "Update Profile" card exactly */}
       <div className="flex items-center gap-4 mb-4 pb-3 border-b border-primary1/5">
-        <div className="p-3 bg-primary1/10 rounded-2xl text-primary1 flex-shrink-0">
+        <div className="p-3 bg-primary1/10 rounded-2xl text-primary1 shrink-0">
           <Shield className="w-6 h-6" />
         </div>
         <div>
@@ -141,12 +141,12 @@ export default function SecuritySection({
       {/* --- Password Modal --- */}
       {open &&
         createPortal(
-          <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-99999 flex items-center justify-center p-4">
             <div
               className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity"
               onClick={closeModal}
             />
-            <div className="relative z-[100000] w-full max-w-md bg-white rounded-[2rem] p-8 shadow-2xl border border-white/50 animate-scale-in">
+            <div className="relative z-100000 w-full max-w-md bg-white rounded-4xl p-8 shadow-2xl border border-white/50 animate-scale-in">
               <div className="flex items-center justify-between mb-8 pb-4 border-b border-gray-100">
                 <div>
                   <h3 className="text-2xl font-rubik font-bold text-primary3">
@@ -193,14 +193,14 @@ export default function SecuritySection({
 
                 {error && (
                   <div className="flex items-start gap-3 p-4 bg-red-50 border border-red-100 rounded-xl text-red-600 text-sm font-raleway font-medium">
-                    <AlertCircle className="w-5 h-5 flex-shrink-0" />
+                    <AlertCircle className="w-5 h-5 shrink-0" />
                     <span>{error}</span>
                   </div>
                 )}
 
                 {success && (
                   <div className="flex items-start gap-3 p-4 bg-green-50 border border-green-100 rounded-xl text-green-600 text-sm font-raleway font-medium">
-                    <CheckCircle2 className="w-5 h-5 flex-shrink-0" />
+                    <CheckCircle2 className="w-5 h-5 shrink-0" />
                     <span>{success}</span>
                   </div>
                 )}

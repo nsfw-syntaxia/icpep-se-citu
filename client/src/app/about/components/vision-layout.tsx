@@ -44,7 +44,7 @@ const VisionLayout: FC<{ section: SectionType }> = ({ section }) => {
             className="flex flex-row md:flex-col items-center md:items-center gap-4 md:gap-0 group"
           >
             <div
-              className="w-12 h-12 md:w-full md:h-40 flex-shrink-0 rounded-xl md:rounded-2xl overflow-hidden bg-white/5 md:mb-4 border border-white/10 transition-colors duration-300 group-hover:bg-white/10
+              className="w-12 h-12 md:w-full md:h-40 shrink-0 rounded-xl md:rounded-2xl overflow-hidden bg-white/5 md:mb-4 border border-white/10 transition-colors duration-300 group-hover:bg-white/10
                          flex items-center justify-center"
               style={{
                 backgroundImage:

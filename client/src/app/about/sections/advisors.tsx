@@ -2,7 +2,7 @@
 
 import { FC, useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import AdvisorCard from "../components/advisor-card";
 
 // Types
@@ -98,14 +98,14 @@ const AdvisorsCarousel: FC<{ items: AdvisorItem[] }> = ({ items }) => {
           disabled={currentIndex === 0}
           className="flex h-14 w-14 items-center justify-center rounded-full border border-primary1/40 bg-white/80 backdrop-blur-sm text-primary1 transition-all duration-300 hover:bg-primary1/10 active:scale-90 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
         >
-          <ArrowLeft size={24} />
+          <ChevronLeft size={24} />
         </button>
         <button
           onClick={handleNext}
           disabled={currentIndex === items.length - 1}
           className="flex h-14 w-14 items-center justify-center rounded-full border border-primary1/40 bg-white/80 backdrop-blur-sm text-primary1 transition-all duration-300 hover:bg-primary1/10 active:scale-90 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
         >
-          <ArrowRight size={24} />
+          <ChevronRight size={24} />
         </button>
       </div>
     </div>

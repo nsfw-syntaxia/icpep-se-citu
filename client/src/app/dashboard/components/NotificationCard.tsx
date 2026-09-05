@@ -52,11 +52,11 @@ export const NotificationCard: FC<NotificationCardProps> = ({
         isRead ? "border-slate-100 bg-white/50" : "border-blue-100 bg-blue-50/20 hover:bg-blue-50/40"
       } ${onClick ? "cursor-pointer hover:shadow-sm" : ""}`}
     >
-      <div className={`h-8 w-8 rounded-lg flex items-center justify-center border flex-shrink-0 ${styles.color}`}>
+      <div className={`h-8 w-8 rounded-lg flex items-center justify-center border shrink-0 ${styles.color}`}>
         {styles.icon}
       </div>
 
-      <div className="flex-grow min-w-0">
+      <div className="grow min-w-0">
         <div className="flex items-start justify-between gap-2">
           <h6 className={`font-rubik text-xs font-bold text-slate-800 leading-snug truncate ${isRead ? "font-semibold text-slate-600" : ""}`}>
             {title}
@@ -71,7 +71,7 @@ export const NotificationCard: FC<NotificationCardProps> = ({
       </div>
 
       {!isRead && (
-        <div className="flex items-center flex-shrink-0 self-center">
+        <div className="flex items-center shrink-0 self-center">
           <Circle className="h-2 w-2 fill-primary1 text-primary1" />
         </div>
       )}

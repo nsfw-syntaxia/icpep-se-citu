@@ -30,7 +30,7 @@ export const DashboardHeader: FC<DashboardHeaderProps> = ({
   };
 
   return (
-    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#003599] via-[#0073AD] to-[#04a6ef] p-8 md:p-10 text-white shadow-xl">
+    <div className="relative overflow-hidden rounded-3xl bg-linear-to-r from-[#003599] via-[#0073AD] to-[#04a6ef] p-8 md:p-10 text-white shadow-xl">
       {/* Decorative blobs inside header */}
       <div className="absolute right-[-10%] top-[-50%] h-64 w-64 rounded-full bg-white/10 blur-2xl pointer-events-none" />
       <div className="absolute bottom-[-30%] right-[10%] h-48 w-48 rounded-full bg-[#45c7ff]/20 blur-xl pointer-events-none" />

@@ -17,7 +17,7 @@ import {
   featuredMerch,
 } from "../mock-data";
 
-import { ArrowRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 
 // ─── Animation variants ───────────────────────────────────────────────────────
 const fadeUp: Variants = {
@@ -39,7 +39,7 @@ export default function StudentDashboardPage() {
         <div className="relative z-10 flex flex-col">
           <Header />
 
-          <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 pt-[9.5rem] pb-24">
+          <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 pt-38 pb-24">
             
             {/* Bento Grid Container */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
@@ -79,7 +79,7 @@ export default function StudentDashboardPage() {
   className="flex items-center justify-center gap-2 border-2 border-primary1 text-primary1 hover:bg-primary1 hover:text-white text-xs font-raleway font-semibold px-6 py-2 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg cursor-pointer w-[220px] sm:w-auto"
 >
   <span>Explore More Events</span>
-  <ArrowRight className="h-4 w-4" />
+  <ChevronRight className="h-4 w-4" />
 </button>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-1">
@@ -133,7 +133,7 @@ export default function StudentDashboardPage() {
   className="flex items-center justify-center gap-2 border-2 border-primary1 text-primary1 hover:bg-primary1 hover:text-white text-xs font-raleway font-semibold px-6 py-2 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg cursor-pointer w-[220px] sm:w-auto"
 >
   <span>View All Announcements</span>
-  <ArrowRight className="h-4 w-4" />
+  <ChevronRight className="h-4 w-4" />
 </button>
                 </div>
                 <div className="flex flex-col gap-3">
@@ -166,7 +166,7 @@ export default function StudentDashboardPage() {
                     className="inline-flex items-center gap-1 font-raleway text-xs font-semibold text-primary1 hover:text-primary3 transition-colors duration-300"
                   >
                     Visit Shop
-                    <ArrowRight className="h-3 w-3" />
+                    <ChevronRight className="h-3 w-3" />
                   </button>
                 </div>
                 <div className="grid grid-cols-2 gap-3 mt-3">
@@ -189,7 +189,7 @@ export default function StudentDashboardPage() {
         </div>
       </main>
 
-      <div className="mt-[-35px] md:mt-[-80px] relative z-0">
+      <div className="mt-[-35px] md:-mt-20 relative z-0">
         <Footer />
       </div>
     </div>

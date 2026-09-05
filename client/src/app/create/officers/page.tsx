@@ -24,6 +24,7 @@ import {
 import Header from "@/app/components/header";
 import Footer from "@/app/components/footer";
 import Grid from "@/app/components/grid";
+import Button from "@/app/components/button";
 import Sidebar from "@/app/create/components/sidebar";
 import { GlassCard } from "../../components/glass-card";
 import officerService, { Officer as IOfficer } from "@/app/services/officer";
@@ -392,7 +393,7 @@ export default function OfficersPage() {
     <div className="min-h-screen flex flex-col overflow-x-hidden bg-[#004e89]">
       {/* Loading Overlay */}
       {isSubmitting && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-white/90 backdrop-blur-md">
+        <div className="fixed inset-0 z-100 flex items-center justify-center bg-white/90 backdrop-blur-md">
           <div className="flex flex-col items-center gap-5">
             <div className="relative w-16 h-16">
               <div className="absolute inset-0 rounded-full border-4 border-primary2/20" />
@@ -416,7 +417,7 @@ export default function OfficersPage() {
         <div className="relative z-10 flex flex-col min-h-screen">
           <Header />
 
-          <div className="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 pt-40 sm:pt-48 pb-20">
+          <div className="grow w-full max-w-7xl mx-auto px-4 sm:px-6 pt-40 sm:pt-48 pb-20">
             {/* ── PAGE HEADER ── */}
             <div className="mb-16 text-left">
               <h1 className="font-rubik text-4xl sm:text-5xl font-bold text-primary3 leading-tight mb-4">
@@ -430,19 +431,19 @@ export default function OfficersPage() {
             </div>
 
             <div className="flex flex-col lg:flex-row gap-8 items-start">
-              <aside className="w-full lg:w-64 flex-shrink-0">
+              <aside className="w-full lg:w-64 shrink-0">
                 <Sidebar />
               </aside>
 
               {/* Main Content */}
               <div className="flex-1 min-w-0 space-y-8">
                 {/* ── FORM CARD ── */}
-                <div className={`bg-white rounded-[2rem] border transition-all duration-300 shadow-lg p-6 sm:p-10 lg:p-12 hover:shadow-primary1/40 hover:-translate-y-2 ${
+                <div className={`bg-white rounded-4xl border transition-all duration-300 shadow-lg p-6 sm:p-10 lg:p-12 hover:shadow-primary1/40 hover:-translate-y-2 ${
                   editingId ? "border-primary1 ring-2 ring-primary1/20" : "border-gray-200"
                 }`}>
                     {/* Edit Banner */}
                     {editingId && (
-                      <div className="-mx-6 sm:-mx-10 lg:-mx-12 -mt-6 sm:-mt-10 lg:-mt-12 mb-8 bg-gradient-to-r from-primary1 to-primary3 px-6 sm:px-10 py-5 flex items-center justify-between rounded-t-[2rem]">
+                      <div className="-mx-6 sm:-mx-10 lg:-mx-12 -mt-6 sm:-mt-10 lg:-mt-12 mb-8 bg-linear-to-r from-primary1 to-primary3 px-6 sm:px-10 py-5 flex items-center justify-between rounded-t-4xl">
                         <div className="flex items-center gap-2 text-white">
                           <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
                           <span className="text-sm font-bold font-rubik tracking-wide">
@@ -517,7 +518,7 @@ export default function OfficersPage() {
                               `}
                               >
                                 <span
-                                  className={`w-2 h-2 rounded-full flex-shrink-0 transition-colors ${
+                                  className={`w-2 h-2 rounded-full shrink-0 transition-colors ${
                                     isActive ? dept.dot : "bg-gray-200"
                                   }`}
                                 />
@@ -675,7 +676,7 @@ export default function OfficersPage() {
                                         onClick={() => selectUser(user)}
                                         className="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center gap-3 border-b border-gray-50 last:border-0"
                                       >
-                                        <div className="w-8 h-8 rounded-full bg-gray-200 overflow-hidden flex-shrink-0">
+                                        <div className="w-8 h-8 rounded-full bg-gray-200 overflow-hidden shrink-0">
                                           {user.profilePicture ? (
                                             <img
                                               src={user.profilePicture}
@@ -867,7 +868,7 @@ export default function OfficersPage() {
                                       {formData.role || <span className="text-gray-400">Select Committee</span>}
                                     </span>
                                     <ChevronDown
-                                      className={`w-5 h-5 text-gray-400 flex-shrink-0 transition-transform duration-300 ${
+                                      className={`w-5 h-5 text-gray-400 shrink-0 transition-transform duration-300 ${
                                         activeDropdown === "committee" ? "rotate-180" : ""
                                       }`}
                                     />
@@ -980,20 +981,21 @@ export default function OfficersPage() {
                               Cancel
                             </button>
                           )}
-                          <button
+                          <Button
+                            variant="hero"
                             onClick={handleSubmit}
                             disabled={isSubmitting}
-                            className="group relative px-8 py-3 bg-gradient-to-r from-primary3 to-primary1 rounded-2xl font-rubik font-bold text-white shadow-lg shadow-primary1/20 hover:shadow-primary1/40 transition-all duration-300 flex items-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="group flex items-center gap-2 px-8 py-3"
                           >
                             <Save className="h-4 w-4" />
                             <span>{editingId ? "Update Officer" : "Add Officer"}</span>
-                          </button>
+                          </Button>
                         </div>
                       </div>
                 </div>
 
                 {/* ── MANAGE LIST ── */}
-                <div className="bg-white rounded-[2rem] border transition-all duration-300 shadow-md hover:shadow-primary1/40 hover:-translate-y-2 border-gray-200">
+                <div className="bg-white rounded-4xl border transition-all duration-300 shadow-md hover:shadow-primary1/40 hover:-translate-y-2 border-gray-200">
                     {/* List Header */}
                     <div className="px-6 sm:px-8 py-6 border-b border-gray-100 flex flex-wrap justify-between items-center gap-4">
                       <div>
@@ -1124,7 +1126,7 @@ export default function OfficersPage() {
                                   <td className="px-4 py-4">
                                     <div className="flex items-center gap-2">
                                       {isEditing && (
-                                        <span className="w-1.5 h-1.5 rounded-full bg-primary1 animate-pulse flex-shrink-0" />
+                                        <span className="w-1.5 h-1.5 rounded-full bg-primary1 animate-pulse shrink-0" />
                                       )}
                                       <span className="font-bold text-sm text-gray-800 font-rubik">
                                         {officer.name}
@@ -1196,13 +1198,13 @@ export default function OfficersPage() {
         </div>
       </main>
 
-      <div className="mt-[-35px] md:mt-[-80px] relative z-0">
+      <div className="mt-[-35px] md:-mt-20 relative z-0">
         <Footer />
       </div>
 
       {/* ── DELETE MODAL ── */}
       {showDeleteModal && (
-        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-110 flex items-center justify-center p-4">
           <div
             className="absolute inset-0 bg-black/50 backdrop-blur-sm"
             onClick={() => setShowDeleteModal(false)}
@@ -1238,7 +1240,7 @@ export default function OfficersPage() {
 
       {/* ── SUCCESS MODAL ── */}
       {showSuccessModal && (
-        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-110 flex items-center justify-center p-4">
           <div
             className="absolute inset-0 bg-black/50 backdrop-blur-sm"
             onClick={() => setShowSuccessModal(false)}
@@ -1247,7 +1249,7 @@ export default function OfficersPage() {
             <div className="flex justify-center mb-6">
               <div className="relative">
                 <div className="absolute inset-0 bg-green-400/20 rounded-full animate-ping" />
-                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center shadow-xl relative">
+                <div className="w-20 h-20 rounded-full bg-linear-to-br from-green-400 to-emerald-500 flex items-center justify-center shadow-xl relative">
                   <svg
                     className="w-10 h-10 text-white"
                     fill="none"
@@ -1272,12 +1274,13 @@ export default function OfficersPage() {
                 {successMessage.description}
               </p>
             </div>
-            <button
+            <Button
+              variant="hero"
               onClick={() => setShowSuccessModal(false)}
-              className="w-full py-3 text-sm font-bold font-rubik text-white bg-gradient-to-r from-primary1 to-primary2 rounded-xl shadow-lg hover:shadow-primary2/40 hover:-translate-y-0.5 transition-all duration-200"
+              className="w-full py-3 text-sm"
             >
               Continue
-            </button>
+            </Button>
           </div>
         </div>
       )}

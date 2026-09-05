@@ -28,7 +28,7 @@ import {
   UserCheck,
   Package,
   CalendarClock,
-  ArrowRight,
+  ChevronRight,
 } from "lucide-react";
 
 // ─── Icon map for stat cards ──────────────────────────────────────────────────
@@ -59,7 +59,7 @@ export default function OfficerDashboardPage() {
         <div className="relative z-10 flex flex-col">
           <Header />
 
-          <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 pt-[9.5rem] pb-24 flex flex-col gap-8">
+          <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 pt-38 pb-24 flex flex-col gap-8">
             
             {/* 1. Header (Spans all 3 columns) */}
             <motion.div
@@ -175,7 +175,7 @@ export default function OfficerDashboardPage() {
   className="flex items-center justify-center gap-2 border-2 border-primary1 text-primary1 hover:bg-primary1 hover:text-white text-xs font-raleway font-semibold px-6 py-2 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg cursor-pointer w-[220px] sm:w-auto"
 >
   <span>View All Events</span>
-  <ArrowRight className="h-4 w-4" />
+  <ChevronRight className="h-4 w-4" />
 </button>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -210,7 +210,7 @@ export default function OfficerDashboardPage() {
   className="flex items-center justify-center gap-2 border-2 border-primary1 text-primary1 hover:bg-primary1 hover:text-white text-xs font-raleway font-semibold px-6 py-2 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg cursor-pointer w-[220px] sm:w-auto"
 >
   <span>View All</span>
-  <ArrowRight className="h-4 w-4" />
+  <ChevronRight className="h-4 w-4" />
 </button>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -258,7 +258,7 @@ export default function OfficerDashboardPage() {
         </div>
       </main>
 
-      <div className="mt-[-35px] md:mt-[-80px] relative z-0">
+      <div className="mt-[-35px] md:-mt-20 relative z-0">
         <Footer />
       </div>
     </div>

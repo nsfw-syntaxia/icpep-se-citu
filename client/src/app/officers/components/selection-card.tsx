@@ -43,7 +43,7 @@ const SelectionCard: FC<SelectionCardProps> = ({
         }}
       />
 
-      <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-black/10 pointer-events-none z-0" />
+      <div className="absolute inset-0 bg-linear-to-br from-white/20 via-transparent to-black/10 pointer-events-none z-0" />
 
       <div className="absolute inset-0 rounded-3xl ring-1 ring-inset ring-white/20 pointer-events-none z-20" />
 

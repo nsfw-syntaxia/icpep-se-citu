@@ -24,10 +24,10 @@ export const ProfileSummary: FC<ProfileSummaryProps> = ({
   return (
     <div className="flex flex-col rounded-3xl border border-slate-100 bg-white/80 p-6 shadow-sm relative overflow-hidden group">
       {/* Visual background element */}
-      <div className="absolute top-0 right-0 translate-x-1/3 -translate-y-1/3 h-32 w-32 rounded-full bg-gradient-to-br from-blue-500/10 to-cyan-500/5 blur-lg pointer-events-none" />
+      <div className="absolute top-0 right-0 translate-x-1/3 -translate-y-1/3 h-32 w-32 rounded-full bg-linear-to-br from-blue-500/10 to-cyan-500/5 blur-lg pointer-events-none" />
 
       <div className="flex items-center gap-4 mb-6">
-        <div className="relative h-16 w-16 rounded-2xl overflow-hidden border-2 border-primary1 bg-slate-100 flex-shrink-0">
+        <div className="relative h-16 w-16 rounded-2xl overflow-hidden border-2 border-primary1 bg-slate-100 shrink-0">
           {imageUrl ? (
             <Image
               src={imageUrl}

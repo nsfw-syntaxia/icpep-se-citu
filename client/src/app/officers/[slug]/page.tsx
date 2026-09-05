@@ -2,12 +2,12 @@
 
 import React from "react";
 import { useParams, useRouter } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
 
 import Header from "../../components/header";
 import Footer from "../../components/footer";
 import Grid from "../../components/grid";
 import OfficerCard from "../components/officer-card";
+import BackButton from "../../components/back-button";
 
 import { departments } from "../utils/officers";
 
@@ -22,10 +22,10 @@ const OfficersPage = () => {
   if (!data) {
     return (
       <div className="min-h-screen bg-[#004e89] flex flex-col relative overflow-x-hidden">
-        <main className="relative z-10 bg-white rounded-b-[40px] md:rounded-b-[50px] overflow-hidden flex-grow">
+        <main className="relative z-10 bg-white rounded-b-[40px] md:rounded-b-[50px] overflow-hidden grow">
           <Grid />
           <Header />
-          <div className="flex-grow flex flex-col items-center justify-center pt-[9.5rem] pb-32">
+          <div className="grow flex flex-col items-center justify-center pt-38 pb-32">
             <h1 className="text-3xl font-bold text-gray-800 font-rubik">
               Department Not Found
             </h1>
@@ -37,7 +37,7 @@ const OfficersPage = () => {
             </button>
           </div>
         </main>
-        <div className="mt-[-35px] md:mt-[-80px] relative z-0">
+        <div className="mt-[-35px] md:-mt-20 relative z-0">
           <Footer />
         </div>
       </div>
@@ -46,7 +46,7 @@ const OfficersPage = () => {
 
   return (
     <div className="min-h-screen bg-[#004e89] flex flex-col relative overflow-x-hidden">
-      <main className="relative z-10 bg-white rounded-b-[40px] md:rounded-b-[50px] overflow-hidden flex-grow">
+      <main className="relative z-10 bg-white rounded-b-[40px] md:rounded-b-[50px] overflow-hidden grow">
         {/* Background Grid */}
         <Grid />
 
@@ -56,23 +56,10 @@ const OfficersPage = () => {
         <div className="relative z-10 flex flex-col">
           <Header />
 
-          <div className="w-full max-w-7xl mx-auto px-6 pt-[9.5rem]">
+          <div className="w-full max-w-7xl mx-auto px-6 pt-38">
             {/* back */}
             <div className="mb-8 flex justify-start">
-              <button
-                onClick={() => router.back()}
-                title="Go Back"
-                className="relative flex h-12 w-12 cursor-pointer items-center justify-center 
-                           rounded-full border-2 border-primary1 text-primary1 
-                           overflow-hidden transition-all duration-300 ease-in-out 
-                           active:scale-95 before:absolute before:inset-0 
-                           before:bg-gradient-to-r before:from-transparent 
-                           before:via-white/40 before:to-transparent 
-                           before:translate-x-[-100%] hover:before:translate-x-[100%] 
-                           before:transition-transform before:duration-700"
-              >
-                <ArrowLeft className="h-6 w-6 animate-nudge-left translate-x-[2px]" />
-              </button>
+              <BackButton onClick={() => router.back()} title="Go Back" />
             </div>
 
             {/* header */}
@@ -107,7 +94,7 @@ const OfficersPage = () => {
         </div>
       </main>
 
-      <div className="mt-[-35px] md:mt-[-80px] relative z-0">
+      <div className="mt-[-35px] md:-mt-20 relative z-0">
         <Footer />
       </div>
     </div>

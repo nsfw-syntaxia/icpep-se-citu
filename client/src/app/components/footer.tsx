@@ -16,7 +16,7 @@ const Footer = () => {
       style={{ clipPath: "inset(0 0 0 0)" }}
     >
       <div className="fixed bottom-0 left-0 right-0 h-[520px] md:h-[380px] w-full -z-10 bg-[#00609c] text-white overflow-hidden flex flex-col justify-between font-raleway">
-        <div className="max-w-7xl mx-auto w-full px-6 flex-grow flex flex-col justify-start pt-16 md:pt-20 gap-8">
+        <div className="max-w-7xl mx-auto w-full px-6 grow flex flex-col justify-start pt-16 md:pt-20 gap-8">
           <div className="flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-0">
             <div className="flex flex-col sm:flex-row items-center gap-4">
               <Image

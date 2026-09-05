@@ -8,6 +8,7 @@ import Button from "../components/button";
 import Header from "../components/header";
 import Footer from "../components/footer";
 import Grid from "../components/grid";
+import PageHeader from "../components/page-header";
 import userService, { CurrentUser } from "../services/user";
 
 // Components
@@ -179,37 +180,28 @@ export default function ProfilePage() {
         <Grid />
         <div className="relative z-10 flex flex-col min-h-screen">
           {/* FIX: Wrapped Header in high z-index to stay above content */}
-          <div className="relative z-[100]">
+          <div className="relative z-100">
             <Header />
           </div>
 
           {/* FIX: Added relative z-0 to main to enforce stacking order below header */}
           <div
             aria-busy={loading}
-            className="flex-grow w-full max-w-7xl mx-auto px-6 pt-[9.5rem] pb-24 relative z-0"
+            className="grow w-full max-w-7xl mx-auto px-6 pt-38 pb-24 relative z-0"
           >
             {/* --- Page Title --- */}
-            <div className="mb-16 text-center">
-              <div className="inline-flex items-center gap-2 rounded-full bg-primary1/10 px-3 py-1 mb-4">
-                <div className="h-2 w-2 rounded-full bg-primary1"></div>
-                <span className="font-raleway text-sm font-semibold text-primary1">
-                  {pillText}
-                </span>
-              </div>
-
-              <h1 className="font-rubik text-4xl sm:text-5xl font-bold text-primary3 leading-tight mb-4">
-                {title}
-              </h1>
-
-              <p className="font-raleway text-gray-600 text-base sm:text-lg max-w-3xl mx-auto">
-                {subtitle}
-              </p>
-            </div>
+            <PageHeader
+              className="mb-16 text-center"
+              badge={pillText}
+              title={title}
+              subtitleClassName="max-w-3xl"
+              subtitle={subtitle}
+            />
 
             {/* --- Hero Profile Card (RESIZED & SCALED DOWN) --- */}
-            <div className="relative mb-8 rounded-[2rem] overflow-hidden shadow-2xl shadow-blue-900/10 group transition-all duration-500 hover:shadow-3xl hover:translate-y-[-2px]">
+            <div className="relative mb-8 rounded-4xl overflow-hidden shadow-2xl shadow-blue-900/10 group transition-all duration-500 hover:shadow-3xl hover:translate-y-[-2px]">
               {/* Card Background & Noise */}
-              <div className="absolute inset-0 bg-gradient-to-br from-[#0066CC] via-[#0088EE] to-[#00A8FF]">
+              <div className="absolute inset-0 bg-linear-to-br from-[#0066CC] via-[#0088EE] to-[#00A8FF]">
                 <div className="absolute inset-0 noise-bg mix-blend-overlay opacity-20"></div>
               </div>
 
@@ -220,20 +212,20 @@ export default function ProfilePage() {
               {/* Content Container - REDUCED PADDING */}
               <div className="relative p-6 sm:p-8 lg:pl-16 lg:pr-8 flex flex-col sm:flex-row items-center gap-6 sm:gap-10 lg:gap-12 text-white z-10">
                 {/* Profile Image / Initials Section */}
-                <div className="relative flex-shrink-0">
+                <div className="relative shrink-0">
                   {/* Glow Layers */}
                   <div className="absolute -inset-6 rounded-full bg-cyan-400/30 blur-2xl animate-pulse"></div>
-                  <div className="absolute -inset-1 rounded-full bg-gradient-to-tr from-cyan-300 to-white/50 blur-md opacity-70"></div>
+                  <div className="absolute -inset-1 rounded-full bg-linear-to-tr from-cyan-300 to-white/50 blur-md opacity-70"></div>
 
                   {/* Avatar Container - REDUCED SIZE */}
-                  <div className="relative w-28 h-28 sm:w-36 sm:h-36 rounded-full p-1.5 bg-gradient-to-b from-white/40 to-white/10 backdrop-blur-md shadow-2xl">
+                  <div className="relative w-28 h-28 sm:w-36 sm:h-36 rounded-full p-1.5 bg-linear-to-b from-white/40 to-white/10 backdrop-blur-md shadow-2xl">
                     <div className="w-full h-full rounded-full bg-white/95 flex items-center justify-center overflow-hidden border-[3px] border-white/90 relative shadow-inner">
                       {loading ? (
                         <div className="w-full h-full rounded-full bg-gray-100 animate-pulse" />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary3 via-[#0055AA] to-primary3 text-white text-4xl sm:text-5xl font-rubik font-bold relative group-hover:scale-105 transition-transform duration-500">
+                        <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-primary3 via-[#0055AA] to-primary3 text-white text-4xl sm:text-5xl font-rubik font-bold relative group-hover:scale-105 transition-transform duration-500">
                           {/* Inner shine */}
-                          <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/20 to-transparent opacity-40"></div>
+                          <div className="absolute inset-0 bg-linear-to-tr from-transparent via-white/20 to-transparent opacity-40"></div>
                           <span className="relative z-10 drop-shadow-lg">
                             {getInitials(user)}
                           </span>
@@ -244,7 +236,7 @@ export default function ProfilePage() {
                 </div>
 
                 {/* Text Info */}
-                <div className="text-center sm:text-left flex-grow flex flex-col justify-center">
+                <div className="text-center sm:text-left grow flex flex-col justify-center">
                   {/* NAME - REDUCED SIZE */}
                   <h2 className="text-3xl sm:text-5xl font-bold font-rubik mb-2 drop-shadow-sm tracking-tight leading-tight">
                     {loading ? (
@@ -276,7 +268,7 @@ export default function ProfilePage() {
                       {loading ? (
                         <div className="h-7 w-28 bg-white/20 rounded-full animate-pulse" />
                       ) : (
-                        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-gradient-to-r from-cyan-400/20 to-blue-400/20 border border-cyan-200/40 backdrop-blur-md group-hover:bg-white/10 transition-colors">
+                        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-linear-to-r from-cyan-400/20 to-blue-400/20 border border-cyan-200/40 backdrop-blur-md group-hover:bg-white/10 transition-colors">
                           <Users className="w-3.5 h-3.5 text-cyan-200" />
                           <span className="font-rubik text-xs font-bold tracking-widest text-white uppercase">
                             {(() => {
@@ -349,7 +341,7 @@ export default function ProfilePage() {
                 {!loading && (
                   <div className="bg-white border border-primary1/10 rounded-3xl p-5 shadow-lg flex flex-row items-center justify-between gap-4 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
                     <div className="flex items-center gap-4">
-                      <div className="p-3 bg-primary1/10 rounded-2xl text-primary1 flex-shrink-0">
+                      <div className="p-3 bg-primary1/10 rounded-2xl text-primary1 shrink-0">
                         <Edit3 className="w-6 h-6" />
                       </div>
                       <div>
@@ -377,12 +369,12 @@ export default function ProfilePage() {
             {/* --- Edit Modal --- */}
             {editOpen &&
               createPortal(
-                <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4">
+                <div className="fixed inset-0 z-99999 flex items-center justify-center p-4">
                   <div
                     className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity"
                     onClick={closeEdit}
                   />
-                  <div className="relative z-[100000] w-full max-w-2xl bg-white rounded-[2rem] p-8 shadow-2xl border border-white/50 animate-scale-in flex flex-col max-h-[90vh] overflow-y-auto">
+                  <div className="relative z-100000 w-full max-w-2xl bg-white rounded-4xl p-8 shadow-2xl border border-white/50 animate-scale-in flex flex-col max-h-[90vh] overflow-y-auto">
                     <div className="flex items-center justify-between mb-8 pb-4 border-b border-gray-100 sticky top-0 bg-white z-10">
                       <div>
                         <h3 className="text-2xl font-rubik font-bold text-primary3">
@@ -455,13 +447,13 @@ export default function ProfilePage() {
 
                       {editError && (
                         <div className="text-red-600 font-raleway font-medium text-sm p-4 bg-red-50 rounded-xl border border-red-100 flex items-center gap-3">
-                          <Shield className="w-5 h-5 flex-shrink-0" />
+                          <Shield className="w-5 h-5 shrink-0" />
                           <span>{editError}</span>
                         </div>
                       )}
                       {editSuccess && (
                         <div className="text-green-600 font-raleway font-medium text-sm p-4 bg-green-50 rounded-xl border border-green-100 flex items-center gap-3">
-                          <Award className="w-5 h-5 flex-shrink-0" />
+                          <Award className="w-5 h-5 shrink-0" />
                           <span>{editSuccess}</span>
                         </div>
                       )}
@@ -498,7 +490,7 @@ export default function ProfilePage() {
         </div>
       </main>
 
-      <div className="mt-[-35px] md:mt-[-80px] relative z-0">
+      <div className="mt-[-35px] md:-mt-20 relative z-0">
         <Footer />
       </div>
     </section>

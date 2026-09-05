@@ -3,6 +3,7 @@ import Header from "../components/header";
 import Footer from "../components/footer";
 import DeveloperCard from "./components/developer-card";
 import Grid from "../components/grid";
+import PageHeader from "../components/page-header";
 
 export default function DevelopersPage() {
   const developers = [
@@ -76,24 +77,20 @@ export default function DevelopersPage() {
         <div className="relative z-10 flex flex-col min-h-screen">
           <Header />
 
-          <div className="max-w-7xl mx-auto px-6 pt-[9.5rem] pb-12 w-full flex-grow">
-            <div className="mb-16 text-center">
-              <div className="inline-flex items-center gap-2 rounded-full bg-primary1/10 px-3 py-1 mb-4">
-                <div className="h-2 w-2 rounded-full bg-primary1"></div>
-                <span className="font-raleway text-sm font-semibold text-primary1">
-                  Project Team
-                </span>
-              </div>
-              <h1 className="font-rubik text-4xl sm:text-5xl font-bold text-primary3 leading-tight mb-4">
-                Meet the Developers
-              </h1>
-              <p className="font-raleway text-gray-600 text-base sm:text-lg max-w-2xl mx-auto">
-                The student developers who created the official ICPEP SE CIT-U
-                Chapter website as part of the Software Design course.
-              </p>
-            </div>
+          <div className="max-w-7xl mx-auto px-6 pt-38 pb-12 w-full grow">
+            <PageHeader
+              className="mb-16 text-center"
+              badge="Project Team"
+              title="Meet the Developers"
+              subtitle={
+                <>
+                  The student developers who created the official ICPEP SE
+                  CIT-U Chapter website as part of the Software Design course.
+                </>
+              }
+            />
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-[0px] gap-y-14 justify-items-center max-w-[845px] mx-auto mb-16">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-0 gap-y-14 justify-items-center max-w-[845px] mx-auto mb-16">
               {developers.map((dev, index) => (
                 <DeveloperCard key={index} {...dev} />
               ))}
@@ -102,7 +99,7 @@ export default function DevelopersPage() {
         </div>
       </main>
 
-      <div className="mt-[-35px] md:mt-[-80px] relative z-0">
+      <div className="mt-[-35px] md:-mt-20 relative z-0">
         <Footer />
       </div>
     </div>

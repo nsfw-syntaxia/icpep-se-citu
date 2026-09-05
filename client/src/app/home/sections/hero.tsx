@@ -3,6 +3,7 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import { Code, PenTool, BrainCircuit, Users } from "lucide-react";
+import Button from "../../components/button";
 
 const Hero = () => {
   const router = useRouter();
@@ -62,7 +63,7 @@ const Hero = () => {
         </div>
 
         <h1 className="text-5xl md:text-7xl lg:text-8xl font-rubik font-bold mb-4 leading-tight">
-          <span className="bg-gradient-to-r from-black via-primary1 to-black bg-clip-text text-transparent animate-gradient-flow">
+          <span className="bg-linear-to-r from-black via-primary1 to-black bg-clip-text text-transparent animate-gradient-flow">
             <span className="sm:hidden">
               ICpEP SE <br />
               CIT-U Chapter
@@ -78,18 +79,20 @@ const Hero = () => {
 
         {/* buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-          <button
-            className="bg-primary1 hover:bg-primary2 text-white font-raleway font-semibold px-8 py-3 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg cursor-pointer w-[220px] sm:w-auto"
+          <Button
+            variant="hero"
+            className="px-8 py-3 w-[220px] sm:w-auto"
             onClick={() => router.push("/login")}
           >
             Join Community
-          </button>
-          <button
+          </Button>
+          <Button
+            variant="heroOutline"
+            className="px-8 py-3 w-[220px] sm:w-auto"
             onClick={() => router.push("/about")}
-            className="bg-transparent border-2 border-gray-300 text-gray-700 hover:bg-buttonbg1 hover:border-primary1 hover:text-primary1 font-raleway font-semibold px-8 py-3 rounded-full transition-all duration-300 cursor-pointer w-[220px] sm:w-auto"
           >
             Learn More
-          </button>
+          </Button>
         </div>
 
         {/* stats */}

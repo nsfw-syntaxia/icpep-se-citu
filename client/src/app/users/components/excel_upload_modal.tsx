@@ -232,7 +232,7 @@ export default function ExcelUploadModal({
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col animate-scale-in">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between bg-gradient-to-r from-primary1/5 to-secondary2/5">
+        <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between bg-linear-to-r from-primary1/5 to-secondary2/5">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-primary1/10 rounded-lg">
               <FileSpreadsheet className="w-6 h-6 text-primary1" />
@@ -285,7 +285,7 @@ export default function ExcelUploadModal({
               />
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="px-6 py-2 bg-gradient-to-r from-primary1 to-primary1/90 text-white font-raleway font-semibold rounded-lg hover:shadow-lg transition-all cursor-pointer"
+                className="px-6 py-2 bg-linear-to-r from-primary1 to-primary1/90 text-white font-raleway font-semibold rounded-lg hover:shadow-lg transition-all cursor-pointer"
               >
                 Select File
               </button>
@@ -486,7 +486,7 @@ export default function ExcelUploadModal({
           <button
             onClick={handleUpload}
             disabled={validCount === 0 || isProcessing}
-            className="px-6 py-2 bg-gradient-to-r from-primary1 to-primary1/90 text-white font-raleway font-semibold rounded-lg hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
+            className="px-6 py-2 bg-linear-to-r from-primary1 to-primary1/90 text-white font-raleway font-semibold rounded-lg hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
           >
             {isProcessing
               ? "Processing..."

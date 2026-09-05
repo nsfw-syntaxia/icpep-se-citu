@@ -11,6 +11,7 @@ import Header from "@/app/components/header";
 import Footer from "@/app/components/footer";
 import Sidebar from "@/app/create/components/sidebar";
 import Grid from "@/app/components/grid";
+import Button from "@/app/components/button";
 import { GlassCard } from "../../components/glass-card";
 import {
   Megaphone,
@@ -274,7 +275,7 @@ export default function DraftsPage() {
   }) => (
     <div className="group flex items-start justify-between gap-3 sm:gap-4 px-4 sm:px-6 py-4 sm:py-5 border-t border-gray-50 hover:bg-gray-50/70 transition-all duration-200 first:border-t-0">
       <div className="flex-1 min-w-0">{children}</div>
-      <div className="flex items-center gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity flex-shrink-0">
+      <div className="flex items-center gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity shrink-0">
         <Link href={editHref}>
           <button className="p-2 text-gray-400 hover:text-primary1 hover:bg-primary1/10 rounded-lg transition-all duration-150">
             <Pencil size={15} />
@@ -325,7 +326,7 @@ export default function DraftsPage() {
               onDelete={() => confirmDelete(it._id, tabId)}
             >
               <div className="flex items-start gap-3">
-                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-primary1/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-primary1/10 flex items-center justify-center shrink-0 mt-0.5">
                   <Icon size={14} className="text-primary1" />
                 </div>
                 <div className="flex-1 min-w-0">
@@ -386,7 +387,7 @@ export default function DraftsPage() {
             onDelete={() => confirmDelete(item._id, "merch")}
           >
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl overflow-hidden bg-gray-100 border border-gray-200 flex-shrink-0">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl overflow-hidden bg-gray-100 border border-gray-200 shrink-0">
                 {item.image ? (
                   <img
                     src={item.image}
@@ -442,7 +443,7 @@ export default function DraftsPage() {
             onDelete={() => confirmDelete(item._id, "testimonials")}
           >
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full overflow-hidden bg-gray-100 border-2 border-gray-100 flex-shrink-0">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full overflow-hidden bg-gray-100 border-2 border-gray-100 shrink-0">
                 {item.image ? (
                   <img
                     src={item.image}
@@ -494,7 +495,7 @@ export default function DraftsPage() {
             onDelete={() => confirmDelete(item._id, "sponsors")}
           >
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl overflow-hidden bg-gray-50 border border-gray-100 flex-shrink-0">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl overflow-hidden bg-gray-50 border border-gray-100 shrink-0">
                 {item.image ? (
                   <img
                     src={item.image}
@@ -556,7 +557,7 @@ export default function DraftsPage() {
             </div>
 
             <div className="flex flex-col lg:flex-row gap-8 items-start">
-              <aside className="w-full lg:w-64 flex-shrink-0">
+              <aside className="w-full lg:w-64 shrink-0">
                 <Sidebar />
               </aside>
 
@@ -580,7 +581,7 @@ export default function DraftsPage() {
                         <Icon size={14} className={isActive ? "text-primary1" : "text-gray-400"} />
                         <span>{tab.label}</span>
                         <span
-                          className={`px-2 py-0.5 rounded-full text-[10px] font-black min-w-[20px] text-center ${
+                          className={`px-2 py-0.5 rounded-full text-[10px] font-black min-w-5 text-center ${
                             isActive ? "bg-primary1 text-white" : "bg-gray-100 text-gray-500"
                           }`}
                         >
@@ -592,7 +593,7 @@ export default function DraftsPage() {
                 </div>
 
                 {/* CONTENT CARD */}
-                <div className="bg-white rounded-[2rem] border transition-all duration-300 shadow-md hover:shadow-primary1/40 hover:-translate-y-2 border-gray-200">
+                <div className="bg-white rounded-4xl border transition-all duration-300 shadow-md hover:shadow-primary1/40 hover:-translate-y-2 border-gray-200">
                     {/* Card Header */}
                     <div className="px-6 sm:px-8 py-6 border-b border-gray-100 flex items-center justify-between gap-3 flex-wrap">
                       <div>
@@ -620,7 +621,7 @@ export default function DraftsPage() {
                         {[1, 2, 3].map((i) => (
                           <div
                             key={i}
-                            className="h-14 sm:h-16 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl animate-pulse"
+                            className="h-14 sm:h-16 bg-linear-to-r from-gray-50 to-gray-100 rounded-xl animate-pulse"
                           />
                         ))}
                       </div>
@@ -645,7 +646,7 @@ export default function DraftsPage() {
         </div>
       </main>
 
-      <div className="mt-[-35px] md:mt-[-80px] relative z-0">
+      <div className="mt-[-35px] md:-mt-20 relative z-0">
         <Footer />
       </div>
 
@@ -696,7 +697,7 @@ export default function DraftsPage() {
             <div className="flex justify-center mb-6">
               <div className="relative">
                 <div className="absolute inset-0 bg-green-400/20 rounded-full animate-ping" />
-                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center shadow-xl relative">
+                <div className="w-20 h-20 rounded-full bg-linear-to-br from-green-400 to-emerald-500 flex items-center justify-center shadow-xl relative">
                   <svg
                     className="w-10 h-10 text-white"
                     fill="none"
@@ -721,12 +722,13 @@ export default function DraftsPage() {
                 {successMessage.description}
               </p>
             </div>
-            <button
+            <Button
+              variant="hero"
               onClick={() => setShowSuccessModal(false)}
-              className="w-full py-3 text-sm font-bold font-rubik text-white bg-gradient-to-r from-primary1 to-primary2 rounded-xl shadow-lg hover:shadow-primary2/40 hover:-translate-y-0.5 transition-all duration-200"
+              className="w-full py-3 text-sm"
             >
               Continue
-            </button>
+            </Button>
           </div>
         </div>
       )}

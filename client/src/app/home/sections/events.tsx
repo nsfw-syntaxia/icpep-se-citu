@@ -61,7 +61,7 @@ function EventCardSkeleton() {
         </div>
 
         <div className="flex items-center gap-3 mt-auto pt-4 border-t border-white/10">
-          <SkeletonBlock className="w-8 h-8 rounded-full flex-shrink-0" />
+          <SkeletonBlock className="w-8 h-8 rounded-full shrink-0" />
           <SkeletonBlock className="w-32 h-4 rounded-md" />
         </div>
       </div>

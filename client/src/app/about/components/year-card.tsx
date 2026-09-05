@@ -19,7 +19,7 @@ const YearCard: FC<YearCardProps> = ({ termData }) => {
     <div className="h-36 sm:h-72">
       <div
         onClick={handleNavigation}
-        className="cursor-default relative w-full h-full rounded-3xl bg-gradient-to-br from-primary3 to-secondary1 shadow-2xl flex items-center justify-center overflow-hidden transition-transform active:scale-[0.99]"
+        className="cursor-default relative w-full h-full rounded-3xl bg-linear-to-br from-primary3 to-secondary1 shadow-2xl flex items-center justify-center overflow-hidden transition-transform active:scale-[0.99]"
       >
         <button
           className="cursor-pointer absolute z-10 top-4 left-4 h-10 w-10 sm:top-8 sm:left-8 sm:h-16 sm:w-16 border-2 border-white/20 rounded-full flex items-center justify-center text-white hover:bg-white/10 hover:backdrop-blur-sm transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-white/50"

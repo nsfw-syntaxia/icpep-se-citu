@@ -48,11 +48,11 @@ export const ActivityCard: FC<ActivityCardProps> = ({
 
   return (
     <div className="flex gap-4 p-4 rounded-2xl border border-slate-100 bg-white/50 hover:bg-white shadow-xs transition-all duration-300">
-      <div className={`h-10 w-10 flex-shrink-0 rounded-xl border flex items-center justify-center ${style.color}`}>
+      <div className={`h-10 w-10 shrink-0 rounded-xl border flex items-center justify-center ${style.color}`}>
         {style.icon}
       </div>
 
-      <div className="flex-grow min-w-0">
+      <div className="grow min-w-0">
         <div className="flex items-center justify-between gap-2">
           <h5 className="font-rubik text-sm font-semibold text-slate-800 truncate">
             {title}

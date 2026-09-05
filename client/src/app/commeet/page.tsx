@@ -3,12 +3,13 @@
 import Header from "../components/header";
 import Footer from "../components/footer";
 import Grid from "../components/grid";
+import PageHeader from "../components/page-header";
+import Button from "../components/button";
 import { FunctionComponent, useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   ChevronLeft,
   ChevronRight,
-  ArrowRight,
   LayoutGrid,
   List,
   Clock,
@@ -237,30 +238,15 @@ const CommeetPage: FunctionComponent = () => {
         <div className="relative z-10 flex flex-col min-h-screen">
           <Header />
 
-          <div className="flex-grow w-full max-w-7xl mx-auto px-6 pt-[9.5rem] pb-24">
+          <div className="grow w-full max-w-7xl mx-auto px-6 pt-38 pb-24">
             {/* Header Section */}
-            <div className="mb-12 text-center">
-              <div className="inline-flex items-center gap-2 rounded-full bg-primary1/10 px-3 py-1 mb-4">
-                <div className="h-2 w-2 rounded-full bg-primary1"></div>
-                <span className="font-raleway text-sm font-semibold text-primary1">
-                  {pillText}
-                </span>
-              </div>
-
-              <h1 className="font-rubik text-4xl sm:text-5xl font-bold text-primary3 leading-tight mb-4">
-                {title}
-              </h1>
-
-              <p className="font-raleway text-gray-600 text-base sm:text-lg max-w-2xl mx-auto">
-                {subtitle}
-              </p>
-            </div>
+            <PageHeader badge={pillText} title={title} subtitle={subtitle} />
 
             {/* Main Layout */}
             <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-start justify-center">
               {/* --- LEFT COLUMN: Calendar --- */}
               <div className="w-full lg:w-1/2 flex flex-col items-center">
-                <div className="w-full bg-white rounded-[2rem] border border-gray-200 shadow-lg transition-all duration-300 ease-in-out hover:shadow-primary1/40 hover:-translate-y-1 p-6 sm:p-8">
+                <div className="w-full bg-white rounded-4xl border border-gray-200 shadow-lg transition-all duration-300 ease-in-out hover:shadow-primary1/40 hover:-translate-y-1 p-6 sm:p-8">
                   {/* Calendar Controls */}
                   <div className="flex items-center justify-between mb-6">
                     <button
@@ -318,25 +304,19 @@ const CommeetPage: FunctionComponent = () => {
 
                 {/* Let's Meet Button */}
                 <div className="mt-8 w-full">
-                  <button
+                  <Button
+                    variant="hero"
                     onClick={onLetsMeetBtnClick}
                     disabled={selectedDates.size === 0}
-                    className={`
-                      group w-full py-4 rounded-2xl font-rubik font-bold text-white shadow-lg flex items-center justify-center gap-3 transition-all duration-300
-                      ${
-                        selectedDates.size > 0
-                          ? "bg-gradient-to-r from-primary3 to-primary1 hover:shadow-primary1/40 cursor-pointer"
-                          : "bg-gray-300 cursor-not-allowed"
-                      }
-                    `}
+                    className="group flex w-full items-center justify-center gap-3 py-4"
                   >
                     <span className="text-lg">Let&apos;s Meet</span>
-                    <ArrowRight
+                    <ChevronRight
                       className={`w-5 h-5 transition-transform duration-300 ${
                         selectedDates.size > 0 ? "group-hover:translate-x-1" : ""
                       }`}
                     />
-                  </button>
+                  </Button>
                   <p className="text-center text-xs font-raleway text-gray-400 mt-3">
                     {selectedDates.size === 0
                       ? "Select dates to proceed"
@@ -434,7 +414,7 @@ const CommeetPage: FunctionComponent = () => {
                           className={`${
                             viewMode === "list"
                               ? "sm:flex-1 text-left"
-                              : "min-h-[3rem] text-left"
+                              : "min-h-12 text-left"
                           }`}
                         >
                           <h4 className="font-rubik font-bold text-base text-primary3 group-hover:text-primary1 transition-colors leading-tight">
@@ -479,7 +459,7 @@ const CommeetPage: FunctionComponent = () => {
         </div>
       </main>
 
-      <div className="mt-[-35px] md:mt-[-80px] relative z-0">
+      <div className="mt-[-35px] md:-mt-20 relative z-0">
         <Footer />
       </div>
     </div>

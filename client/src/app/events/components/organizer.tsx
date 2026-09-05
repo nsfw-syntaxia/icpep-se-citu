@@ -30,7 +30,7 @@ export default function OrganizerCard({ organizer }: Props) {
   return (
     <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-lg">
       <div className="flex items-center gap-4 mb-5">
-        <div className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-full overflow-hidden bg-gray-100 flex-shrink-0">
+        <div className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-full overflow-hidden bg-gray-100 shrink-0">
           {!imgError ? (
             <img
               src={avatarUrl}
@@ -72,9 +72,9 @@ export default function OrganizerCard({ organizer }: Props) {
                      hover:bg-primary1 hover:text-white font-raleway font-semibold text-sm sm:text-base 
                      py-2 px-4 rounded-lg cursor-pointer relative overflow-hidden 
                      transition-all duration-300 ease-in-out active:scale-95 
-                     before:absolute before:inset-0 before:bg-gradient-to-r 
+                     before:absolute before:inset-0 before:bg-linear-to-r 
                      before:from-transparent before:via-white/40 before:to-transparent 
-                     before:translate-x-[-100%] hover:before:translate-x-[100%] 
+                     before:-translate-x-full hover:before:translate-x-full 
                      before:transition-transform before:duration-700"
         >
           Contact Host
