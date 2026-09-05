@@ -879,163 +879,168 @@ export default function UsersListPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white flex flex-col relative">
-      <Grid />
-      <div className="relative z-10 flex flex-col min-h-screen">
-        <Header />
-        <main className="flex-grow w-full max-w-[1600px] mx-auto px-8 pt-[9.5rem] pb-12">
-          <div className="mb-8 flex justify-start">
-            <Link
-              href="/"
-              title="Back to Home"
-              className="relative flex h-12 w-12 cursor-pointer items-center justify-center 
-                         rounded-full border-2 border-primary1 text-primary1 
-                         overflow-hidden transition-all duration-300 ease-in-out 
-                         active:scale-95 before:absolute before:inset-0 
-                         before:bg-gradient-to-r before:from-transparent 
-                         before:via-white/40 before:to-transparent 
-                         before:translate-x-[-100%] hover:before:translate-x-[100%] 
-                         before:transition-transform before:duration-700"
-            >
-              <ArrowLeft className="h-6 w-6 animate-nudge-left translate-x-[2px]" />
-            </Link>
-          </div>
-
-          <div className="mb-12 text-center">
-            <div className="inline-flex items-center gap-2 rounded-full bg-primary1/10 px-3 py-1 mb-4">
-              <div className="h-2 w-2 rounded-full bg-primary1"></div>
-              <span className="font-raleway text-sm font-semibold text-primary1">
-                User Management
-              </span>
+    <div className="min-h-screen flex flex-col overflow-x-hidden bg-[#004e89]">
+      <main className="relative z-10 bg-white rounded-b-[40px] md:rounded-b-[50px] overflow-hidden">
+        <Grid />
+        <div className="relative z-10 flex flex-col min-h-screen">
+          <Header />
+          <div className="flex-grow w-full max-w-[1600px] mx-auto px-8 pt-[9.5rem] pb-12">
+            <div className="mb-8 flex justify-start">
+              <Link
+                href="/"
+                title="Back to Home"
+                className="relative flex h-12 w-12 cursor-pointer items-center justify-center 
+                           rounded-full border-2 border-primary1 text-primary1 
+                           overflow-hidden transition-all duration-300 ease-in-out 
+                           active:scale-95 before:absolute before:inset-0 
+                           before:bg-gradient-to-r before:from-transparent 
+                           before:via-white/40 before:to-transparent 
+                           before:translate-x-[-100%] hover:before:translate-x-[100%] 
+                           before:transition-transform before:duration-700"
+              >
+                <ArrowLeft className="h-6 w-6 animate-nudge-left translate-x-[2px]" />
+              </Link>
             </div>
-            <h1 className="font-rubik text-4xl sm:text-5xl font-bold text-primary3 leading-tight mb-4">
-              Registered Users
-            </h1>
-            <p className="font-raleway text-gray-600 text-base sm:text-lg max-w-2xl mx-auto">
-              Manage and view all registered users, members, officers, and
-              faculty.
-            </p>
-          </div>
 
-          <UserStats users={allUsers} />
-
-          {/* 🔍 Search Bar - Redesigned */}
-          <div className="mb-6">
-            <div
-              className="relative max-w-3xl mx-auto"
-            >
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
-                  <Search className="h-5 w-5 text-primary1" />
-                </div>
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => handleSearchChange(e.target.value)}
-                  placeholder="Search users by name, student number, role, or year level..."
-                  className="w-full pl-14 pr-14 py-4 font-raleway text-base text-gray-900 placeholder-gray-500 bg-white border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary1 focus:border-primary1 transition-all duration-300 shadow-sm hover:shadow-md"
-                />
-                {searchQuery && (
-                  <button
-                    onClick={handleClearSearch}
-                    className="absolute inset-y-0 right-0 pr-5 flex items-center text-gray-400 hover:text-primary1 transition-colors cursor-pointer"
-                    title="Clear search"
-                  >
-                    <X className="h-5 w-5" />
-                  </button>
-                )}
+            <div className="mb-12 text-center">
+              <div className="inline-flex items-center gap-2 rounded-full bg-primary1/10 px-3 py-1 mb-4">
+                <div className="h-2 w-2 rounded-full bg-primary1"></div>
+                <span className="font-raleway text-sm font-semibold text-primary1">
+                  User Management
+                </span>
               </div>
-
-
-              {/* Search Suggestions Dropdown - REMOVED */}
+              <h1 className="font-rubik text-4xl sm:text-5xl font-bold text-primary3 leading-tight mb-4">
+                Registered Users
+              </h1>
+              <p className="font-raleway text-gray-600 text-base sm:text-lg max-w-2xl mx-auto">
+                Manage and view all registered users, members, officers, and
+                faculty.
+              </p>
             </div>
-          </div>
 
-          <div className="mb-6 flex flex-wrap items-center justify-end gap-3">
-            <button
-              onClick={handleExport}
-              className="flex items-center gap-2 px-4 py-2 border-2 border-gray-300 text-gray-700 font-raleway font-semibold rounded-lg hover:bg-gray-50 transition-colors duration-300 cursor-pointer"
-            >
-              <Download className="w-4 h-4" />
-              Export All
-            </button>
-            <button
-              onClick={() => setIsUploadModalOpen(true)}
-              disabled={isUploading}
-              className="flex items-center gap-2 px-4 py-2 border-2 border-primary1 text-primary1 font-raleway font-semibold rounded-lg hover:bg-primary1 hover:text-white transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-            >
-              <Upload className="w-4 h-4" />
-              Upload Excel
-            </button>
-            <button
-              onClick={handleAddUser}
-              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary1 to-primary1/90 text-white font-raleway font-semibold rounded-lg hover:shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer"
-            >
-              <UserPlus className="w-4 h-4" />
-              Add User
-            </button>
-          </div>
+            <UserStats users={allUsers} />
 
-          {/* Pass props to UsersTable */}
-          <UsersTable
-            users={displayedUsers}
-            totalUsers={getFilteredUsers().length}
-            currentPage={currentPage}
-            usersPerPage={USERS_PER_PAGE}
-            onEdit={handleEditUser}
-            onDelete={handleDeleteUser}
-            onToggleActive={handleToggleActive}
-            onView={handleViewUser}
-            filterRole={filterRole}
-            filterMembership={filterMembership}
-            onFilterChange={handleFilterChange}
-            sortField={sortField}
-            sortDirection={sortDirection}
-            onSortChange={handleSortChange}
-          />
+            {/* 🔍 Search Bar - Redesigned */}
+            <div className="mb-6">
+              <div
+                className="relative max-w-3xl mx-auto"
+              >
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
+                    <Search className="h-5 w-5 text-primary1" />
+                  </div>
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => handleSearchChange(e.target.value)}
+                    placeholder="Search users by name, student number, role, or year level..."
+                    className="w-full pl-14 pr-14 py-4 font-raleway text-base text-gray-900 placeholder-gray-500 bg-white border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary1 focus:border-primary1 transition-all duration-300 shadow-sm hover:shadow-md"
+                  />
+                  {searchQuery && (
+                    <button
+                      onClick={handleClearSearch}
+                      className="absolute inset-y-0 right-0 pr-5 flex items-center text-gray-400 hover:text-primary1 transition-colors cursor-pointer"
+                      title="Clear search"
+                    >
+                      <X className="h-5 w-5" />
+                    </button>
+                  )}
+                </div>
 
-          {totalPages > 1 && (
-            <div className="mt-8 flex items-center justify-center border-t border-gray-200 pt-6">
-              <div className="flex items-center gap-4">
-                {currentPage > 1 ? (
-                  <button
-                    onClick={handlePreviousPage}
-                    className="p-2 rounded-lg border-2 border-primary1 text-primary1 hover:bg-primary1 hover:text-white transition-all duration-300 cursor-pointer"
-                    title="Previous page"
-                  >
-                    <ChevronLeft className="w-5 h-5" />
-                  </button>
-                ) : (
-                  <div className="w-[42px]"></div>
-                )}
 
-                <div className="flex items-center gap-2 min-w-[100px] justify-center">
-                  <span className="font-raleway text-base text-gray-700">
-                    <span className="font-bold text-primary1">
-                      {currentPage}
-                    </span>{" "}
-                    of{" "}
-                    <span className="font-bold text-primary1">
-                      {totalPages}
+                {/* Search Suggestions Dropdown - REMOVED */}
+              </div>
+            </div>
+
+            <div className="mb-6 flex flex-wrap items-center justify-end gap-3">
+              <button
+                onClick={handleExport}
+                className="flex items-center gap-2 px-4 py-2 border-2 border-gray-300 text-gray-700 font-raleway font-semibold rounded-lg hover:bg-gray-50 transition-colors duration-300 cursor-pointer"
+              >
+                <Download className="w-4 h-4" />
+                Export All
+              </button>
+              <button
+                onClick={() => setIsUploadModalOpen(true)}
+                disabled={isUploading}
+                className="flex items-center gap-2 px-4 py-2 border-2 border-primary1 text-primary1 font-raleway font-semibold rounded-lg hover:bg-primary1 hover:text-white transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+              >
+                <Upload className="w-4 h-4" />
+                Upload Excel
+              </button>
+              <button
+                onClick={handleAddUser}
+                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary1 to-primary1/90 text-white font-raleway font-semibold rounded-lg hover:shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer"
+              >
+                <UserPlus className="w-4 h-4" />
+                Add User
+              </button>
+            </div>
+
+            {/* Pass props to UsersTable */}
+            <UsersTable
+              users={displayedUsers}
+              totalUsers={getFilteredUsers().length}
+              currentPage={currentPage}
+              usersPerPage={USERS_PER_PAGE}
+              onEdit={handleEditUser}
+              onDelete={handleDeleteUser}
+              onToggleActive={handleToggleActive}
+              onView={handleViewUser}
+              filterRole={filterRole}
+              filterMembership={filterMembership}
+              onFilterChange={handleFilterChange}
+              sortField={sortField}
+              sortDirection={sortDirection}
+              onSortChange={handleSortChange}
+            />
+
+            {totalPages > 1 && (
+              <div className="mt-8 flex items-center justify-center border-t border-gray-200 pt-6">
+                <div className="flex items-center gap-4">
+                  {currentPage > 1 ? (
+                    <button
+                      onClick={handlePreviousPage}
+                      className="p-2 rounded-lg border-2 border-primary1 text-primary1 hover:bg-primary1 hover:text-white transition-all duration-300 cursor-pointer"
+                      title="Previous page"
+                    >
+                      <ChevronLeft className="w-5 h-5" />
+                    </button>
+                  ) : (
+                    <div className="w-[42px]"></div>
+                  )}
+
+                  <div className="flex items-center gap-2 min-w-[100px] justify-center">
+                    <span className="font-raleway text-base text-gray-700">
+                      <span className="font-bold text-primary1">
+                        {currentPage}
+                      </span>{" "}
+                      of{" "}
+                      <span className="font-bold text-primary1">
+                        {totalPages}
+                      </span>
                     </span>
-                  </span>
-                </div>
+                  </div>
 
-                {currentPage < totalPages ? (
-                  <button
-                    onClick={handleNextPage}
-                    className="p-2 rounded-lg border-2 border-primary1 text-primary1 hover:bg-primary1 hover:text-white transition-all duration-300 cursor-pointer"
-                    title="Next page"
-                  >
-                    <ChevronRight className="w-5 h-5" />
-                  </button>
-                ) : (
-                  <div className="w-[42px]"></div>
-                )}
+                  {currentPage < totalPages ? (
+                    <button
+                      onClick={handleNextPage}
+                      className="p-2 rounded-lg border-2 border-primary1 text-primary1 hover:bg-primary1 hover:text-white transition-all duration-300 cursor-pointer"
+                      title="Next page"
+                    >
+                      <ChevronRight className="w-5 h-5" />
+                    </button>
+                  ) : (
+                    <div className="w-[42px]"></div>
+                  )}
+                </div>
               </div>
-            </div>
-          )}
-        </main>
+            )}
+          </div>
+        </div>
+      </main>
+
+      <div className="mt-[-35px] md:mt-[-80px] relative z-0">
         <Footer />
       </div>
 

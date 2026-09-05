@@ -272,372 +272,376 @@ const MeetInfoPage: FunctionComponent = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col relative overflow-hidden">
-      <Grid />
+    <div className="min-h-screen flex flex-col overflow-x-hidden bg-[#004e89]">
+      <main className="relative z-10 bg-white rounded-b-[40px] md:rounded-b-[50px] overflow-hidden">
+        <Grid />
 
-      <div className="relative z-10 flex flex-col min-h-screen">
-        <Header />
+        <div className="relative z-10 flex flex-col min-h-screen">
+          <Header />
 
-        {/* Updated Width to max-w-7xl to match reference page layout */}
-        <main className="flex-grow w-full max-w-7xl mx-auto px-6 pt-[9.5rem] pb-24">
-          {/* Back Button - Now aligned far left relative to the wider container */}
-          <div className="mb-8 flex justify-start">
-            <button
-              onClick={() => router.back()}
-              title="Go Back"
-              className="relative flex h-12 w-12 cursor-pointer items-center justify-center 
-                         rounded-full border-2 border-primary1 text-primary1 
-                         overflow-hidden transition-all duration-300 ease-in-out 
-                         active:scale-95 before:absolute before:inset-0 
-                         before:bg-gradient-to-r before:from-transparent 
-                         before:via-white/40 before:to-transparent 
-                         before:translate-x-[-100%] hover:before:translate-x-[100%] 
-                         before:transition-transform before:duration-700"
-            >
-              <ArrowLeft className="h-6 w-6 animate-nudge-left translate-x-[2px]" />
-            </button>
-          </div>
-
-          {/* Centered Content Container for Form */}
-          <div className="max-w-4xl mx-auto">
-            {/* Header Section */}
-            <div className="text-center mb-12">
-              <div className="inline-flex items-center gap-2 rounded-full bg-primary1/10 px-3 py-1 mb-4">
-                <div className="h-2 w-2 rounded-full bg-primary1"></div>
-                <span className="font-raleway text-sm font-semibold text-primary1">
-                  New Meeting
-                </span>
-              </div>
-              <h1 className="font-rubik text-4xl sm:text-5xl font-bold text-primary3 leading-tight mb-4">
-                Meeting Details
-              </h1>
-              <p className="font-raleway text-gray-600 text-base sm:text-lg max-w-2xl mx-auto">
-                Set up the agenda, participants, and schedule for your upcoming
-                session.
-              </p>
+          {/* Updated Width to max-w-7xl to match reference page layout */}
+          <div className="flex-grow w-full max-w-7xl mx-auto px-6 pt-[9.5rem] pb-24">
+            {/* Back Button - Now aligned far left relative to the wider container */}
+            <div className="mb-8 flex justify-start">
+              <button
+                onClick={() => router.back()}
+                title="Go Back"
+                className="relative flex h-12 w-12 cursor-pointer items-center justify-center 
+                           rounded-full border-2 border-primary1 text-primary1 
+                           overflow-hidden transition-all duration-300 ease-in-out 
+                           active:scale-95 before:absolute before:inset-0 
+                           before:bg-gradient-to-r before:from-transparent 
+                           before:via-white/40 before:to-transparent 
+                           before:translate-x-[-100%] hover:before:translate-x-[100%] 
+                           before:transition-transform before:duration-700"
+              >
+                <ArrowLeft className="h-6 w-6 animate-nudge-left translate-x-[2px]" />
+              </button>
             </div>
 
-            {/* Form Container */}
-            <div className="bg-white rounded-[2rem] border border-gray-200 shadow-lg p-8 sm:p-12 transition-all duration-300 hover:shadow-primary1/40 hover:-translate-y-2">
-              {authHint && (
-                <div className="mb-4 p-3 rounded-xl bg-yellow-50 text-yellow-700 text-sm font-raleway border border-yellow-100">
-                  {authHint}
+            {/* Centered Content Container for Form */}
+            <div className="max-w-4xl mx-auto">
+              {/* Header Section */}
+              <div className="text-center mb-12">
+                <div className="inline-flex items-center gap-2 rounded-full bg-primary1/10 px-3 py-1 mb-4">
+                  <div className="h-2 w-2 rounded-full bg-primary1"></div>
+                  <span className="font-raleway text-sm font-semibold text-primary1">
+                    New Meeting
+                  </span>
                 </div>
-              )}
-              <div className="flex flex-col gap-6">
-                {/* Title */}
-                <div className="w-full">
-                  <label className={labelStyle}>
-                    Meeting Title <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    className={`${inputBaseStyle} ${
-                      errors.title ? errorStyle : ""
-                    } ${inputFocusStyle}`}
-                    placeholder="e.g. 1st Strategic Meeting"
-                    value={title}
-                    onChange={(e) => {
-                      setTitle(e.target.value);
-                      if (errors.title) setErrors({ ...errors, title: "" });
-                    }}
-                  />
-                  {errors.title && (
-                    <p className="text-red-500 text-xs mt-1 ml-2 font-raleway">
-                      {errors.title}
-                    </p>
-                  )}
-                </div>
+                <h1 className="font-rubik text-4xl sm:text-5xl font-bold text-primary3 leading-tight mb-4">
+                  Meeting Details
+                </h1>
+                <p className="font-raleway text-gray-600 text-base sm:text-lg max-w-2xl mx-auto">
+                  Set up the agenda, participants, and schedule for your upcoming
+                  session.
+                </p>
+              </div>
 
-                {/* Agenda */}
-                <div className="w-full">
-                  <label className={labelStyle}>
-                    Agenda <span className="text-red-500">*</span>
-                  </label>
-                  <textarea
-                    rows={4}
-                    className={`${inputBaseStyle} resize-none ${
-                      errors.agenda ? errorStyle : ""
-                    } ${inputFocusStyle}`}
-                    placeholder="What will be discussed?"
-                    value={agenda}
-                    onChange={(e) => {
-                      setAgenda(e.target.value);
-                      if (errors.agenda) setErrors({ ...errors, agenda: "" });
-                    }}
-                  />
-                  {errors.agenda && (
-                    <p className="text-red-500 text-xs mt-1 ml-2 font-raleway">
-                      {errors.agenda}
-                    </p>
-                  )}
-                </div>
-
-                {/* Time Frame (Start & End) */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  {/* Start Time Selector */}
-                  <div>
-                    <label className={labelStyle}>
-                      Start Time <span className="text-red-500">*</span>
-                    </label>
-                    <div
-                      className={`flex items-center gap-1 bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 transition-all ${
-                        ["startHour", "startMinute", "startPeriod"].includes(
-                          activeDropdown || ""
-                        )
-                          ? "bg-white border-primary1 ring-4 ring-primary1/10"
-                          : ""
-                      }`}
-                    >
-                      {renderTimeInput(
-                        "startHour",
-                        startHour,
-                        setStartHour,
-                        hours,
-                        "hour"
-                      )}
-                      <span className="text-gray-400 font-bold">:</span>
-                      {renderTimeInput(
-                        "startMinute",
-                        startMinute,
-                        setStartMinute,
-                        minutes,
-                        "minute"
-                      )}
-                      <div className="w-[1px] h-6 bg-gray-200 mx-2"></div>
-                      {renderTimeInput(
-                        "startPeriod",
-                        startPeriod,
-                        setStartPeriod,
-                        periods,
-                        "period"
-                      )}
-                    </div>
+              {/* Form Container */}
+              <div className="bg-white rounded-[2rem] border border-gray-200 shadow-lg p-8 sm:p-12 transition-all duration-300 hover:shadow-primary1/40 hover:-translate-y-2">
+                {authHint && (
+                  <div className="mb-4 p-3 rounded-xl bg-yellow-50 text-yellow-700 text-sm font-raleway border border-yellow-100">
+                    {authHint}
                   </div>
-
-                  {/* End Time Selector */}
-                  <div>
+                )}
+                <div className="flex flex-col gap-6">
+                  {/* Title */}
+                  <div className="w-full">
                     <label className={labelStyle}>
-                      End Time <span className="text-red-500">*</span>
+                      Meeting Title <span className="text-red-500">*</span>
                     </label>
-                    <div
-                      className={`flex items-center gap-1 bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 transition-all ${
-                        ["endHour", "endMinute", "endPeriod"].includes(
-                          activeDropdown || ""
-                        )
-                          ? "bg-white border-primary1 ring-4 ring-primary1/10"
-                          : ""
-                      }`}
-                    >
-                      {renderTimeInput(
-                        "endHour",
-                        endHour,
-                        setEndHour,
-                        hours,
-                        "hour"
-                      )}
-                      <span className="text-gray-400 font-bold">:</span>
-                      {renderTimeInput(
-                        "endMinute",
-                        endMinute,
-                        setEndMinute,
-                        minutes,
-                        "minute"
-                      )}
-                      <div className="w-[1px] h-6 bg-gray-200 mx-2"></div>
-                      {renderTimeInput(
-                        "endPeriod",
-                        endPeriod,
-                        setEndPeriod,
-                        periods,
-                        "period"
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Department Selection (Multi-Select) */}
-                <div className="w-full relative">
-                  <label className={labelStyle}>
-                    Departments Involved <span className="text-red-500">*</span>
-                  </label>
-
-                  <div
-                    className={`w-full min-h-[3rem] bg-gray-50 border rounded-2xl px-4 py-3 cursor-pointer relative transition-all hover:bg-gray-100 ${
-                      errors.department ? errorStyle : "border-gray-200"
-                    } ${
-                      activeDropdown === "dept"
-                        ? "bg-white border-primary1 ring-4 ring-primary1/10"
-                        : ""
-                    }`}
-                    onClick={() =>
-                      setActiveDropdown(
-                        activeDropdown === "dept" ? null : "dept"
-                      )
-                    }
-                  >
-                    <div className="flex flex-wrap gap-2 pr-8">
-                      {selectedDepts.length > 0 ? (
-                        selectedDepts.map((dept) => (
-                          <span
-                            key={dept}
-                            className="inline-flex items-center gap-1 bg-white border border-gray-200 text-primary3 px-3 py-1.5 rounded-full text-xs font-bold font-rubik shadow-sm"
-                          >
-                            {dept}
-                            <X
-                              className="w-3.5 h-3.5 cursor-pointer text-gray-400 hover:text-red-500 transition-colors"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                removeDept(dept);
-                              }}
-                            />
-                          </span>
-                        ))
-                      ) : (
-                        <span className="text-gray-400 font-rubik text-base">
-                          Select departments...
-                        </span>
-                      )}
-                    </div>
-                    <ChevronDown
-                      className={`absolute right-4 top-3.5 w-5 h-5 text-gray-400 transition-transform duration-300 ${
-                        activeDropdown === "dept" ? "rotate-180" : ""
-                      }`}
+                    <input
+                      type="text"
+                      className={`${inputBaseStyle} ${
+                        errors.title ? errorStyle : ""
+                      } ${inputFocusStyle}`}
+                      placeholder="e.g. 1st Strategic Meeting"
+                      value={title}
+                      onChange={(e) => {
+                        setTitle(e.target.value);
+                        if (errors.title) setErrors({ ...errors, title: "" });
+                      }}
                     />
+                    {errors.title && (
+                      <p className="text-red-500 text-xs mt-1 ml-2 font-raleway">
+                        {errors.title}
+                      </p>
+                    )}
                   </div>
 
-                  {/* Dropdown Menu */}
-                  {activeDropdown === "dept" && (
-                    <>
-                      <div
-                        className="fixed inset-0 z-20"
-                        onClick={() => setActiveDropdown(null)}
-                      ></div>
-                      <div className={dropdownContainerStyle}>
-                        {departmentsList.map((dept) => (
-                          <div
-                            key={dept}
-                            className={`${dropdownItemStyle} px-4 ${
-                              selectedDepts.includes(dept)
-                                ? dropdownItemSelectedStyle
-                                : dropdownItemHoverStyle
-                            }`}
-                            onClick={() => toggleDept(dept)}
-                          >
-                            <span>{dept}</span>
-                            {selectedDepts.includes(dept) && (
-                              <Check className="w-4 h-4 text-primary1" />
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    </>
-                  )}
-                  {errors.department && (
-                    <p className="text-red-500 text-xs mt-1 ml-2 font-raleway">
-                      {errors.department}
-                    </p>
-                  )}
-                </div>
+                  {/* Agenda */}
+                  <div className="w-full">
+                    <label className={labelStyle}>
+                      Agenda <span className="text-red-500">*</span>
+                    </label>
+                    <textarea
+                      rows={4}
+                      className={`${inputBaseStyle} resize-none ${
+                        errors.agenda ? errorStyle : ""
+                      } ${inputFocusStyle}`}
+                      placeholder="What will be discussed?"
+                      value={agenda}
+                      onChange={(e) => {
+                        setAgenda(e.target.value);
+                        if (errors.agenda) setErrors({ ...errors, agenda: "" });
+                      }}
+                    />
+                    {errors.agenda && (
+                      <p className="text-red-500 text-xs mt-1 ml-2 font-raleway">
+                        {errors.agenda}
+                      </p>
+                    )}
+                  </div>
 
-                {/* Time Limit (Value + Unit) */}
-                <div className="w-full">
-                  <label className={labelStyle}>
-                    Time Limit{" "}
-                    <span className="text-gray-400 font-normal">
-                      (Optional)
-                    </span>
-                  </label>
-                  <div className="flex gap-4">
-                    {/* Value Input */}
-                    <div className="flex-1">
-                      <input
-                        type="number"
-                        min="1"
-                        className={`${inputBaseStyle} ${inputFocusStyle}`}
-                        placeholder="e.g. 45"
-                        value={limitValue}
-                        onChange={(e) => setLimitValue(e.target.value)}
-                      />
-                    </div>
-                    {/* Unit Dropdown (Custom) */}
-                    <div className="w-1/3 relative">
+                  {/* Time Frame (Start & End) */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    {/* Start Time Selector */}
+                    <div>
+                      <label className={labelStyle}>
+                        Start Time <span className="text-red-500">*</span>
+                      </label>
                       <div
-                        className={`w-full h-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 cursor-pointer flex items-center justify-between text-gray-700 transition-all hover:bg-gray-100 ${
-                          activeDropdown === "limitUnit"
+                        className={`flex items-center gap-1 bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 transition-all ${
+                          ["startHour", "startMinute", "startPeriod"].includes(
+                            activeDropdown || ""
+                          )
                             ? "bg-white border-primary1 ring-4 ring-primary1/10"
                             : ""
                         }`}
-                        onClick={() =>
-                          setActiveDropdown(
-                            activeDropdown === "limitUnit" ? null : "limitUnit"
-                          )
-                        }
                       >
-                        <span className="font-rubik text-base font-medium">
-                          {limitUnit}
-                        </span>
-                        <ChevronDown
-                          className={`w-5 h-5 text-gray-400 transition-transform duration-300 ${
-                            activeDropdown === "limitUnit" ? "rotate-180" : ""
-                          }`}
-                        />
+                        {renderTimeInput(
+                          "startHour",
+                          startHour,
+                          setStartHour,
+                          hours,
+                          "hour"
+                        )}
+                        <span className="text-gray-400 font-bold">:</span>
+                        {renderTimeInput(
+                          "startMinute",
+                          startMinute,
+                          setStartMinute,
+                          minutes,
+                          "minute"
+                        )}
+                        <div className="w-[1px] h-6 bg-gray-200 mx-2"></div>
+                        {renderTimeInput(
+                          "startPeriod",
+                          startPeriod,
+                          setStartPeriod,
+                          periods,
+                          "period"
+                        )}
                       </div>
+                    </div>
 
-                      {/* Options */}
-                      {activeDropdown === "limitUnit" && (
-                        <>
-                          <div
-                            className="fixed inset-0 z-20"
-                            onClick={() => setActiveDropdown(null)}
-                          ></div>
-                          <div className={dropdownContainerStyle}>
-                            {["Minutes", "Hours"].map((unit) => (
-                              <div
-                                key={unit}
-                                className={`${dropdownItemStyle} px-4 ${
-                                  limitUnit === unit
-                                    ? dropdownItemSelectedStyle
-                                    : dropdownItemHoverStyle
-                                }`}
-                                onClick={() => {
-                                  setLimitUnit(unit);
-                                  setActiveDropdown(null);
-                                }}
-                              >
-                                <span>{unit}</span>
-                                {limitUnit === unit && (
-                                  <Check className="w-4 h-4 text-primary1" />
-                                )}
-                              </div>
-                            ))}
-                          </div>
-                        </>
-                      )}
+                    {/* End Time Selector */}
+                    <div>
+                      <label className={labelStyle}>
+                        End Time <span className="text-red-500">*</span>
+                      </label>
+                      <div
+                        className={`flex items-center gap-1 bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 transition-all ${
+                          ["endHour", "endMinute", "endPeriod"].includes(
+                            activeDropdown || ""
+                          )
+                            ? "bg-white border-primary1 ring-4 ring-primary1/10"
+                            : ""
+                        }`}
+                      >
+                        {renderTimeInput(
+                          "endHour",
+                          endHour,
+                          setEndHour,
+                          hours,
+                          "hour"
+                        )}
+                        <span className="text-gray-400 font-bold">:</span>
+                        {renderTimeInput(
+                          "endMinute",
+                          endMinute,
+                          setEndMinute,
+                          minutes,
+                          "minute"
+                        )}
+                        <div className="w-[1px] h-6 bg-gray-200 mx-2"></div>
+                        {renderTimeInput(
+                          "endPeriod",
+                          endPeriod,
+                          setEndPeriod,
+                          periods,
+                          "period"
+                        )}
+                      </div>
                     </div>
                   </div>
-                  {errors.timeLimit && (
-                    <p className="text-red-500 text-xs mt-1 ml-2 font-raleway">
-                      {errors.timeLimit}
-                    </p>
-                  )}
-                </div>
 
-                {/* Action Button */}
-                <div className="mt-4 flex justify-end">
-                  <button
-                    className="group relative px-8 py-3.5 bg-gradient-to-r from-primary3 to-primary1 rounded-2xl font-rubik font-bold text-white shadow-lg shadow-primary1/20 hover:shadow-primary1/40 transition-all duration-300 flex items-center gap-3 cursor-pointer"
-                    onClick={onCreateMeetingClick}
-                  >
-                    <span>Create Meeting</span>
-                    <ArrowRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
-                  </button>
+                  {/* Department Selection (Multi-Select) */}
+                  <div className="w-full relative">
+                    <label className={labelStyle}>
+                      Departments Involved <span className="text-red-500">*</span>
+                    </label>
+
+                    <div
+                      className={`w-full min-h-[3rem] bg-gray-50 border rounded-2xl px-4 py-3 cursor-pointer relative transition-all hover:bg-gray-100 ${
+                        errors.department ? errorStyle : "border-gray-200"
+                      } ${
+                        activeDropdown === "dept"
+                          ? "bg-white border-primary1 ring-4 ring-primary1/10"
+                          : ""
+                      }`}
+                      onClick={() =>
+                        setActiveDropdown(
+                          activeDropdown === "dept" ? null : "dept"
+                        )
+                      }
+                    >
+                      <div className="flex flex-wrap gap-2 pr-8">
+                        {selectedDepts.length > 0 ? (
+                          selectedDepts.map((dept) => (
+                            <span
+                              key={dept}
+                              className="inline-flex items-center gap-1 bg-white border border-gray-200 text-primary3 px-3 py-1.5 rounded-full text-xs font-bold font-rubik shadow-sm"
+                            >
+                              {dept}
+                              <X
+                                className="w-3.5 h-3.5 cursor-pointer text-gray-400 hover:text-red-500 transition-colors"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  removeDept(dept);
+                                }}
+                              />
+                            </span>
+                          ))
+                        ) : (
+                          <span className="text-gray-400 font-rubik text-base">
+                            Select departments...
+                          </span>
+                        )}
+                      </div>
+                      <ChevronDown
+                        className={`absolute right-4 top-3.5 w-5 h-5 text-gray-400 transition-transform duration-300 ${
+                          activeDropdown === "dept" ? "rotate-180" : ""
+                        }`}
+                      />
+                    </div>
+
+                    {/* Dropdown Menu */}
+                    {activeDropdown === "dept" && (
+                      <>
+                        <div
+                          className="fixed inset-0 z-20"
+                          onClick={() => setActiveDropdown(null)}
+                        ></div>
+                        <div className={dropdownContainerStyle}>
+                          {departmentsList.map((dept) => (
+                            <div
+                              key={dept}
+                              className={`${dropdownItemStyle} px-4 ${
+                                selectedDepts.includes(dept)
+                                  ? dropdownItemSelectedStyle
+                                  : dropdownItemHoverStyle
+                              }`}
+                              onClick={() => toggleDept(dept)}
+                            >
+                              <span>{dept}</span>
+                              {selectedDepts.includes(dept) && (
+                                <Check className="w-4 h-4 text-primary1" />
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      </>
+                    )}
+                    {errors.department && (
+                      <p className="text-red-500 text-xs mt-1 ml-2 font-raleway">
+                        {errors.department}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Time Limit (Value + Unit) */}
+                  <div className="w-full">
+                    <label className={labelStyle}>
+                      Time Limit{" "}
+                      <span className="text-gray-400 font-normal">
+                        (Optional)
+                      </span>
+                    </label>
+                    <div className="flex gap-4">
+                      {/* Value Input */}
+                      <div className="flex-1">
+                        <input
+                          type="number"
+                          min="1"
+                          className={`${inputBaseStyle} ${inputFocusStyle}`}
+                          placeholder="e.g. 45"
+                          value={limitValue}
+                          onChange={(e) => setLimitValue(e.target.value)}
+                        />
+                      </div>
+                      {/* Unit Dropdown (Custom) */}
+                      <div className="w-1/3 relative">
+                        <div
+                          className={`w-full h-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 cursor-pointer flex items-center justify-between text-gray-700 transition-all hover:bg-gray-100 ${
+                            activeDropdown === "limitUnit"
+                              ? "bg-white border-primary1 ring-4 ring-primary1/10"
+                              : ""
+                          }`}
+                          onClick={() =>
+                            setActiveDropdown(
+                              activeDropdown === "limitUnit" ? null : "limitUnit"
+                            )
+                          }
+                        >
+                          <span className="font-rubik text-base font-medium">
+                            {limitUnit}
+                          </span>
+                          <ChevronDown
+                            className={`w-5 h-5 text-gray-400 transition-transform duration-300 ${
+                              activeDropdown === "limitUnit" ? "rotate-180" : ""
+                            }`}
+                          />
+                        </div>
+
+                        {/* Options */}
+                        {activeDropdown === "limitUnit" && (
+                          <>
+                            <div
+                              className="fixed inset-0 z-20"
+                              onClick={() => setActiveDropdown(null)}
+                            ></div>
+                            <div className={dropdownContainerStyle}>
+                              {["Minutes", "Hours"].map((unit) => (
+                                <div
+                                  key={unit}
+                                  className={`${dropdownItemStyle} px-4 ${
+                                    limitUnit === unit
+                                      ? dropdownItemSelectedStyle
+                                      : dropdownItemHoverStyle
+                                  }`}
+                                  onClick={() => {
+                                    setLimitUnit(unit);
+                                    setActiveDropdown(null);
+                                  }}
+                                >
+                                  <span>{unit}</span>
+                                  {limitUnit === unit && (
+                                    <Check className="w-4 h-4 text-primary1" />
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                    {errors.timeLimit && (
+                      <p className="text-red-500 text-xs mt-1 ml-2 font-raleway">
+                        {errors.timeLimit}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Action Button */}
+                  <div className="mt-4 flex justify-end">
+                    <button
+                      className="group relative px-8 py-3.5 bg-gradient-to-r from-primary3 to-primary1 rounded-2xl font-rubik font-bold text-white shadow-lg shadow-primary1/20 hover:shadow-primary1/40 transition-all duration-300 flex items-center gap-3 cursor-pointer"
+                      onClick={onCreateMeetingClick}
+                    >
+                      <span>Create Meeting</span>
+                      <ArrowRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </main>
+        </div>
+      </main>
 
+      <div className="mt-[-35px] md:mt-[-80px] relative z-0">
         <Footer />
       </div>
     </div>
