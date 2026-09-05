@@ -138,7 +138,7 @@ export default function OfficersPage() {
 
   // Shared dropdown styles
   const dropdownContainerStyle =
-    "absolute z-30 w-full mt-2 bg-white border border-gray-100 rounded-2xl shadow-xl overflow-hidden flex flex-col gap-1 p-2 max-h-56 overflow-y-auto";
+    "absolute z-30 w-full mt-2 bg-white border border-gray-100 rounded-2xl shadow-xl overflow-x-hidden flex flex-col gap-1 p-2 max-h-56 overflow-y-auto themed-scrollbar";
   const dropdownItemStyle =
     "flex items-center justify-between px-4 py-2.5 rounded-xl cursor-pointer transition-colors font-rubik text-sm font-medium";
   const dropdownItemSelectedStyle = "bg-primary1/5 text-primary1";
@@ -452,7 +452,7 @@ export default function OfficersPage() {
                         </div>
                         <button
                           onClick={handleCancelEdit}
-                          className="text-white/80 hover:text-white text-sm font-bold font-raleway underline underline-offset-2 transition-colors"
+                          className="text-white/80 hover:text-white text-sm font-bold font-raleway underline underline-offset-2 transition-colors cursor-pointer"
                         >
                           Cancel
                         </button>
@@ -509,7 +509,7 @@ export default function OfficersPage() {
                                 }}
                                 className={`
                                 relative flex items-center gap-3 rounded-xl px-5 py-4 text-left font-rubik font-bold text-sm border-2
-                                transition-all duration-200
+                                transition-all duration-200 cursor-pointer
                                 ${
                                   isActive
                                     ? `${dept.bg} ${dept.color} ${dept.border} shadow-sm scale-[1.02]`
@@ -587,7 +587,7 @@ export default function OfficersPage() {
                                     e.stopPropagation();
                                     fileInputRef.current?.click();
                                   }}
-                                  className="bg-white text-primary3 text-xs font-bold px-4 py-2 rounded-full shadow-lg hover:scale-105 transition-transform font-rubik"
+                                  className="bg-white text-primary3 text-xs font-bold px-4 py-2 rounded-full shadow-lg hover:scale-105 active:scale-95 transition-transform font-rubik cursor-pointer"
                                 >
                                   Replace
                                 </button>
@@ -598,7 +598,7 @@ export default function OfficersPage() {
                                       e.stopPropagation();
                                       clearSelection();
                                     }}
-                                    className="bg-red-500 text-white text-xs font-bold px-4 py-2 rounded-full shadow-lg hover:scale-105 transition-transform font-rubik"
+                                    className="bg-red-500 text-white text-xs font-bold px-4 py-2 rounded-full shadow-lg hover:scale-105 active:scale-95 transition-transform font-rubik cursor-pointer"
                                   >
                                     Remove
                                   </button>
@@ -650,7 +650,7 @@ export default function OfficersPage() {
                                 <button
                                   type="button"
                                   onClick={clearSelection}
-                                  className="text-primary3 hover:text-red-500"
+                                  className="text-primary3 hover:text-red-500 cursor-pointer"
                                 >
                                   <X size={18} />
                                 </button>
@@ -668,13 +668,13 @@ export default function OfficersPage() {
                                   className="w-full font-rubik text-base bg-gray-50 border border-gray-200 rounded-2xl pl-12 pr-4 py-3 outline-none transition-all placeholder-gray-400 focus:bg-white focus:border-primary1 focus:ring-4 focus:ring-primary1/10"
                                 />
                                 {searchResults.length > 0 && (
-                                  <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-xl border border-gray-100 max-h-60 overflow-y-auto z-50">
+                                  <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-xl border border-gray-100 max-h-60 overflow-y-auto themed-scrollbar z-50">
                                     {searchResults.map((user) => (
                                       <button
                                         key={user._id}
                                         type="button"
                                         onClick={() => selectUser(user)}
-                                        className="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center gap-3 border-b border-gray-50 last:border-0"
+                                        className="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center gap-3 border-b border-gray-50 last:border-0 cursor-pointer"
                                       >
                                         <div className="w-8 h-8 rounded-full bg-gray-200 overflow-hidden shrink-0">
                                           {user.profilePicture ? (
@@ -976,7 +976,7 @@ export default function OfficersPage() {
                             <button
                               type="button"
                               onClick={handleCancelEdit}
-                              className="px-6 py-3 font-rubik font-bold text-gray-500 border-2 border-gray-200 hover:border-red-200 hover:text-red-400 rounded-2xl transition-all duration-300"
+                              className="px-6 py-3 font-rubik font-bold text-gray-500 border-2 border-gray-200 hover:border-red-200 hover:text-red-400 rounded-2xl transition-all duration-300 cursor-pointer"
                             >
                               Cancel
                             </button>
@@ -999,7 +999,7 @@ export default function OfficersPage() {
                     {/* List Header */}
                     <div className="px-6 sm:px-8 py-6 border-b border-gray-100 flex flex-wrap justify-between items-center gap-4">
                       <div>
-                        <h2 className="text-xl font-black font-rubik text-primary3">
+                        <h2 className="text-xl font-bold font-rubik text-primary3">
                           {currentDeptData.title} List
                         </h2>
                         <p className="text-gray-400 text-xs font-raleway mt-0.5 tracking-wide">
@@ -1012,7 +1012,7 @@ export default function OfficersPage() {
                       </div>
                       <button
                         onClick={fetchOfficers}
-                        className="flex items-center gap-2 text-xs font-bold font-rubik text-primary1 border border-primary1/20 hover:border-primary1/50 hover:bg-primary1/5 px-4 py-2 rounded-full transition-all duration-200"
+                        className="flex items-center gap-2 text-xs font-bold font-rubik text-primary1 border border-primary1/20 hover:border-primary1/50 hover:bg-primary1/5 px-4 py-2 rounded-full transition-all duration-200 cursor-pointer"
                       >
                         <RefreshCw
                           size={13}
@@ -1033,7 +1033,7 @@ export default function OfficersPage() {
                           <button
                             key={key}
                             onClick={() => setActiveTab(key)}
-                            className={`flex items-center gap-1.5 px-3 py-1 rounded-full border text-xs font-semibold font-rubik transition-all ${
+                            className={`flex items-center gap-1.5 px-3 py-1 rounded-full border text-xs font-semibold font-rubik transition-all cursor-pointer ${
                               activeTab === key
                                 ? `${dept.bg} ${dept.color} ${dept.border}`
                                 : "bg-gray-50 text-gray-400 border-gray-100 hover:border-gray-300"
@@ -1075,25 +1075,25 @@ export default function OfficersPage() {
                         </div>
                       </div>
                     ) : (
-                      <div className="overflow-x-auto">
+                      <div className="overflow-x-auto themed-scrollbar">
                         <table className="w-full text-left min-w-[580px]">
                           <thead>
                             <tr className="bg-gray-50/80">
-                              <th className="px-6 sm:px-8 py-3.5 text-[10px] font-black uppercase tracking-widest text-gray-400 font-rubik">
+                              <th className="px-6 sm:px-8 py-3.5 text-[10px] font-bold uppercase tracking-widest text-gray-400 font-rubik">
                                 Photo
                               </th>
-                              <th className="px-4 py-3.5 text-[10px] font-black uppercase tracking-widest text-gray-400 font-rubik">
+                              <th className="px-4 py-3.5 text-[10px] font-bold uppercase tracking-widest text-gray-400 font-rubik">
                                 Name
                               </th>
-                              <th className="px-4 py-3.5 text-[10px] font-black uppercase tracking-widest text-gray-400 font-rubik">
+                              <th className="px-4 py-3.5 text-[10px] font-bold uppercase tracking-widest text-gray-400 font-rubik">
                                 Position
                               </th>
                               {activeTab === "committee" && (
-                                <th className="px-4 py-3.5 text-[10px] font-black uppercase tracking-widest text-gray-400 font-rubik">
+                                <th className="px-4 py-3.5 text-[10px] font-bold uppercase tracking-widest text-gray-400 font-rubik">
                                   Committee
                                 </th>
                               )}
-                              <th className="px-6 sm:px-8 py-3.5 text-right text-[10px] font-black uppercase tracking-widest text-gray-400 font-rubik">
+                              <th className="px-6 sm:px-8 py-3.5 text-right text-[10px] font-bold uppercase tracking-widest text-gray-400 font-rubik">
                                 Actions
                               </th>
                             </tr>
@@ -1168,7 +1168,7 @@ export default function OfficersPage() {
                                     <div className="inline-flex items-center gap-1 opacity-0 group-hover:opacity-100 sm:opacity-100 transition-opacity">
                                       <button
                                         onClick={() => handleEditClick(officer)}
-                                        className="p-2 text-gray-400 hover:text-primary1 hover:bg-primary1/10 rounded-lg transition-all duration-150"
+                                        className="p-2 text-gray-400 hover:text-primary1 hover:bg-primary1/10 rounded-lg transition-all duration-150 cursor-pointer"
                                         title="Edit"
                                       >
                                         <Pencil size={15} />
@@ -1177,7 +1177,7 @@ export default function OfficersPage() {
                                         onClick={() =>
                                           confirmDelete(officer.id)
                                         }
-                                        className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all duration-150"
+                                        className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all duration-150 cursor-pointer"
                                         title="Remove"
                                       >
                                         <Trash2 size={15} />
@@ -1213,7 +1213,7 @@ export default function OfficersPage() {
             <div className="w-14 h-14 bg-red-50 rounded-2xl flex items-center justify-center mx-auto mb-5">
               <AlertTriangle className="w-6 h-6 text-red-500" />
             </div>
-            <h3 className="text-xl font-black text-primary3 font-rubik mb-2">
+            <h3 className="text-xl font-bold text-primary3 font-rubik mb-2">
               Remove Officer?
             </h3>
             <p className="text-gray-400 text-sm font-raleway mb-6 leading-relaxed">
@@ -1223,13 +1223,13 @@ export default function OfficersPage() {
             <div className="flex gap-3">
               <button
                 onClick={() => setShowDeleteModal(false)}
-                className="flex-1 py-3 text-sm font-bold font-rubik text-gray-500 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors"
+                className="flex-1 py-3 text-sm font-bold font-rubik text-gray-500 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 onClick={handleDelete}
-                className="flex-1 py-3 text-sm font-bold font-rubik text-white bg-red-500 hover:bg-red-600 rounded-xl transition-colors shadow-lg shadow-red-500/25"
+                className="flex-1 py-3 text-sm font-bold font-rubik text-white bg-red-500 hover:bg-red-600 rounded-xl transition-colors active:scale-95 shadow-lg shadow-red-500/25 cursor-pointer"
               >
                 Remove
               </button>
@@ -1267,7 +1267,7 @@ export default function OfficersPage() {
               </div>
             </div>
             <div className="text-center mb-6">
-              <h3 className="text-xl font-black text-primary3 font-rubik">
+              <h3 className="text-xl font-bold text-primary3 font-rubik">
                 {successMessage.title}
               </h3>
               <p className="text-gray-400 text-sm font-raleway mt-2">

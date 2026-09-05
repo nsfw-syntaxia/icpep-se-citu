@@ -255,7 +255,7 @@ export default function ExcelUploadModal({
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-6">
+        <div className="flex-1 overflow-y-auto themed-scrollbar p-6 space-y-6">
           {/* Upload Area */}
           {!file ? (
             <div
@@ -285,7 +285,7 @@ export default function ExcelUploadModal({
               />
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="px-6 py-2 bg-linear-to-r from-primary1 to-primary1/90 text-white font-raleway font-semibold rounded-lg hover:shadow-lg transition-all cursor-pointer"
+                className="px-6 py-2 bg-linear-to-r from-primary1 to-primary1/90 text-white font-raleway font-semibold rounded-lg hover:shadow-lg active:scale-95 transition-all cursor-pointer"
               >
                 Select File
               </button>
@@ -349,7 +349,7 @@ export default function ExcelUploadModal({
               {/* Preview Table */}
               {uploadedUsers.length > 0 && (
                 <div className="border border-gray-200 rounded-lg overflow-hidden">
-                  <div className="overflow-x-auto max-h-96">
+                  <div className="overflow-x-auto themed-scrollbar max-h-96">
                     <table className="w-full text-sm">
                       <thead className="bg-gray-100 sticky top-0">
                         <tr>
@@ -486,7 +486,7 @@ export default function ExcelUploadModal({
           <button
             onClick={handleUpload}
             disabled={validCount === 0 || isProcessing}
-            className="px-6 py-2 bg-linear-to-r from-primary1 to-primary1/90 text-white font-raleway font-semibold rounded-lg hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
+            className="px-6 py-2 bg-linear-to-r from-primary1 to-primary1/90 text-white font-raleway font-semibold rounded-lg hover:shadow-lg active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
           >
             {isProcessing
               ? "Processing..."

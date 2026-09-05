@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import faqService from "../../services/faq";
+import Button from "../../components/button";
 
 interface FAQ {
   question: string;
@@ -113,18 +114,12 @@ export function FAQSection() {
             here to help you.
           </p>
           <div className="flex flex-col sm:flex-row justify-center md:justify-start gap-4">
-            <button
-              onClick={() => router.push("/contact-us")}
-              className="bg-primary1 hover:bg-primary2 text-white font-raleway font-semibold px-8 py-3 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg cursor-pointer inline-flex items-center justify-center"
-            >
+            <Button variant="hero" onClick={() => router.push("/contact")}>
               Contact Us
-            </button>
-            <button
-              onClick={() => router.push("/faq")}
-              className="bg-transparent border-2 border-gray-300 text-gray-700 hover:bg-buttonbg1 hover:border-primary1 hover:text-primary1 font-raleway font-semibold px-8 py-3 rounded-full transition-all duration-300 cursor-pointer"
-            >
+            </Button>
+            <Button variant="heroOutline" onClick={() => router.push("/faq")}>
               More FAQs
-            </button>
+            </Button>
           </div>
         </div>
 

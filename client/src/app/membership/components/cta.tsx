@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, type MouseEvent, type FC } from "react";
+import Button from "../../components/button";
 
 interface InteractiveCtaProps {
   isOpen?: boolean;
@@ -77,7 +78,8 @@ const InteractiveCta: FC<InteractiveCtaProps> = ({ isOpen = true }) => {
         {paragraphText}
       </p>
 
-      <button
+      <Button
+        variant="hero"
         onClick={() => {
           if (isOpen) {
             window.open(registrationUrl, "_blank");
@@ -85,12 +87,9 @@ const InteractiveCta: FC<InteractiveCtaProps> = ({ isOpen = true }) => {
             window.location.href = announcementsUrl;
           }
         }}
-        className="bg-primary1 hover:bg-primary2 text-white font-raleway font-semibold px-8 py-3 
-             rounded-full transition-all duration-300 transform hover:scale-105 
-             shadow-lg cursor-pointer"
       >
         {buttonText}
-      </button>
+      </Button>
     </div>
   );
 };

@@ -7,6 +7,7 @@ import FeaturedAnnouncementCard from "../components/featured-announcement";
 import MiniAnnouncementCard from "../components/mini-announcement";
 import announcementService from "@/app/services/announcement";
 import { Announcement } from "../../announcements/utils/announcements";
+import Button from "../../components/button";
 
 export function AnnouncementsSection() {
   const router = useRouter();
@@ -60,12 +61,13 @@ export function AnnouncementsSection() {
           </div>
 
           <div className="hidden sm:block">
-            <button
+            <Button
+              variant="hero"
               onClick={() => router.push("/announcements")}
-              className="bg-primary1 hover:bg-primary2 text-white font-raleway font-semibold px-8 py-3 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg cursor-pointer w-[220px] sm:w-auto"
+              className="w-[220px] px-8 py-3 sm:w-auto"
             >
               View All
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -109,12 +111,9 @@ export function AnnouncementsSection() {
         )}
 
         <div className="mt-8 flex justify-center sm:hidden">
-          <button
-            onClick={() => router.push("/announcements")}
-            className="bg-primary1 hover:bg-primary2 text-white font-raleway font-semibold px-8 py-3 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg cursor-pointer"
-          >
+          <Button variant="hero" onClick={() => router.push("/announcements")}>
             View All
-          </button>
+          </Button>
         </div>
       </div>
     </section>

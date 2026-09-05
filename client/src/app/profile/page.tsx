@@ -172,7 +172,7 @@ export default function ProfilePage() {
 
       <main className="relative z-10 bg-white rounded-b-[40px] md:rounded-b-[50px] overflow-hidden">
         {/* Background Decor */}
-        <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-blue-100/40 rounded-full blur-[120px]" />
           <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-cyan-100/40 rounded-full blur-[120px]" />
         </div>
@@ -355,9 +355,9 @@ export default function ProfilePage() {
                     </div>
 
                     <Button
-                      variant="primary3"
+                      variant="hero"
                       onClick={openEdit}
-                      className="px-5 py-2.5 rounded-xl shadow-md font-rubik font-semibold text-sm whitespace-nowrap cursor-pointer"
+                      className="px-5 py-2.5 text-sm whitespace-nowrap"
                     >
                       Edit
                     </Button>
@@ -374,7 +374,7 @@ export default function ProfilePage() {
                     className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity"
                     onClick={closeEdit}
                   />
-                  <div className="relative z-100000 w-full max-w-2xl bg-white rounded-4xl p-8 shadow-2xl border border-white/50 animate-scale-in flex flex-col max-h-[90vh] overflow-y-auto">
+                  <div className="relative z-100000 w-full max-w-2xl bg-white rounded-4xl p-8 shadow-2xl border border-white/50 animate-scale-in flex flex-col max-h-[90vh] overflow-y-auto themed-scrollbar">
                     <div className="flex items-center justify-between mb-8 pb-4 border-b border-gray-100 sticky top-0 bg-white z-10">
                       <div>
                         <h3 className="text-2xl font-rubik font-bold text-primary3">
@@ -459,18 +459,19 @@ export default function ProfilePage() {
                       )}
 
                       <div className="flex justify-end gap-3 pt-6 border-t border-gray-100 mt-2">
-                        <button
+                        <Button
+                          variant="cancel"
                           type="button"
                           onClick={closeEdit}
-                          className="px-6 py-3 rounded-xl border border-gray-200 font-rubik font-semibold text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-all cursor-pointer"
+                          className="px-6 py-3"
                         >
                           Cancel
-                        </button>
+                        </Button>
                         <Button
-                          variant="primary3"
+                          variant="hero"
                           type="submit"
                           disabled={editLoading}
-                          className="px-8 py-3 rounded-xl font-rubik font-semibold shadow-lg shadow-primary3/20 cursor-pointer"
+                          className="px-8 py-3"
                         >
                           {editLoading ? "Saving Changes..." : "Save Changes"}
                         </Button>

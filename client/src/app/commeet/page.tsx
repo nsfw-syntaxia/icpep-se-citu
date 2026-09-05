@@ -142,19 +142,24 @@ const CommeetPage: FunctionComponent = () => {
     const totalDaysInMonth = new Date(year, month + 1, 0).getDate();
     const totalDaysInPrevMonth = new Date(year, month, 0).getDate();
 
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
     const days = [];
 
     for (let i = firstDayOfMonth - 1; i >= 0; i--) {
-      days.push({ day: totalDaysInPrevMonth - i, inactive: true });
+      days.push({ day: totalDaysInPrevMonth - i, inactive: true, isPast: false });
     }
 
     for (let i = 1; i <= totalDaysInMonth; i++) {
-      days.push({ day: i, inactive: false });
+      const cellDate = new Date(year, month, i);
+      cellDate.setHours(0, 0, 0, 0);
+      days.push({ day: i, inactive: false, isPast: cellDate < today });
     }
 
     const remainingCells = 42 - days.length;
     for (let i = 1; i <= remainingCells; i++) {
-      days.push({ day: i, inactive: true });
+      days.push({ day: i, inactive: true, isPast: false });
     }
     return days;
   };
@@ -182,7 +187,8 @@ const CommeetPage: FunctionComponent = () => {
     isHeader: boolean = false,
     isInactive: boolean = false,
     isSelected: boolean = false,
-    onClick?: (day: number) => void
+    onClick?: (day: number) => void,
+    isPast: boolean = false
   ) => {
     if (isHeader) {
       return (
@@ -192,12 +198,16 @@ const CommeetPage: FunctionComponent = () => {
       );
     }
 
+    const isDisabled = isInactive || isPast;
+
     const baseClasses =
       "flex items-center justify-center h-10 w-10 sm:h-12 sm:w-12 text-sm sm:text-base font-rubik font-medium rounded-xl transition-all duration-200 ease-out";
 
     let stateClasses = "";
     if (isInactive) {
       stateClasses = "text-gray-300 cursor-default";
+    } else if (isPast) {
+      stateClasses = "text-red-300 cursor-not-allowed";
     } else if (isSelected) {
       stateClasses =
         "bg-primary1 text-white shadow-lg shadow-primary1/30 scale-105 font-bold";
@@ -207,7 +217,7 @@ const CommeetPage: FunctionComponent = () => {
     }
 
     const clickableProps =
-      !isInactive && onClick && typeof day === "number"
+      !isDisabled && onClick && typeof day === "number"
         ? { onClick: () => onClick(day) }
         : {};
 
@@ -294,7 +304,8 @@ const CommeetPage: FunctionComponent = () => {
                             false,
                             date.inactive,
                             isSelected,
-                            handleDateClick
+                            handleDateClick,
+                            date.isPast
                           )}
                         </div>
                       );
@@ -340,7 +351,7 @@ const CommeetPage: FunctionComponent = () => {
                     <div className="flex bg-gray-100 p-1 rounded-xl">
                       <button
                         onClick={() => setViewMode("list")}
-                        className={`p-2 rounded-lg transition-all ${
+                        className={`p-2 rounded-lg transition-all cursor-pointer ${
                           viewMode === "list"
                             ? "bg-white text-primary1 shadow-sm"
                             : "text-gray-400 hover:text-gray-600"
@@ -350,7 +361,7 @@ const CommeetPage: FunctionComponent = () => {
                       </button>
                       <button
                         onClick={() => setViewMode("grid")}
-                        className={`p-2 rounded-lg transition-all ${
+                        className={`p-2 rounded-lg transition-all cursor-pointer ${
                           viewMode === "grid"
                             ? "bg-white text-primary1 shadow-sm"
                             : "text-gray-400 hover:text-gray-600"

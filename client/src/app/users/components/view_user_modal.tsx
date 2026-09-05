@@ -81,7 +81,7 @@ export default function ViewUserModal({
         </div>
 
         {/* Content */}
-        <div className="p-6 overflow-y-auto max-h-[calc(90vh-100px)]">
+        <div className="p-6 overflow-y-auto themed-scrollbar max-h-[calc(90vh-100px)]">
           {/* Profile Section */}
           <div className="mb-6 text-center pb-6 border-b border-gray-200">
             <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-linear-to-br from-primary1 to-primary1/70 flex items-center justify-center">
@@ -281,7 +281,7 @@ export default function ViewUserModal({
         <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-end">
           <button
             onClick={onClose}
-            className="px-6 py-2 bg-primary1 text-white font-raleway font-semibold rounded-lg hover:bg-primary1/90 transition-colors"
+            className="px-6 py-2 bg-primary1 text-white font-raleway font-semibold rounded-lg hover:bg-primary1/90 transition-colors cursor-pointer"
           >
             Close
           </button>

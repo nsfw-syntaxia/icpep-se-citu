@@ -31,7 +31,7 @@ const OfficersPage = () => {
             </h1>
             <button
               onClick={() => router.back()}
-              className="mt-4 text-primary1 underline font-raleway"
+              className="mt-4 text-primary1 underline font-raleway cursor-pointer"
             >
               Go Back
             </button>

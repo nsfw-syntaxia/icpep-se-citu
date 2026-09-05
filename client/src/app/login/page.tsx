@@ -434,7 +434,7 @@ export default function Login() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-sky-500 flex items-center justify-center"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-sky-500 flex items-center justify-center cursor-pointer"
                   disabled={isLoading}
                 >
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
@@ -470,7 +470,7 @@ export default function Login() {
 
             <Button
               variant="primary3"
-              className="sm:block border-2 w-full rounded-full bg-sky-400 text-white font-medium mt-10 hover:bg-[var(--primary3)]"
+              className="sm:block border-2 w-full rounded-full bg-sky-400 text-white font-medium mt-10 hover:bg-(--primary3)"
               type="submit"
               disabled={isLoading}
             >
@@ -498,7 +498,7 @@ export default function Login() {
                 <button
                   type="button"
                   onClick={() => setShowNewPassword(!showNewPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-sky-500 flex items-center justify-center"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-sky-500 flex items-center justify-center cursor-pointer"
                   disabled={isLoading}
                 >
                   {showNewPassword ? <EyeOff size={18} /> : <Eye size={18} />}
@@ -524,7 +524,7 @@ export default function Login() {
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-sky-500 flex items-center justify-center"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-sky-500 flex items-center justify-center cursor-pointer"
                   disabled={isLoading}
                 >
                   {showConfirmPassword ? (
@@ -634,7 +634,7 @@ export default function Login() {
 
             <Button
               variant="primary3"
-              className="sm:block border-2 w-full rounded-full bg-sky-400 text-white font-medium mt-10 hover:bg-[var(--primary3)]"
+              className="sm:block border-2 w-full rounded-full bg-sky-400 text-white font-medium mt-10 hover:bg-(--primary3)"
               type="submit"
               disabled={isLoading || !passwordValidation.isValid}
             >
@@ -704,7 +704,7 @@ export default function Login() {
 
               <Button
                 variant="primary3"
-                className="w-full rounded-full bg-sky-400 text-white font-raleway font-semibold hover:bg-[var(--primary3)] transition-colors duration-300"
+                className="w-full rounded-full bg-sky-400 text-white font-raleway font-semibold hover:bg-(--primary3) transition-colors duration-300"
                 onClick={handleSuccessModalClose}
               >
                 Continue to Login

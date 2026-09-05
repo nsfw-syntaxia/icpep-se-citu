@@ -76,7 +76,7 @@ const AdvisorsCarousel: FC<{ items: AdvisorItem[] }> = ({ items }) => {
                 ref={(el) => {
                   itemRefs.current[index] = el;
                 }}
-                className="w-64 h-[22rem] min-w-[16rem] sm:w-80 sm:h-[28rem] sm:min-w-[20rem] origin-bottom overflow-visible shrink-0"
+                className="w-64 h-88 min-w-64 sm:w-80 sm:h-112 sm:min-w-80 origin-bottom overflow-visible shrink-0"
                 animate={{ scale }}
                 style={{
                   marginLeft: `-${marginOffset}rem`,

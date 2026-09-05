@@ -26,7 +26,7 @@ export default function FacultyOfficerCard({
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       className={`relative rounded-2xl p-[2px] 
-        bg-linear-to-br from-[var(--secondary2)] to-[var(--primary1)] 
+        bg-linear-to-br from-(--secondary2) to-(--primary1) 
         shadow-md transition-all duration-500 ease-in-out
         h-[240px] sm:h-[280px]
         ${
@@ -35,7 +35,7 @@ export default function FacultyOfficerCard({
             : "w-[120px] sm:w-[150px]"
         }`}
     >
-      <div className="relative w-full h-full flex items-center justify-start overflow-hidden rounded-[14px] bg-linear-to-br from-[var(--primary1)] to-[var(--primary3)]">
+      <div className="relative w-full h-full flex items-center justify-start overflow-hidden rounded-[14px] bg-linear-to-br from-(--primary1) to-(--primary3)">
         <Image
           src="/icpep logo.png"
           alt="ICPEP Logo"

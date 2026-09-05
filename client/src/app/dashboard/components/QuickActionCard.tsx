@@ -44,7 +44,7 @@ export const QuickActionCard: FC<QuickActionCardProps> = ({
   return (
     <button
       onClick={onClick}
-      className={`flex flex-col text-left rounded-2xl p-4 pt-5 border shadow-sm transition-all duration-300 hover:shadow-md hover:-translate-y-1 group w-full ${styles.bg} ${styles.border}`}
+      className={`flex flex-col text-left rounded-2xl p-4 pt-5 border shadow-sm transition-all duration-300 hover:shadow-md hover:-translate-y-1 active:scale-[0.98] group w-full cursor-pointer ${styles.bg} ${styles.border}`}
     >
       <div className="flex items-center gap-3 mb-2 w-full">
         <div

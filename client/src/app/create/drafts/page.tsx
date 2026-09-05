@@ -256,7 +256,7 @@ export default function DraftsPage() {
         </p>
       </div>
       <Link href={href}>
-        <button className="px-5 py-2.5 text-xs font-bold font-rubik text-primary2 border-2 border-primary2/30 hover:border-primary2 hover:bg-primary2/5 rounded-xl transition-all duration-200">
+        <button className="px-5 py-2.5 text-xs font-bold font-rubik text-primary2 border-2 border-primary2/30 hover:border-primary2 hover:bg-primary2/5 rounded-xl transition-all duration-200 cursor-pointer">
           Create {label}
         </button>
       </Link>
@@ -277,13 +277,13 @@ export default function DraftsPage() {
       <div className="flex-1 min-w-0">{children}</div>
       <div className="flex items-center gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity shrink-0">
         <Link href={editHref}>
-          <button className="p-2 text-gray-400 hover:text-primary1 hover:bg-primary1/10 rounded-lg transition-all duration-150">
+          <button className="p-2 text-gray-400 hover:text-primary1 hover:bg-primary1/10 rounded-lg transition-all duration-150 cursor-pointer">
             <Pencil size={15} />
           </button>
         </Link>
         <button
           onClick={onDelete}
-          className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all duration-150"
+          className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all duration-150 cursor-pointer"
         >
           <Trash2 size={15} />
         </button>
@@ -451,7 +451,7 @@ export default function DraftsPage() {
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-primary1/10 text-primary1 text-xs font-black font-rubik">
+                  <div className="w-full h-full flex items-center justify-center bg-primary1/10 text-primary1 text-xs font-bold font-rubik">
                     {item.name.charAt(0)}
                   </div>
                 )}
@@ -503,7 +503,7 @@ export default function DraftsPage() {
                     className="w-full h-full object-contain p-1"
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-amber-50 text-amber-600 font-black text-lg font-rubik">
+                  <div className="w-full h-full flex items-center justify-center bg-amber-50 text-amber-600 font-bold text-lg font-rubik">
                     {item.name.charAt(0)}
                   </div>
                 )}
@@ -572,7 +572,7 @@ export default function DraftsPage() {
                       <button
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id)}
-                        className={`px-4 py-2 rounded-2xl text-xs sm:text-sm font-bold font-rubik border-2 transition-all duration-200 select-none flex items-center gap-2 ${
+                        className={`px-4 py-2 rounded-2xl text-xs sm:text-sm font-bold font-rubik border-2 transition-all duration-200 select-none flex items-center gap-2 cursor-pointer ${
                           isActive
                             ? "border-primary1 bg-primary1/10 text-primary1 shadow-sm"
                             : "border-gray-200 bg-white text-gray-500 hover:border-gray-300 hover:text-gray-700"
@@ -581,7 +581,7 @@ export default function DraftsPage() {
                         <Icon size={14} className={isActive ? "text-primary1" : "text-gray-400"} />
                         <span>{tab.label}</span>
                         <span
-                          className={`px-2 py-0.5 rounded-full text-[10px] font-black min-w-5 text-center ${
+                          className={`px-2 py-0.5 rounded-full text-[10px] font-bold min-w-5 text-center ${
                             isActive ? "bg-primary1 text-white" : "bg-gray-100 text-gray-500"
                           }`}
                         >
@@ -597,7 +597,7 @@ export default function DraftsPage() {
                     {/* Card Header */}
                     <div className="px-6 sm:px-8 py-6 border-b border-gray-100 flex items-center justify-between gap-3 flex-wrap">
                       <div>
-                        <h2 className="text-xl font-black font-rubik text-primary3">
+                        <h2 className="text-xl font-bold font-rubik text-primary3">
                           {activeConfig.label}
                         </h2>
                         <p className="text-gray-400 text-xs font-raleway mt-0.5 tracking-wide">
@@ -606,7 +606,7 @@ export default function DraftsPage() {
                         </p>
                       </div>
                       <Link href={activeConfig.href}>
-                        <button className="flex items-center gap-1.5 px-4 py-2 text-xs font-bold font-rubik text-primary1 border border-primary1/20 hover:border-primary1/50 hover:bg-primary1/5 rounded-full transition-all duration-200">
+                        <button className="flex items-center gap-1.5 px-4 py-2 text-xs font-bold font-rubik text-primary1 border border-primary1/20 hover:border-primary1/50 hover:bg-primary1/5 rounded-full transition-all duration-200 cursor-pointer">
                           + New{" "}
                           <span className="hidden sm:inline">
                             {activeConfig.emptyLabel}
@@ -661,7 +661,7 @@ export default function DraftsPage() {
             <div className="w-14 h-14 bg-red-50 rounded-2xl flex items-center justify-center mx-auto mb-5">
               <AlertTriangle className="w-6 h-6 text-red-500" />
             </div>
-            <h3 className="text-xl font-black text-primary3 font-rubik mb-2">
+            <h3 className="text-xl font-bold text-primary3 font-rubik mb-2">
               Delete Draft?
             </h3>
             <p className="text-gray-400 text-sm font-raleway mb-6 leading-relaxed">
@@ -671,13 +671,13 @@ export default function DraftsPage() {
             <div className="flex gap-3">
               <button
                 onClick={() => setShowDeleteModal(false)}
-                className="flex-1 py-3 text-sm font-bold font-rubik text-gray-500 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors"
+                className="flex-1 py-3 text-sm font-bold font-rubik text-gray-500 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 onClick={handleDelete}
-                className="flex-1 py-3 text-sm font-bold font-rubik text-white bg-red-500 hover:bg-red-600 rounded-xl transition-colors shadow-lg shadow-red-500/25"
+                className="flex-1 py-3 text-sm font-bold font-rubik text-white bg-red-500 hover:bg-red-600 rounded-xl transition-colors active:scale-95 shadow-lg shadow-red-500/25 cursor-pointer"
               >
                 Delete
               </button>
@@ -715,7 +715,7 @@ export default function DraftsPage() {
               </div>
             </div>
             <div className="text-center mb-6">
-              <h3 className="text-xl font-black text-primary3 font-rubik">
+              <h3 className="text-xl font-bold text-primary3 font-rubik">
                 {successMessage.title}
               </h3>
               <p className="text-gray-400 text-sm font-raleway mt-2">

@@ -952,7 +952,7 @@ export default function UsersListPage() {
               </button>
               <button
                 onClick={handleAddUser}
-                className="flex items-center gap-2 px-4 py-2 bg-primary1 hover:bg-primary2 text-white font-raleway font-semibold rounded-lg hover:shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer"
+                className="flex items-center gap-2 px-4 py-2 bg-primary1 hover:bg-primary2 text-white font-raleway font-semibold rounded-lg hover:shadow-lg hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer"
               >
                 <UserPlus className="w-4 h-4" />
                 Add User
@@ -1085,7 +1085,7 @@ export default function UsersListPage() {
 
       {uploadResult.show && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl p-8 shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+          <div className="bg-white rounded-2xl p-8 shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-y-auto themed-scrollbar">
             <div className="text-center mb-6">
               {uploadResult.failed === 0 ? (
                 <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
@@ -1122,7 +1122,7 @@ export default function UsersListPage() {
                 <h4 className="font-raleway font-semibold text-lg mb-3 text-red-600">
                   Failed Users:
                 </h4>
-                <div className="bg-red-50 rounded-lg p-4 max-h-60 overflow-y-auto">
+                <div className="bg-red-50 rounded-lg p-4 max-h-60 overflow-y-auto themed-scrollbar">
                   {uploadResult.failedUsers.map((user, index) => (
                     <div
                       key={index}

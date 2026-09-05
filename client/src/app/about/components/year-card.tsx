@@ -28,7 +28,7 @@ const YearCard: FC<YearCardProps> = ({ termData }) => {
           <ChevronRight className="w-5 h-5 sm:w-8 sm:h-8" />
         </button>
         <h3
-          className="absolute -bottom-3 -right-4 sm:-bottom-6 sm:-right-8 font-rubik font-black text-[6.8rem] sm:text-[13rem] leading-none text-transparent select-none [-webkit-text-stroke:1px_theme(colors.secondary2)] sm:[-webkit-text-stroke:2px_theme(colors.secondary2)]"
+          className="absolute -bottom-3 -right-4 sm:-bottom-6 sm:-right-8 font-rubik font-black text-[6.8rem] sm:text-[13rem] leading-none text-transparent select-none [-webkit-text-stroke:1px_var(--color-secondary2)] sm:[-webkit-text-stroke:2px_var(--color-secondary2)]"
           aria-hidden="true"
         >
           {termData.term.slice(-4)}

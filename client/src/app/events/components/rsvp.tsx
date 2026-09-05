@@ -115,7 +115,7 @@ export default function RsvpCard({ status, date, rsvpLink }: Props) {
           </p>
           <button
             onClick={handleRsvp}
-            className="w-full bg-primary1 hover:bg-primary2 text-white font-raleway font-bold py-4 rounded-xl transition-all text-lg sm:text-xl shadow-lg hover:shadow-primary1/40 transform hover:-translate-y-0.5 cursor-pointer"
+            className="w-full bg-primary1 hover:bg-primary2 text-white font-raleway font-bold py-4 rounded-xl transition-all text-lg sm:text-xl shadow-lg hover:shadow-primary1/40 transform hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] cursor-pointer"
           >
             {rsvpLink ? "RSVP Now" : "RSVP Now"}
           </button>

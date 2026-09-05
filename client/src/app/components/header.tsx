@@ -633,7 +633,7 @@ const Header = () => {
       </header>
 
       <div
-        className={`fixed inset-0 z-50 overflow-y-auto transition-transform duration-700 ease-in-out ${open ? "translate-x-0 md:translate-y-0" : "translate-x-full md:translate-x-0 md:-translate-y-full"}`}
+        className={`fixed inset-0 z-50 overflow-y-auto themed-scrollbar-dark transition-transform duration-700 ease-in-out ${open ? "translate-x-0 md:translate-y-0" : "translate-x-full md:translate-x-0 md:-translate-y-full"}`}
       >
         <Menu userRole={role} onExit={() => setOpen(false)} />
       </div>

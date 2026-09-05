@@ -67,7 +67,7 @@ function TestimonialCardSkeleton({
 
 function TestimonialsSkeleton() {
   return (
-    <section className="dark-light-background relative min-h-screen overflow-visible z-[2]">
+    <section className="dark-light-background relative min-h-screen overflow-visible z-2">
       <style>{shimmerStyle}</style>
 
       <div className="absolute inset-0 z-0 opacity-90 hidden lg:block">
@@ -179,7 +179,7 @@ export function TestimonialsSection() {
   }, [currentIndex, loading]);
 
   return (
-    <section className="dark-light-background relative min-h-screen overflow-visible z-[2]">
+    <section className="dark-light-background relative min-h-screen overflow-visible z-2">
       <div className="absolute inset-0 z-0 opacity-90 hidden lg:block">
         <div className="blob bg-sky-400 top-0 left-0 animate-blob-1"></div>
         <div className="blob bg-indigo-400 top-0 right-0 animate-blob-2"></div>
@@ -215,7 +215,7 @@ export function TestimonialsSection() {
               {/* mobile carousel */}
               <div
                 ref={scrollContainerRef}
-                className="lg:hidden z-20 w-full h-[450px] flex overflow-x-auto snap-x snap-mandatory scroll-smooth"
+                className="lg:hidden z-20 w-full h-[450px] flex overflow-x-auto hide-scrollbar snap-x snap-mandatory scroll-smooth"
                 style={
                   {
                     scrollbarWidth: "none",

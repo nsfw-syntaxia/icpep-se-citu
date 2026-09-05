@@ -317,6 +317,7 @@ html {
 
 .themed-scrollbar::-webkit-scrollbar {
   width: 7px;
+  height: 7px;
 }
 .themed-scrollbar::-webkit-scrollbar-track {
   background: #f1f5f9;
@@ -328,6 +329,23 @@ html {
 }
 .themed-scrollbar::-webkit-scrollbar-thumb:hover {
   background-color: #94a3b8;
+}
+
+/* Same custom scrollbar, tuned for dark/colored backgrounds */
+.themed-scrollbar-dark::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+.themed-scrollbar-dark::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+}
+.themed-scrollbar-dark::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+}
+.themed-scrollbar-dark::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.5);
 }
 
 @keyframes spin-and-fade {

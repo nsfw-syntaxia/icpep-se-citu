@@ -76,7 +76,7 @@ export default function StudentDashboardPage() {
             
                   <button
   onClick={() => router.push("/events")}
-  className="flex items-center justify-center gap-2 border-2 border-primary1 text-primary1 hover:bg-primary1 hover:text-white text-xs font-raleway font-semibold px-6 py-2 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg cursor-pointer w-[220px] sm:w-auto"
+  className="flex items-center justify-center gap-2 border-2 border-primary1 text-primary1 hover:bg-primary1 hover:text-white text-xs font-raleway font-semibold px-6 py-2 rounded-full transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg cursor-pointer w-[220px] sm:w-auto"
 >
   <span>Explore More Events</span>
   <ChevronRight className="h-4 w-4" />
@@ -130,7 +130,7 @@ export default function StudentDashboardPage() {
                   
                   <button
   onClick={() => router.push("/announcements")}
-  className="flex items-center justify-center gap-2 border-2 border-primary1 text-primary1 hover:bg-primary1 hover:text-white text-xs font-raleway font-semibold px-6 py-2 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg cursor-pointer w-[220px] sm:w-auto"
+  className="flex items-center justify-center gap-2 border-2 border-primary1 text-primary1 hover:bg-primary1 hover:text-white text-xs font-raleway font-semibold px-6 py-2 rounded-full transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg cursor-pointer w-[220px] sm:w-auto"
 >
   <span>View All Announcements</span>
   <ChevronRight className="h-4 w-4" />
@@ -163,7 +163,7 @@ export default function StudentDashboardPage() {
                   </h3>
                   <button
                     onClick={() => router.push("/merch")}
-                    className="inline-flex items-center gap-1 font-raleway text-xs font-semibold text-primary1 hover:text-primary3 transition-colors duration-300"
+                    className="inline-flex items-center gap-1 font-raleway text-xs font-semibold text-primary1 hover:text-primary3 transition-colors duration-300 cursor-pointer"
                   >
                     Visit Shop
                     <ChevronRight className="h-3 w-3" />

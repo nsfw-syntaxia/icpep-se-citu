@@ -167,7 +167,7 @@ export default function AnnouncementDetailPage() {
           </p>
           <button
             onClick={() => router.push("/announcements")}
-            className="group inline-flex items-center justify-center gap-2 rounded-full bg-primary1 px-6 py-3 font-rubik font-semibold text-white shadow-lg transition-all duration-300 ease-in-out hover:bg-primary2"
+            className="group inline-flex items-center justify-center gap-2 rounded-full bg-primary1 px-6 py-3 font-rubik font-semibold text-white shadow-lg transition-all duration-300 ease-in-out hover:bg-primary2 active:scale-95 cursor-pointer"
           >
             <ChevronLeft className="h-5 w-5 transition-transform duration-300 group-hover:-translate-x-1" />
             <span>Back to Announcements</span>

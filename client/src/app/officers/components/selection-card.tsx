@@ -23,11 +23,11 @@ const SelectionCard: FC<SelectionCardProps> = ({
       onClick={onClick}
       className={`
         relative w-full rounded-3xl
-        shadow-lg 
+        shadow-lg
         ${shadowColorClass} ${className}
         group overflow-hidden isolate
-        cursor-default
-        transition-transform duration-300 ease-out hover:scale-[1.02]
+        cursor-pointer
+        transition-transform duration-300 ease-out hover:scale-[1.02] active:scale-[0.99]
       `}
     >
       {/* Background Gradient */}

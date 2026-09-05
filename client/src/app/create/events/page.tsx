@@ -638,7 +638,7 @@ export default function EventsPage() {
     `${inputBaseStyle} ${inputFocusStyle} ${hasError ? errorInputStyle : ""}`;
 
   const dropdownContainerStyle =
-    "absolute z-30 w-full min-w-[5rem] mt-2 bg-white border border-gray-100 rounded-2xl shadow-xl overflow-hidden flex flex-col gap-1 p-2 max-h-56 overflow-y-auto";
+    "absolute z-30 w-full min-w-[5rem] mt-2 bg-white border border-gray-100 rounded-2xl shadow-xl overflow-x-hidden flex flex-col gap-1 p-2 max-h-56 overflow-y-auto themed-scrollbar";
   const dropdownItemStyle =
     "flex items-center justify-between px-3 py-2 rounded-xl cursor-pointer transition-colors font-rubik text-sm font-medium";
   const dropdownItemSelectedStyle = "bg-primary1/5 text-primary1";
@@ -808,7 +808,7 @@ export default function EventsPage() {
               <div className="flex items-center justify-between mb-3 px-1">
                 <button
                   type="button"
-                  className="p-1.5 rounded-xl hover:bg-gray-100 text-gray-600 transition-colors"
+                  className="p-1.5 rounded-xl hover:bg-gray-100 text-gray-600 transition-colors cursor-pointer"
                   onClick={(e) => {
                     e.stopPropagation();
                     if (viewMonth === 0) {
@@ -826,7 +826,7 @@ export default function EventsPage() {
                 </span>
                 <button
                   type="button"
-                  className="p-1.5 rounded-xl hover:bg-gray-100 text-gray-600 transition-colors"
+                  className="p-1.5 rounded-xl hover:bg-gray-100 text-gray-600 transition-colors cursor-pointer"
                   onClick={(e) => {
                     e.stopPropagation();
                     if (viewMonth === 11) {
@@ -863,7 +863,7 @@ export default function EventsPage() {
                     <button
                       key={dayNum}
                       type="button"
-                      className={`h-8 w-8 mx-auto rounded-xl flex items-center justify-center text-xs font-semibold transition-all ${
+                      className={`h-8 w-8 mx-auto rounded-xl flex items-center justify-center text-xs font-semibold transition-all cursor-pointer active:scale-90 ${
                         isSelected
                           ? "bg-primary1 text-white font-bold shadow-md shadow-primary1/20"
                           : isToday
@@ -885,7 +885,7 @@ export default function EventsPage() {
               <div className="mt-3 pt-2 border-t border-gray-100 flex justify-between items-center text-xs font-semibold">
                 <button
                   type="button"
-                  className="text-primary1 hover:underline font-raleway"
+                  className="text-primary1 hover:underline font-raleway cursor-pointer"
                   onClick={(e) => {
                     e.stopPropagation();
                     onChange(todayStr);
@@ -897,7 +897,7 @@ export default function EventsPage() {
                 {value && (
                   <button
                     type="button"
-                    className="text-gray-400 hover:text-red-500 font-raleway"
+                    className="text-gray-400 hover:text-red-500 font-raleway cursor-pointer"
                     onClick={(e) => {
                       e.stopPropagation();
                       onChange("");
@@ -981,7 +981,7 @@ export default function EventsPage() {
                         </div>
                         <button
                           onClick={handleCancelEdit}
-                          className="text-white/80 hover:text-white text-sm font-bold font-raleway underline underline-offset-2 transition-colors"
+                          className="text-white/80 hover:text-white text-sm font-bold font-raleway underline underline-offset-2 transition-colors cursor-pointer"
                         >
                           Cancel
                         </button>
@@ -1025,7 +1025,7 @@ export default function EventsPage() {
                               <button
                                 type="button"
                                 onClick={() => fileInputRef.current?.click()}
-                                className="bg-white text-primary3 text-xs font-bold px-4 py-2 rounded-full shadow-lg hover:scale-105 transition-transform font-rubik"
+                                className="bg-white text-primary3 text-xs font-bold px-4 py-2 rounded-full shadow-lg hover:scale-105 active:scale-95 transition-transform font-rubik cursor-pointer"
                               >
                                 Replace
                               </button>
@@ -1038,7 +1038,7 @@ export default function EventsPage() {
                                   setImages([]);
                                   setPreviews([]);
                                 }}
-                                className="bg-red-500 text-white text-xs font-bold px-4 py-2 rounded-full shadow-lg hover:scale-105 transition-transform font-rubik"
+                                className="bg-red-500 text-white text-xs font-bold px-4 py-2 rounded-full shadow-lg hover:scale-105 active:scale-95 transition-transform font-rubik cursor-pointer"
                               >
                                 Remove
                               </button>
@@ -1097,7 +1097,7 @@ export default function EventsPage() {
                                     : [...prev, tag],
                                 )
                               }
-                              className={`px-4 py-2 text-xs font-bold rounded-xl border-2 transition-all duration-200 font-rubik ${tags.includes(tag) ? "bg-primary2 text-white border-primary2 shadow-md" : "border-gray-200 text-gray-500 bg-white hover:border-primary2/50 hover:text-primary2"}`}
+                              className={`px-4 py-2 text-xs font-bold rounded-xl border-2 transition-all duration-200 font-rubik cursor-pointer active:scale-95 ${tags.includes(tag) ? "bg-primary2 text-white border-primary2 shadow-md" : "border-gray-200 text-gray-500 bg-white hover:border-primary2/50 hover:text-primary2"}`}
                             >
                               {tag}
                             </button>
@@ -1106,7 +1106,7 @@ export default function EventsPage() {
                             <button
                               type="button"
                               onClick={() => setShowTagInput(true)}
-                              className="flex items-center gap-1 px-4 py-2 border-2 border-dashed border-primary2/40 text-primary2 rounded-xl hover:border-primary2 hover:bg-primary2/5 transition-all font-rubik text-xs font-bold"
+                              className="flex items-center gap-1 px-4 py-2 border-2 border-dashed border-primary2/40 text-primary2 rounded-xl hover:border-primary2 hover:bg-primary2/5 transition-all font-rubik text-xs font-bold cursor-pointer"
                             >
                               <Plus size={12} /> Custom
                             </button>
@@ -1137,7 +1137,7 @@ export default function EventsPage() {
                                   setNewTag("");
                                   setShowTagInput(false);
                                 }}
-                                className="px-3 py-2 bg-linear-to-r from-primary1 to-primary2 text-white rounded-xl text-xs font-bold"
+                                className="px-3 py-2 bg-linear-to-r from-primary1 to-primary2 text-white rounded-xl text-xs font-bold cursor-pointer"
                               >
                                 Add
                               </button>
@@ -1147,7 +1147,7 @@ export default function EventsPage() {
                                   setNewTag("");
                                   setShowTagInput(false);
                                 }}
-                                className="px-3 py-2 border-2 border-gray-200 text-gray-500 rounded-xl text-xs font-bold"
+                                className="px-3 py-2 border-2 border-gray-200 text-gray-500 rounded-xl text-xs font-bold cursor-pointer"
                               >
                                 ✕
                               </button>
@@ -1168,7 +1168,7 @@ export default function EventsPage() {
                                   onClick={() =>
                                     setTags(tags.filter((_, idx) => idx !== i))
                                   }
-                                  className="hover:text-red-500 transition-colors"
+                                  className="hover:text-red-500 transition-colors cursor-pointer"
                                 >
                                   <X size={10} />
                                 </button>
@@ -1279,7 +1279,7 @@ export default function EventsPage() {
       key={m}
       type="button"
       onClick={() => setMode(m)}
-      className={`px-5 py-2 rounded-full text-sm font-bold font-rubik border-2 transition-all duration-200 ${
+      className={`px-5 py-2 rounded-full text-sm font-bold font-rubik border-2 transition-all duration-200 cursor-pointer ${
         mode === m
           ? "border-primary1 text-primary1 bg-primary1/10"
           : "border-gray-300 text-gray-600 hover:border-gray-400 hover:text-gray-800 bg-transparent"
@@ -1301,7 +1301,7 @@ export default function EventsPage() {
                               <button
                                 type="button"
                                 onClick={() => setShowAdmissionInput(true)}
-                                className="flex items-center gap-1 px-3 py-1.5 text-xs font-bold border-2 border-primary2/30 text-primary2 rounded-lg hover:border-primary2 hover:bg-primary2/5 transition-all font-rubik"
+                                className="flex items-center gap-1 px-3 py-1.5 text-xs font-bold border-2 border-primary2/30 text-primary2 rounded-lg hover:border-primary2 hover:bg-primary2/5 transition-all font-rubik cursor-pointer"
                               >
                                 <Plus size={11} /> Add
                               </button>
@@ -1340,7 +1340,7 @@ export default function EventsPage() {
                                     setPrice("");
                                     setShowAdmissionInput(false);
                                   }}
-                                  className="px-5 py-2.5 bg-linear-to-r from-primary1 to-primary2 text-white rounded-xl font-bold text-xs font-rubik shadow-sm"
+                                  className="px-5 py-2.5 bg-linear-to-r from-primary1 to-primary2 text-white rounded-xl font-bold text-xs font-rubik shadow-sm cursor-pointer"
                                 >
                                   Add
                                 </button>
@@ -1351,7 +1351,7 @@ export default function EventsPage() {
                                     setPrice("");
                                     setShowAdmissionInput(false);
                                   }}
-                                  className="px-4 py-2.5 border-2 border-gray-200 bg-white text-gray-500 rounded-xl font-bold text-xs font-rubik"
+                                  className="px-4 py-2.5 border-2 border-gray-200 bg-white text-gray-500 rounded-xl font-bold text-xs font-rubik cursor-pointer"
                                 >
                                   Cancel
                                 </button>
@@ -1378,7 +1378,7 @@ export default function EventsPage() {
                                         ),
                                       )
                                     }
-                                    className="hover:text-red-500 transition-colors"
+                                    className="hover:text-red-500 transition-colors cursor-pointer"
                                   >
                                     <X size={12} />
                                   </button>
@@ -1560,7 +1560,7 @@ export default function EventsPage() {
                             <button
                               type="button"
                               onClick={() => setShowAdditionalInfo(true)}
-                              className="flex items-center gap-1 px-3 py-1.5 text-xs font-bold border-2 border-primary2/30 text-primary2 rounded-lg hover:border-primary2 hover:bg-primary2/5 transition-all font-rubik"
+                              className="flex items-center gap-1 px-3 py-1.5 text-xs font-bold border-2 border-primary2/30 text-primary2 rounded-lg hover:border-primary2 hover:bg-primary2/5 transition-all font-rubik cursor-pointer"
                             >
                               <Plus size={11} /> Add Section
                             </button>
@@ -1596,7 +1596,7 @@ export default function EventsPage() {
                                         p.filter((_, i) => i !== idx),
                                       )
                                     }
-                                    className="px-3 py-2.5 rounded-xl bg-white border-2 border-red-100 text-red-400 hover:bg-red-50 text-xs font-bold font-rubik transition-all"
+                                    className="px-3 py-2.5 rounded-xl bg-white border-2 border-red-100 text-red-400 hover:bg-red-50 text-xs font-bold font-rubik transition-all cursor-pointer"
                                   >
                                     Remove
                                   </button>
@@ -1625,7 +1625,7 @@ export default function EventsPage() {
                                   { title: "", body: "" },
                                 ])
                               }
-                              className="w-full px-6 py-3.5 border-2 border-dashed border-primary2/30 text-primary2 rounded-xl hover:border-primary2 hover:bg-primary2/5 transition-all font-bold font-rubik text-sm flex items-center justify-center gap-2"
+                              className="w-full px-6 py-3.5 border-2 border-dashed border-primary2/30 text-primary2 rounded-xl hover:border-primary2 hover:bg-primary2/5 transition-all font-bold font-rubik text-sm flex items-center justify-center gap-2 cursor-pointer"
                             >
                               <Plus size={14} /> Add Another Section
                             </button>
@@ -1669,7 +1669,7 @@ export default function EventsPage() {
                                     visibility: opt.value,
                                   }))
                                 }
-                                className={`flex items-center gap-3 rounded-xl px-4 py-3.5 text-left border-2 transition-all duration-200 ${isActive ? `${opt.bg} ${opt.color} ${opt.border} shadow-sm scale-[1.02]` : "bg-white text-gray-400 border-gray-100 hover:border-gray-300 hover:text-gray-600"}`}
+                                className={`flex items-center gap-3 rounded-xl px-4 py-3.5 text-left border-2 transition-all duration-200 cursor-pointer ${isActive ? `${opt.bg} ${opt.color} ${opt.border} shadow-sm scale-[1.02]` : "bg-white text-gray-400 border-gray-100 hover:border-gray-300 hover:text-gray-600"}`}
                               >
                                 <span
                                   className={`w-2 h-2 rounded-full shrink-0 ${isActive ? opt.dot : "bg-gray-200"}`}
@@ -1710,7 +1710,7 @@ export default function EventsPage() {
                             <button
                               type="button"
                               onClick={handleCancelEdit}
-                              className="px-6 py-3 font-rubik font-bold text-gray-500 border-2 border-gray-200 hover:border-red-200 hover:text-red-400 rounded-2xl transition-all duration-300"
+                              className="px-6 py-3 font-rubik font-bold text-gray-500 border-2 border-gray-200 hover:border-red-200 hover:text-red-400 rounded-2xl transition-all duration-300 cursor-pointer"
                             >
                               Cancel
                             </button>
@@ -1747,7 +1747,7 @@ export default function EventsPage() {
                 <div className="bg-white rounded-4xl border transition-all duration-300 shadow-md hover:shadow-primary1/40 hover:-translate-y-2 border-gray-200">
                   <div className="px-6 sm:px-8 py-6 border-b border-gray-100 flex flex-wrap justify-between items-center gap-4">
                     <div>
-                      <h2 className="text-xl font-black font-rubik text-primary3">
+                      <h2 className="text-xl font-bold font-rubik text-primary3">
                         Published Events
                       </h2>
                         <p className="text-gray-400 text-xs font-raleway mt-0.5 tracking-wide">
@@ -1757,7 +1757,7 @@ export default function EventsPage() {
                       </div>
                       <button
                         onClick={fetchEvents}
-                        className="flex items-center gap-2 text-xs font-bold font-rubik text-primary1 border border-primary1/20 hover:border-primary1/50 hover:bg-primary1/5 px-4 py-2 rounded-full transition-all duration-200"
+                        className="flex items-center gap-2 text-xs font-bold font-rubik text-primary1 border border-primary1/20 hover:border-primary1/50 hover:bg-primary1/5 px-4 py-2 rounded-full transition-all duration-200 cursor-pointer"
                       >
                         <RefreshCw
                           size={13}
@@ -1789,23 +1789,23 @@ export default function EventsPage() {
                         </div>
                       </div>
                     ) : (
-                      <div className="overflow-x-auto">
+                      <div className="overflow-x-auto themed-scrollbar">
                         <table className="w-full text-left min-w-[640px]">
                           <thead>
                             <tr className="bg-gray-50/80">
-                              <th className="px-6 sm:px-8 py-3.5 text-[10px] font-black uppercase tracking-widest text-gray-400 font-rubik">
+                              <th className="px-6 sm:px-8 py-3.5 text-[10px] font-bold uppercase tracking-widest text-gray-400 font-rubik">
                                 Cover
                               </th>
-                              <th className="px-4 py-3.5 text-[10px] font-black uppercase tracking-widest text-gray-400 font-rubik">
+                              <th className="px-4 py-3.5 text-[10px] font-bold uppercase tracking-widest text-gray-400 font-rubik">
                                 Title
                               </th>
-                              <th className="px-4 py-3.5 text-[10px] font-black uppercase tracking-widest text-gray-400 font-rubik">
+                              <th className="px-4 py-3.5 text-[10px] font-bold uppercase tracking-widest text-gray-400 font-rubik">
                                 Date
                               </th>
-                              <th className="px-4 py-3.5 text-[10px] font-black uppercase tracking-widest text-gray-400 font-rubik">
+                              <th className="px-4 py-3.5 text-[10px] font-bold uppercase tracking-widest text-gray-400 font-rubik">
                                 Mode
                               </th>
-                              <th className="px-6 sm:px-8 py-3.5 text-right text-[10px] font-black uppercase tracking-widest text-gray-400 font-rubik">
+                              <th className="px-6 sm:px-8 py-3.5 text-right text-[10px] font-bold uppercase tracking-widest text-gray-400 font-rubik">
                                 Actions
                               </th>
                             </tr>
@@ -1873,14 +1873,14 @@ export default function EventsPage() {
                                     <div className="inline-flex items-center gap-1 opacity-0 group-hover:opacity-100 sm:opacity-100 transition-opacity">
                                       <button
                                         onClick={() => handleEditClick(item)}
-                                        className="p-2 text-gray-400 hover:text-primary1 hover:bg-primary1/10 rounded-lg transition-all duration-150"
+                                        className="p-2 text-gray-400 hover:text-primary1 hover:bg-primary1/10 rounded-lg transition-all duration-150 cursor-pointer"
                                         title="Edit"
                                       >
                                         <Pencil size={15} />
                                       </button>
                                       <button
                                         onClick={() => confirmDelete(item._id)}
-                                        className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all duration-150"
+                                        className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all duration-150 cursor-pointer"
                                         title="Delete"
                                       >
                                         <Trash2 size={15} />
@@ -1916,7 +1916,7 @@ export default function EventsPage() {
             <div className="w-14 h-14 bg-red-50 rounded-2xl flex items-center justify-center mx-auto mb-5">
               <AlertTriangle className="w-6 h-6 text-red-500" />
             </div>
-            <h3 className="text-xl font-black text-primary3 font-rubik mb-2">
+            <h3 className="text-xl font-bold text-primary3 font-rubik mb-2">
               Delete Event?
             </h3>
             <p className="text-gray-400 text-sm font-raleway mb-6 leading-relaxed">
@@ -1926,13 +1926,13 @@ export default function EventsPage() {
             <div className="flex gap-3">
               <button
                 onClick={() => setShowDeleteModal(false)}
-                className="flex-1 py-3 text-sm font-bold font-rubik text-gray-500 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors"
+                className="flex-1 py-3 text-sm font-bold font-rubik text-gray-500 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 onClick={handleDelete}
-                className="flex-1 py-3 text-sm font-bold font-rubik text-white bg-red-500 hover:bg-red-600 rounded-xl transition-colors shadow-lg shadow-red-500/25"
+                className="flex-1 py-3 text-sm font-bold font-rubik text-white bg-red-500 hover:bg-red-600 rounded-xl transition-colors active:scale-95 shadow-lg shadow-red-500/25 cursor-pointer"
               >
                 Delete
               </button>
@@ -1973,7 +1973,7 @@ export default function EventsPage() {
               </div>
             </div>
             <div className="text-center mb-6">
-              <h3 className="text-xl font-black text-primary3 font-rubik">
+              <h3 className="text-xl font-bold text-primary3 font-rubik">
                 {successMessage.title}
               </h3>
               <p className="text-gray-400 text-sm font-raleway mt-2">
@@ -1997,7 +1997,7 @@ export default function EventsPage() {
                   setShowSuccessModal(false);
                   setSubmitSuccess(false);
                 }}
-                className="w-full py-3 text-sm font-bold font-rubik text-gray-500 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors"
+                className="w-full py-3 text-sm font-bold font-rubik text-gray-500 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors cursor-pointer"
               >
                 Close
               </button>

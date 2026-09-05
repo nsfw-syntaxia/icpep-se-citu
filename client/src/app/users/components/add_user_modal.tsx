@@ -41,7 +41,7 @@ export default function AddUserModal({
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
   const dropdownContainerStyle =
-    "absolute z-30 w-full mt-2 bg-white border border-gray-100 rounded-2xl shadow-xl overflow-hidden flex flex-col gap-1 p-2 max-h-56 overflow-y-auto";
+    "absolute z-30 w-full mt-2 bg-white border border-gray-100 rounded-2xl shadow-xl overflow-x-hidden flex flex-col gap-1 p-2 max-h-56 overflow-y-auto themed-scrollbar";
   const dropdownItemStyle =
     "flex items-center justify-between px-4 py-2.5 rounded-xl cursor-pointer transition-colors font-rubik text-sm font-medium";
   const dropdownItemSelectedStyle = "bg-primary1/5 text-primary1";
@@ -448,7 +448,7 @@ export default function AddUserModal({
           </button>
           <button
             onClick={handleSubmit}
-            className="px-6 py-2 bg-linear-to-r from-primary1 to-primary1/90 text-white font-raleway font-semibold rounded-lg hover:shadow-lg hover:scale-105 transition-all cursor-pointer"
+            className="px-6 py-2 bg-linear-to-r from-primary1 to-primary1/90 text-white font-raleway font-semibold rounded-lg hover:shadow-lg hover:scale-105 active:scale-95 transition-all cursor-pointer"
           >
             Add User
           </button>

@@ -128,7 +128,7 @@ const Footer = () => {
             */}
             <div className="flex flex-col items-center gap-3 mb-6 sm:mb-0">
               <Link
-                href="/contact-us"
+                href="/contact"
                 className="inline-flex items-center gap-2 rounded-full border border-white/30 px-4 py-2 text-sm font-semibold text-sky-100 transition-all hover:border-white hover:bg-white hover:text-[#00609c]"
               >
                 <MessageCircle className="h-4 w-4" aria-hidden="true" />

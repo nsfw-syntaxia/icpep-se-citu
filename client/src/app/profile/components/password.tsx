@@ -128,8 +128,8 @@ export default function SecuritySection({
         </div>
 
         <Button
-          variant="secondary2"
-          className="px-5 py-2.5 rounded-xl shadow-md font-rubik font-semibold text-sm whitespace-nowrap cursor-pointer hover:scale-105 transition-transform"
+          variant="hero"
+          className="px-5 py-2.5 text-sm whitespace-nowrap"
           onClick={openModal}
         >
           {/* Responsive Text */}
@@ -206,17 +206,18 @@ export default function SecuritySection({
                 )}
 
                 <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
-                  <button
+                  <Button
+                    variant="cancel"
                     type="button"
                     onClick={closeModal}
-                    className="px-6 py-2.5 rounded-xl border border-gray-200 font-rubik font-semibold text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-colors cursor-pointer"
+                    className="px-6 py-2.5"
                   >
                     Cancel
-                  </button>
+                  </Button>
                   <Button
                     type="submit"
-                    variant="primary3"
-                    className="px-6 py-2.5 rounded-xl font-rubik font-semibold shadow-lg shadow-primary3/20 cursor-pointer"
+                    variant="hero"
+                    className="px-6 py-2.5"
                     disabled={submitting}
                   >
                     {submitting ? "Updating..." : "Update Password"}

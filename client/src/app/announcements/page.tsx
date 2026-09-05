@@ -258,7 +258,7 @@ export default function AnnouncementsPage() {
                   {searchQuery && (
                     <button
                       onClick={() => setSearchQuery("")}
-                      className="ml-2 text-gray-400 hover:text-primary1 transition-colors"
+                      className="ml-2 text-gray-400 hover:text-primary1 transition-colors cursor-pointer"
                     >
                       <X className="h-4 w-4" />
                     </button>
@@ -275,7 +275,7 @@ export default function AnnouncementsPage() {
                     setIsCategoryFilterOpen(false);
                   }}
                   className={clsx(
-                    "flex items-center justify-center h-[52px] w-[52px] bg-white border-2 rounded-2xl transition-all hover:border-primary1",
+                    "flex items-center justify-center h-[52px] w-[52px] bg-white border-2 rounded-2xl transition-all hover:border-primary1 cursor-pointer",
                     isFilterOpen ||
                       selectedYears.length > 0 ||
                       selectedMonths.length > 0
@@ -293,7 +293,7 @@ export default function AnnouncementsPage() {
                         {filterStep === "month" && (
                           <button
                             onClick={() => setFilterStep("year")}
-                            className="p-1 hover:bg-gray-100 rounded-full transition-colors text-primary1"
+                            className="p-1 hover:bg-gray-100 rounded-full transition-colors text-primary1 cursor-pointer"
                           >
                             <ChevronLeft className="h-4 w-4" />
                           </button>
@@ -309,7 +309,7 @@ export default function AnnouncementsPage() {
                           setSelectedYears([]);
                           setSelectedMonths([]);
                         }}
-                        className="flex items-center gap-1 px-2 py-1 bg-red-50 hover:bg-red-100 rounded-full transition-colors group"
+                        className="flex items-center gap-1 px-2 py-1 bg-red-50 hover:bg-red-100 rounded-full transition-colors group cursor-pointer"
                       >
                         <RotateCcw className="h-3 w-3 text-red-500 group-hover:-rotate-45 transition-transform" />
                         <span className="font-raleway text-[9px] font-bold text-red-500 uppercase tracking-wider">
@@ -334,7 +334,7 @@ export default function AnnouncementsPage() {
                                   : toggleMonth(idx)
                               }
                               className={clsx(
-                                "relative py-2.5 rounded-xl text-xs font-bold font-rubik transition-all duration-200 border-2 overflow-hidden",
+                                "relative py-2.5 rounded-xl text-xs font-bold font-rubik transition-all duration-200 border-2 overflow-hidden cursor-pointer active:scale-95",
                                 isSelected
                                   ? "bg-primary1 text-white border-primary1 shadow-md shadow-primary1/30 scale-[0.96]"
                                   : "bg-white text-gray-500 border-gray-50 hover:border-primary1/30 hover:bg-primary1/5 hover:text-primary1",
@@ -356,7 +356,7 @@ export default function AnnouncementsPage() {
                           ? setFilterStep("month")
                           : setIsFilterOpen(false)
                       }
-                      className="w-full mt-5 py-2.5 bg-primary3 text-white rounded-xl font-rubik font-bold text-xs flex items-center justify-center gap-2 hover:opacity-90 active:scale-[0.97] transition-all shadow-lg shadow-primary3/10"
+                      className="w-full mt-5 py-2.5 bg-primary3 text-white rounded-xl font-rubik font-bold text-xs flex items-center justify-center gap-2 hover:opacity-90 active:scale-[0.97] transition-all shadow-lg shadow-primary3/10 cursor-pointer"
                     >
                       {filterStep === "year" ? (
                         <>
@@ -380,7 +380,7 @@ export default function AnnouncementsPage() {
                     setIsFilterOpen(false);
                   }}
                   className={clsx(
-                    "flex items-center justify-center h-[52px] w-[52px] bg-white border-2 rounded-2xl transition-all hover:border-primary1",
+                    "flex items-center justify-center h-[52px] w-[52px] bg-white border-2 rounded-2xl transition-all hover:border-primary1 cursor-pointer",
                     isCategoryFilterOpen || activeTab !== "All"
                       ? "border-primary1 bg-primary1/5 shadow-sm shadow-primary1/10"
                       : "border-primary1/20",
@@ -397,7 +397,7 @@ export default function AnnouncementsPage() {
                       </span>
                       <button
                         onClick={() => setActiveTab("All")}
-                        className="flex items-center gap-1 px-2 py-1 bg-red-50 hover:bg-red-100 rounded-full transition-colors group"
+                        className="flex items-center gap-1 px-2 py-1 bg-red-50 hover:bg-red-100 rounded-full transition-colors group cursor-pointer"
                       >
                         <RotateCcw className="h-3 w-3 text-red-500 group-hover:-rotate-45 transition-transform" />
                         <span className="font-raleway text-[9px] font-bold text-red-500 uppercase tracking-wider">
@@ -414,7 +414,7 @@ export default function AnnouncementsPage() {
                             setIsCategoryFilterOpen(false);
                           }}
                           className={clsx(
-                            "w-full py-2.5 px-4 rounded-xl text-sm transition-all duration-200 text-left flex items-center gap-3 font-rubik cursor-pointer",
+                            "w-full py-2.5 px-4 rounded-xl text-sm transition-all duration-200 text-left flex items-center gap-3 font-rubik cursor-pointer active:scale-[0.98]",
                             activeTab === cat.name
                               ? "bg-primary1 text-white shadow-md shadow-primary1/25 font-semibold"
                               : "text-gray-600 hover:bg-primary1/5 hover:text-primary1 hover:translate-x-1",
@@ -464,7 +464,7 @@ export default function AnnouncementsPage() {
                     Category: {activeTab}
                     <button
                       onClick={() => setActiveTab("All")}
-                      className="hover:text-primary3 transition-colors"
+                      className="hover:text-primary3 transition-colors cursor-pointer"
                     >
                       <X className="h-3 w-3" />
                     </button>
@@ -483,7 +483,7 @@ export default function AnnouncementsPage() {
                             prev.filter((y) => !range.original.includes(y)),
                           )
                         }
-                        className="hover:text-primary3 transition-colors"
+                        className="hover:text-primary3 transition-colors cursor-pointer"
                       >
                         <X className="h-3 w-3" />
                       </button>
@@ -503,7 +503,7 @@ export default function AnnouncementsPage() {
                             prev.filter((m) => !range.original.includes(m)),
                           )
                         }
-                        className="hover:text-primary1 transition-colors"
+                        className="hover:text-primary1 transition-colors cursor-pointer"
                       >
                         <X className="h-3 w-3" />
                       </button>
@@ -564,7 +564,7 @@ export default function AnnouncementsPage() {
                           <button
                             key={pageNum}
                             onClick={() => setCurrentPage(pageNum)}
-                            className={`w-10 h-10 rounded-xl text-sm font-bold font-rubik transition-all border-2 ${
+                            className={`w-10 h-10 rounded-xl text-sm font-bold font-rubik transition-all border-2 cursor-pointer ${
                               currentPage === pageNum
                                 ? "bg-primary1 text-white border-primary1"
                                 : "border-primary1/20 text-primary1 hover:border-primary1 hover:bg-primary1/5"

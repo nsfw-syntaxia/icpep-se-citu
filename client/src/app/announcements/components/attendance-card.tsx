@@ -15,7 +15,7 @@ export default function MeetingAttendanceCard({
         Meeting Attendance
       </h3>
 
-      <div className="bg-white/10 rounded-lg p-4 mb-4 max-h-64 overflow-y-auto">
+      <div className="bg-white/10 rounded-lg p-4 mb-4 max-h-64 overflow-y-auto themed-scrollbar-dark">
         <div className="space-y-3">
           <div>
             <h4 className="font-rubik text-sm font-semibold text-white/90 mb-2">
