@@ -280,9 +280,16 @@ export default function MerchPage() {
       reader.readAsDataURL(file);
     });
 
+  const MAX_IMAGE_SIZE_MB = 5;
+
   const handleCoverChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    if (file.size > MAX_IMAGE_SIZE_MB * 1024 * 1024) {
+      alert(`Image must be ${MAX_IMAGE_SIZE_MB}MB or smaller.`);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      return;
+    }
     try {
       const resized = await resizeImage(file);
       setCover(resized);
@@ -298,6 +305,10 @@ export default function MerchPage() {
     setIsDragging(false);
     const file = e.dataTransfer.files?.[0];
     if (!file || !file.type.startsWith("image/")) return;
+    if (file.size > MAX_IMAGE_SIZE_MB * 1024 * 1024) {
+      alert(`Image must be ${MAX_IMAGE_SIZE_MB}MB or smaller.`);
+      return;
+    }
     try {
       const resized = await resizeImage(file);
       setCover(resized);
@@ -593,20 +604,24 @@ export default function MerchPage() {
                                 handleAddPrice();
                               }
                             }}
-                            className="flex-1 rounded-xl px-4 py-3 font-rubik text-sm border-2 border-white bg-white focus:border-primary2 outline-none transition-all"
+                            className="flex-1 rounded-xl px-4 py-3 font-rubik text-sm border-2 border-gray-200 bg-white focus:border-primary2 outline-none transition-all"
                           />
                           <input
                             type="text"
+                            inputMode="decimal"
                             placeholder="Price (₱)"
                             value={priceValue}
-                            onChange={(e) => setPriceValue(e.target.value)}
+                            onChange={(e) => {
+                              const val = e.target.value;
+                              if (/^\d*\.?\d*$/.test(val)) setPriceValue(val);
+                            }}
                             onKeyDown={(e) => {
                               if (e.key === "Enter") {
                                 e.preventDefault();
                                 handleAddPrice();
                               }
                             }}
-                            className="w-full sm:w-36 rounded-xl px-4 py-3 font-rubik text-sm border-2 border-white bg-white focus:border-primary2 outline-none transition-all"
+                            className="w-full sm:w-36 rounded-xl px-4 py-3 font-rubik text-sm border-2 border-gray-200 bg-white focus:border-primary2 outline-none transition-all"
                           />
                           <button
                             type="button"
@@ -658,22 +673,25 @@ export default function MerchPage() {
                         )}
                         <div className="flex flex-wrap gap-3 ml-auto">
                           {editingId && (
-                            <button
+                            <Button
                               type="button"
+                              variant="heroOutline"
                               onClick={handleCancelEdit}
-                              className="px-6 py-3 font-rubik font-bold text-gray-500 border-2 border-gray-200 hover:border-red-200 hover:text-red-400 rounded-2xl transition-all duration-300 cursor-pointer"
+                              className="px-6 py-3"
                             >
                               Cancel
-                            </button>
+                            </Button>
                           )}
                           {(!editingId || isEditingDraft) && (
-                            <button
+                            <Button
                               type="button"
+                              variant="heroOutline"
                               onClick={() => handleSubmit(true)}
-                              className="px-6 py-3 font-rubik font-bold text-primary1 border-2 border-primary1/30 hover:border-primary1 hover:bg-primary1/5 rounded-2xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                              disabled={isSubmitting}
+                              className="px-6 py-3"
                             >
                               {editingId ? "Update Draft" : "Save Draft"}
-                            </button>
+                            </Button>
                           )}
                           <Button
                             type="button"
@@ -745,19 +763,19 @@ export default function MerchPage() {
                         <table className="w-full text-left min-w-170">
                           <thead>
                             <tr className="bg-gray-50/80">
-                              <th className="px-6 sm:px-8 py-3.5 text-[10px] font-bold uppercase tracking-widest text-gray-400 font-rubik">
+                              <th className="px-6 sm:px-8 py-3.5 text-[10px] font-semibold uppercase tracking-widest text-gray-400 font-raleway">
                                 Image
                               </th>
-                              <th className="px-4 py-3.5 text-[10px] font-bold uppercase tracking-widest text-gray-400 font-rubik">
+                              <th className="px-4 py-3.5 text-[10px] font-semibold uppercase tracking-widest text-gray-400 font-raleway">
                                 Name
                               </th>
-                              <th className="px-4 py-3.5 text-[10px] font-bold uppercase tracking-widest text-gray-400 font-rubik">
+                              <th className="px-4 py-3.5 text-[10px] font-semibold uppercase tracking-widest text-gray-400 font-raleway">
                                 Prices
                               </th>
-                              <th className="px-4 py-3.5 text-[10px] font-bold uppercase tracking-widest text-gray-400 font-rubik">
+                              <th className="px-4 py-3.5 text-[10px] font-semibold uppercase tracking-widest text-gray-400 font-raleway">
                                 Link
                               </th>
-                              <th className="px-6 sm:px-8 py-3.5 text-right text-[10px] font-bold uppercase tracking-widest text-gray-400 font-rubik">
+                              <th className="px-6 sm:px-8 py-3.5 text-right text-[10px] font-semibold uppercase tracking-widest text-gray-400 font-raleway">
                                 Actions
                               </th>
                             </tr>
@@ -815,7 +833,7 @@ export default function MerchPage() {
                                       {item.prices?.map((p, idx) => (
                                         <span
                                           key={idx}
-                                          className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-primary2/10 text-primary2 border border-primary2/20"
+                                          className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-raleway font-semibold bg-primary2/10 text-primary2 border border-primary2/20"
                                         >
                                           {p.category}: ₱{p.price}
                                         </span>

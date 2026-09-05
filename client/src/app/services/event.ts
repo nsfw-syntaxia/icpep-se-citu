@@ -133,6 +133,7 @@ export interface EventData {
     registrationRequired?: boolean;
     registrationStart?: string;
     registrationEnd?: string;
+    galleryImages?: string[];
 }
 
 class EventService {

@@ -24,6 +24,7 @@ import {
   AlertTriangle,
   Clock,
   FileText,
+  Plus,
 } from "lucide-react";
 
 interface DraftItem {
@@ -581,7 +582,7 @@ export default function DraftsPage() {
                         <Icon size={14} className={isActive ? "text-primary1" : "text-gray-400"} />
                         <span>{tab.label}</span>
                         <span
-                          className={`px-2 py-0.5 rounded-full text-[10px] font-bold min-w-5 text-center ${
+                          className={`inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-[10px] font-bold leading-none ${
                             isActive ? "bg-primary1 text-white" : "bg-gray-100 text-gray-500"
                           }`}
                         >
@@ -593,7 +594,7 @@ export default function DraftsPage() {
                 </div>
 
                 {/* CONTENT CARD */}
-                <div className="bg-white rounded-4xl border transition-all duration-300 shadow-md hover:shadow-primary1/40 hover:-translate-y-2 border-gray-200">
+                <div className="bg-white rounded-4xl border transition-all duration-300 shadow-md hover:shadow-primary1/40 hover:-translate-y-2 border-gray-200 overflow-hidden">
                     {/* Card Header */}
                     <div className="px-6 sm:px-8 py-6 border-b border-gray-100 flex items-center justify-between gap-3 flex-wrap">
                       <div>
@@ -606,10 +607,13 @@ export default function DraftsPage() {
                         </p>
                       </div>
                       <Link href={activeConfig.href}>
-                        <button className="flex items-center gap-1.5 px-4 py-2 text-xs font-bold font-rubik text-primary1 border border-primary1/20 hover:border-primary1/50 hover:bg-primary1/5 rounded-full transition-all duration-200 cursor-pointer">
-                          + New{" "}
-                          <span className="hidden sm:inline">
-                            {activeConfig.emptyLabel}
+                        <button className="flex items-center gap-2 px-4 py-2 text-xs font-bold font-rubik text-primary1 border border-primary1/20 hover:border-primary1/50 hover:bg-primary1/5 rounded-full transition-all duration-200 cursor-pointer active:scale-95">
+                          <Plus size={13} />
+                          <span>
+                            New{" "}
+                            <span className="hidden sm:inline">
+                              {activeConfig.emptyLabel}
+                            </span>
                           </span>
                         </button>
                       </Link>

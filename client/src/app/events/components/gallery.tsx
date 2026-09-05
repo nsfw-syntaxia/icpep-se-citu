@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import GalleryLightbox from "./gallery-lightbox";
 
 interface Props {
   imageUrls: string[];
@@ -10,6 +11,7 @@ export default function EventGallery({ imageUrls }: Props) {
   const [imageErrors, setImageErrors] = useState<{ [key: number]: boolean }>(
     {},
   );
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   if (!imageUrls || imageUrls.length === 0) return null;
 
@@ -30,6 +32,7 @@ export default function EventGallery({ imageUrls }: Props) {
         {imageUrls.slice(0, 2).map((photo, index) => (
           <div
             key={index}
+            onClick={() => setLightboxIndex(index)}
             className="aspect-square rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer bg-gray-100"
           >
             {!imageErrors[index] ? (
@@ -62,6 +65,7 @@ export default function EventGallery({ imageUrls }: Props) {
         {imageUrls.length === 3 && (
           <div
             key={2}
+            onClick={() => setLightboxIndex(2)}
             className="aspect-square rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer bg-gray-100"
           >
             {!imageErrors[2] ? (
@@ -92,7 +96,10 @@ export default function EventGallery({ imageUrls }: Props) {
         )}
 
         {imageUrls.length > 3 && (
-          <div className="group aspect-square cursor-pointer overflow-hidden relative rounded-xl shadow-sm bg-gray-100">
+          <div
+            onClick={() => setLightboxIndex(2)}
+            className="group aspect-square cursor-pointer overflow-hidden relative rounded-xl shadow-sm bg-gray-100"
+          >
             {!imageErrors[2] ? (
               <>
                 <img
@@ -117,6 +124,15 @@ export default function EventGallery({ imageUrls }: Props) {
           </div>
         )}
       </div>
+
+      {lightboxIndex !== null && (
+        <GalleryLightbox
+          imageUrls={imageUrls}
+          index={lightboxIndex}
+          onClose={() => setLightboxIndex(null)}
+          onIndexChange={setLightboxIndex}
+        />
+      )}
     </div>
   );
 }

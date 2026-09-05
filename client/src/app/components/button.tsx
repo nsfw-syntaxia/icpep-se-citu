@@ -17,11 +17,17 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     | "confirm"
     | "cancel";
   size?: "sm" | "md" | "lg";
+  // Only affects the "hero"/"heroOutline" pill variants: "full" keeps the
+  // fully-rounded pill shape (default, matches existing usage everywhere),
+  // "lg" swaps in a slightly-rounded rectangle so the same CTA style can be
+  // reused on surfaces where a full pill doesn't fit.
+  rounded?: "full" | "lg";
 }
 
 const Button: React.FC<ButtonProps> = ({
   variant = "primary",
   size = "md",
+  rounded = "full",
   className,
   children,
   ...props
@@ -37,10 +43,10 @@ const Button: React.FC<ButtonProps> = ({
     primary2: "bg-primary1 text-white font-medium text-sm sm:text-base px-8 py-2.5 rounded-2xl border border-transparent hover:bg-white hover:text-primary1 hover:border-primary1",
     primary3: "bg-primary1 text-white font-medium text-sm sm:text-base px-8 py-2.5 rounded-2xl border border-transparent hover:bg-(--primary3) hover:text-white hover:border-primary3",
     secondary2: "bg-lavender border border-primary1 rounded-lg text-primary1 px-4 py-2 hover:bg-primary3 hover:text-white focus-visible:ring-primary1",
-    // Solid pill CTA, matches the home hero "Join Community" button
-    hero: "bg-primary1 hover:bg-primary2 disabled:bg-gray-300 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:shadow-none text-white font-raleway font-semibold px-8 py-3 rounded-full shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer",
-    // Outline pill CTA, matches the home hero "Learn More" button
-    heroOutline: "bg-transparent border-2 border-gray-300 text-gray-700 hover:bg-buttonbg1 hover:border-primary1 hover:text-primary1 font-raleway font-semibold px-8 py-3 rounded-full transition-all duration-300 cursor-pointer",
+    // Solid CTA, matches the home hero "Join Community" button (pill by default)
+    hero: `bg-primary1 hover:bg-primary2 disabled:bg-gray-300 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:shadow-none text-white font-raleway font-semibold px-8 py-3 ${rounded === "lg" ? "rounded-2xl" : "rounded-full"} shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer`,
+    // Outline CTA, matches the home hero "Learn More" button (pill by default)
+    heroOutline: `bg-transparent border-2 border-gray-300 text-gray-700 hover:bg-buttonbg1 hover:border-primary1 hover:text-primary1 font-raleway font-semibold px-8 py-3 ${rounded === "lg" ? "rounded-2xl" : "rounded-full"} transition-all duration-300 cursor-pointer`,
     // Destructive action (e.g. "Delete", "Yes, Delete")
     danger: "bg-red-500 hover:bg-red-600 text-white font-rubik font-semibold rounded-xl shadow-lg shadow-red-200 hover:-translate-y-0.5 transition-all duration-300 cursor-pointer",
     // Positive confirm/save action within compact editing UIs

@@ -39,7 +39,7 @@ interface RawEvent {
   image?: string;
   description?: string;
   details?: unknown[];
-  galleryImageUrls?: string[];
+  galleryImages?: string[];
   rsvpLink?: string;
 }
 
@@ -140,8 +140,8 @@ export default function EventDetailPage() {
                 ? String((e as Record<string, unknown>).content)
                 : "",
             details: detailsArr,
-            galleryImageUrls: Array.isArray(e.galleryImageUrls)
-              ? e.galleryImageUrls
+            galleryImageUrls: Array.isArray(e.galleryImages)
+              ? e.galleryImages
               : [],
             rsvpLink: e.rsvpLink,
           };
@@ -270,7 +270,10 @@ export default function EventDetailPage() {
                   title={event.title}
                 />
                 <EventTags tags={event.tags || []} />
-                <OrganizerCard organizer={event.organizer} />
+                <OrganizerCard
+                  organizer={event.organizer}
+                  eventTitle={event.title}
+                />
               </div>
 
               <div className="lg:col-span-3 space-y-8 order-1 lg:order-2">

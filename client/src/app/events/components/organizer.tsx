@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import ReportEventModal from "./report-modal";
 
 interface Props {
   organizer?:
@@ -10,10 +11,12 @@ interface Props {
         [key: string]: unknown;
       }
     | string;
+  eventTitle?: string;
 }
 
-export default function OrganizerCard({ organizer }: Props) {
+export default function OrganizerCard({ organizer, eventTitle }: Props) {
   const [imgError, setImgError] = useState(false);
+  const [showReportModal, setShowReportModal] = useState(false);
 
   if (!organizer) {
     return null;
@@ -79,10 +82,19 @@ export default function OrganizerCard({ organizer }: Props) {
         >
           Contact Host
         </button>
-        <button className="w-full bg-transparent border border-gray-400 text-gray-600 hover:bg-gray-100 font-raleway font-semibold text-sm sm:text-base py-2 px-4 rounded-lg transition-all cursor-pointer">
+        <button
+          onClick={() => setShowReportModal(true)}
+          className="w-full bg-transparent border border-gray-400 text-gray-600 hover:bg-gray-100 font-raleway font-semibold text-sm sm:text-base py-2 px-4 rounded-lg transition-all cursor-pointer active:scale-95"
+        >
           Report Event
         </button>
       </div>
+
+      <ReportEventModal
+        isOpen={showReportModal}
+        onClose={() => setShowReportModal(false)}
+        eventTitle={eventTitle || name}
+      />
     </div>
   );
 }

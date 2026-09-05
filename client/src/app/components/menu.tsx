@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
+import { ChevronRight, MessageCircle } from "lucide-react";
 
 interface MenuProps {
   userRole:
@@ -237,15 +238,15 @@ const Menu: React.FC<MenuProps> = ({ userRole, onExit }) => {
                   {item.label}
                 </span>
                 <span
-                  className={`hidden md:block text-2xl transition-opacity duration-300 ${activeItem === item.label ? "opacity-100 text-[#00a7ee]" : "opacity-0"}`}
+                  className={`hidden md:block transition-opacity duration-300 ${activeItem === item.label ? "opacity-100 text-[#00a7ee]" : "opacity-0"}`}
                 >
-                  &rarr;
+                  <ChevronRight className="h-6 w-6" />
                 </span>
                 {item.children && (
                   <span
-                    className={`md:hidden text-xl text-white/50 ${activeItem === item.label ? "rotate-90 text-[#00a7ee]" : ""} transition-transform duration-300`}
+                    className={`md:hidden text-white/50 ${activeItem === item.label ? "rotate-90 text-[#00a7ee]" : ""} transition-transform duration-300`}
                   >
-                    &#8250;
+                    <ChevronRight className="h-5 w-5" />
                   </span>
                 )}
               </div>
@@ -364,6 +365,13 @@ const Menu: React.FC<MenuProps> = ({ userRole, onExit }) => {
                     />
                   </a>
                 ))}
+                <Link
+                  href="/contact"
+                  onClick={() => onExit()}
+                  className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center hover:bg-white hover:border-white transition-all duration-300 group"
+                >
+                  <MessageCircle className="h-5 w-5 text-white/70 group-hover:text-[#00609c] group-hover:opacity-100 transition-all" />
+                </Link>
               </div>
             </div>
           </div>

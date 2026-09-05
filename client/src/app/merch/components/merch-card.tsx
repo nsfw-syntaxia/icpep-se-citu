@@ -8,6 +8,7 @@ type MerchStatus = "Available" | "Coming Soon" | "Sold Out";
 
 interface MerchCardProps {
   name: string;
+  imageSrc?: string;
   price: string;
   description: string;
   status: MerchStatus;
@@ -16,6 +17,7 @@ interface MerchCardProps {
 
 const MerchCard: FC<MerchCardProps> = ({
   name,
+  imageSrc,
   price,
   description,
   status,
@@ -38,6 +40,8 @@ const MerchCard: FC<MerchCardProps> = ({
   return (
     <Link
       href={isAvailable ? buyLink || "#" : "#"}
+      target={isAvailable ? "_blank" : undefined}
+      rel={isAvailable ? "noopener noreferrer" : undefined}
       onClick={(e) => !isAvailable && e.preventDefault()}
       className={`group flex flex-col rounded-2xl border border-slate-200 bg-white shadow-md transition-all duration-300 hover:shadow-primary1/40 hover:-translate-y-1 overflow-hidden h-full ${
         !isAvailable ? "cursor-default" : "cursor-pointer"
@@ -46,7 +50,7 @@ const MerchCard: FC<MerchCardProps> = ({
       {/* Image */}
       <div className="relative w-full aspect-square bg-slate-100 overflow-hidden rounded-t-2xl">
         <img
-          src="/gle.png"
+          src={imageSrc || "/gle.png"}
           alt={name}
           className={`absolute inset-0 h-full w-full object-cover rounded-t-2xl transition-transform duration-300 ${
             isAvailable ? "group-hover:scale-105" : "group-hover:scale-105"

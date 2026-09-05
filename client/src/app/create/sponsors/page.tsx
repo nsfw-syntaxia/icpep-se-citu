@@ -39,10 +39,10 @@ const TIER_CONFIG: Record<
   { color: string; bg: string; border: string; dot: string; rank: number }
 > = {
   "Platinum Sponsor": {
-    color: "text-slate-700",
-    bg: "bg-linear-to-r from-slate-100 to-slate-200",
-    border: "border-slate-300",
-    dot: "bg-slate-500",
+    color: "text-sky-700",
+    bg: "bg-linear-to-r from-sky-100 to-sky-200",
+    border: "border-sky-300",
+    dot: "bg-sky-500",
     rank: 1,
   },
   "Gold Sponsor": {
@@ -329,9 +329,16 @@ export default function SponsorsPage() {
     });
   };
 
+  const MAX_IMAGE_SIZE_MB = 5;
+
   const handleCoverChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    if (file.size > MAX_IMAGE_SIZE_MB * 1024 * 1024) {
+      alert(`Image must be ${MAX_IMAGE_SIZE_MB}MB or smaller.`);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      return;
+    }
     try {
       const resized = await resizeImage(file);
       setCover(resized);
@@ -347,6 +354,10 @@ export default function SponsorsPage() {
     setIsDragging(false);
     const file = e.dataTransfer.files?.[0];
     if (!file || !file.type.startsWith("image/")) return;
+    if (file.size > MAX_IMAGE_SIZE_MB * 1024 * 1024) {
+      alert(`Image must be ${MAX_IMAGE_SIZE_MB}MB or smaller.`);
+      return;
+    }
     try {
       const resized = await resizeImage(file);
       setCover(resized);
@@ -624,23 +635,25 @@ export default function SponsorsPage() {
 
                         <div className="flex flex-wrap gap-3 ml-auto">
                           {editingId && (
-                            <button
+                            <Button
                               type="button"
+                              variant="heroOutline"
                               onClick={handleCancelEdit}
-                              className="px-6 py-3 font-rubik font-bold text-gray-500 border-2 border-gray-200 hover:border-red-200 hover:text-red-400 rounded-2xl transition-all duration-300 cursor-pointer"
+                              className="px-6 py-3"
                             >
                               Cancel
-                            </button>
+                            </Button>
                           )}
 
                           {(!editingId || isEditingDraft) && (
-                            <button
+                            <Button
                               type="button"
+                              variant="heroOutline"
                               onClick={handleSaveDraft}
-                              className="px-6 py-3 font-rubik font-bold text-primary1 border-2 border-primary1/30 hover:border-primary1 hover:bg-primary1/5 rounded-2xl transition-all duration-300 cursor-pointer"
+                              className="px-6 py-3"
                             >
                               {editingId ? "Update Draft" : "Save Draft"}
-                            </button>
+                            </Button>
                           )}
 
                           <Button
@@ -733,16 +746,16 @@ export default function SponsorsPage() {
                         <table className="w-full text-left min-w-145">
                           <thead>
                             <tr className="bg-gray-50/80">
-                              <th className="px-6 sm:px-8 py-3.5 text-[10px] font-bold uppercase tracking-widest text-gray-400 font-rubik">
+                              <th className="px-6 sm:px-8 py-3.5 text-[10px] font-semibold uppercase tracking-widest text-gray-400 font-raleway">
                                 Logo
                               </th>
-                              <th className="px-4 py-3.5 text-[10px] font-bold uppercase tracking-widest text-gray-400 font-rubik">
+                              <th className="px-4 py-3.5 text-[10px] font-semibold uppercase tracking-widest text-gray-400 font-raleway">
                                 Name
                               </th>
-                              <th className="px-4 py-3.5 text-[10px] font-bold uppercase tracking-widest text-gray-400 font-rubik">
+                              <th className="px-4 py-3.5 text-[10px] font-semibold uppercase tracking-widest text-gray-400 font-raleway">
                                 Tier
                               </th>
-                              <th className="px-6 sm:px-8 py-3.5 text-right text-[10px] font-bold uppercase tracking-widest text-gray-400 font-rubik">
+                              <th className="px-6 sm:px-8 py-3.5 text-right text-[10px] font-semibold uppercase tracking-widest text-gray-400 font-raleway">
                                 Actions
                               </th>
                             </tr>
@@ -801,7 +814,7 @@ export default function SponsorsPage() {
                                     {/* Tier */}
                                     <td className="px-4 py-4">
                                       <span
-                                        className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border ${cfg.bg} ${cfg.color} ${cfg.border}`}
+                                        className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-raleway font-semibold border ${cfg.bg} ${cfg.color} ${cfg.border}`}
                                       >
                                         <span
                                           className={`w-1.5 h-1.5 rounded-full ${cfg.dot}`}

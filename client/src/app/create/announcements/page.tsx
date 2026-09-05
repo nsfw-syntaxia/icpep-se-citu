@@ -645,13 +645,22 @@ export default function AnnouncementsPage() {
       reader.readAsDataURL(file);
     });
 
+  const MAX_IMAGE_SIZE_MB = 5;
+
   const handleImagesChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const fileList = e.target.files;
     if (!fileList || !fileList.length) return;
+    const files = Array.from(fileList);
+    const oversized = files.find(
+      (f) => f.size > MAX_IMAGE_SIZE_MB * 1024 * 1024,
+    );
+    if (oversized) {
+      alert(`Each image must be ${MAX_IMAGE_SIZE_MB}MB or smaller.`);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      return;
+    }
     try {
-      const resized = await Promise.all(
-        Array.from(fileList).map((f) => resizeImage(f)),
-      );
+      const resized = await Promise.all(files.map((f) => resizeImage(f)));
       setImages((prev) => [...prev, ...resized]);
       setPreviews((prev) => [
         ...prev,
@@ -668,6 +677,10 @@ export default function AnnouncementsPage() {
     setIsDragging(false);
     const file = e.dataTransfer.files?.[0];
     if (!file || !file.type.startsWith("image/")) return;
+    if (file.size > MAX_IMAGE_SIZE_MB * 1024 * 1024) {
+      alert(`Image must be ${MAX_IMAGE_SIZE_MB}MB or smaller.`);
+      return;
+    }
     try {
       const resized = await resizeImage(file);
       setImages((p) => [...p, resized]);
@@ -706,8 +719,13 @@ export default function AnnouncementsPage() {
   const Divider = () => <div className="h-px bg-gray-100 w-full" />;
 
   // --- Custom Time Picker Render (matching meet-information) ---
-  const dropdownContainerStyle =
-    "absolute z-30 w-full min-w-20 mt-2 bg-white border border-gray-100 rounded-2xl shadow-xl overflow-x-hidden flex flex-col gap-1 p-2 max-h-56 overflow-y-auto themed-scrollbar";
+  // Split into a non-scrolling outer wrapper (owns the rounding/border/shadow)
+  // and a scrolling inner container, so the scrollbar never pokes past the
+  // rounded corners.
+  const dropdownOuterStyle =
+    "absolute z-30 w-full min-w-20 mt-2 bg-white border border-gray-100 rounded-2xl shadow-xl overflow-hidden";
+  const dropdownInnerStyle =
+    "flex flex-col gap-1 p-2 max-h-56 overflow-y-auto themed-scrollbar";
   const dropdownItemStyle =
     "flex items-center justify-between px-3 py-2 rounded-xl cursor-pointer transition-colors font-rubik text-sm font-medium";
   const dropdownItemSelectedStyle = "bg-primary1/5 text-primary1";
@@ -796,26 +814,28 @@ export default function AnnouncementsPage() {
         {isOpen && (
           <>
             <div
-              className={`${dropdownContainerStyle} left-1/2 -translate-x-1/2 text-center`}
+              className={`${dropdownOuterStyle} left-1/2 -translate-x-1/2 text-center`}
               onMouseDown={(e) => e.preventDefault()}
             >
-              {options.map((opt) => (
-                <div
-                  key={opt}
-                  className={`justify-center ${dropdownItemStyle} ${
-                    value === opt
-                      ? dropdownItemSelectedStyle
-                      : dropdownItemHoverStyle
-                  }`}
-                  onMouseDown={(e) => {
-                    e.preventDefault();
-                    setValue(opt);
-                    setActiveTimeDropdown(null);
-                  }}
-                >
-                  <span>{opt}</span>
-                </div>
-              ))}
+              <div className={dropdownInnerStyle}>
+                {options.map((opt) => (
+                  <div
+                    key={opt}
+                    className={`justify-center ${dropdownItemStyle} ${
+                      value === opt
+                        ? dropdownItemSelectedStyle
+                        : dropdownItemHoverStyle
+                    }`}
+                    onMouseDown={(e) => {
+                      e.preventDefault();
+                      setValue(opt);
+                      setActiveTimeDropdown(null);
+                    }}
+                  >
+                    <span>{opt}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </>
         )}
@@ -1076,6 +1096,11 @@ export default function AnnouncementsPage() {
                           <label className={labelStyle}>
                             Featured Image <span className="text-red-500">*</span>
                           </label>
+                          {previews.length === 0 && (
+                            <span className="text-xs text-gray-400 font-raleway">
+                              Max {MAX_IMAGE_SIZE_MB}MB each
+                            </span>
+                          )}
                           {previews.length > 0 && (
                             <button
                               type="button"
@@ -1205,7 +1230,7 @@ export default function AnnouncementsPage() {
         key={tab}
         type="button"
         onClick={() => setActiveTab(tab)}
-        className={`px-4 py-2 rounded-2xl text-xs sm:text-sm font-bold font-rubik border-2 transition-all duration-200 select-none cursor-pointer ${
+        className={`px-4 py-2 rounded-full text-xs sm:text-sm font-semibold font-rubik border-2 transition-all duration-200 select-none cursor-pointer ${
           isActive
             ? "border-primary1 bg-primary1/10 text-primary1 shadow-sm"
             : "border-gray-200 bg-white text-gray-500 hover:border-gray-300 hover:text-gray-700"
@@ -1435,7 +1460,7 @@ export default function AnnouncementsPage() {
                                           e.target.value,
                                         )
                                       }
-                                      className="w-full rounded-xl border-2 border-white bg-white px-3 py-2.5 text-sm font-rubik focus:outline-none focus:border-primary2 transition-all"
+                                      className="w-full rounded-xl border-2 border-gray-200 bg-white px-3 py-2.5 text-sm font-rubik focus:outline-none focus:border-primary2 transition-all"
                                     />
                                   </div>
                                   <div className="sm:col-span-3">
@@ -1450,7 +1475,7 @@ export default function AnnouncementsPage() {
                                           e.target.value,
                                         )
                                       }
-                                      className="w-full rounded-xl border-2 border-white bg-white px-3 py-2.5 text-sm font-rubik focus:outline-none focus:border-primary2 transition-all"
+                                      className="w-full rounded-xl border-2 border-gray-200 bg-white px-3 py-2.5 text-sm font-rubik focus:outline-none focus:border-primary2 transition-all"
                                     />
                                   </div>
                                   <div className="sm:col-span-2">
@@ -1465,7 +1490,7 @@ export default function AnnouncementsPage() {
                                           e.target.value,
                                         )
                                       }
-                                      className="w-full rounded-xl border-2 border-white bg-white px-3 py-2.5 text-sm font-rubik focus:outline-none focus:border-primary2 transition-all"
+                                      className="w-full rounded-xl border-2 border-gray-200 bg-white px-3 py-2.5 text-sm font-rubik focus:outline-none focus:border-primary2 transition-all"
                                     />
                                   </div>
                                   <div className="sm:col-span-3">
@@ -1480,7 +1505,7 @@ export default function AnnouncementsPage() {
                                           e.target.value,
                                         )
                                       }
-                                      className="w-full rounded-xl border-2 border-white bg-white px-3 py-2.5 text-sm font-rubik focus:outline-none focus:border-primary2 transition-all"
+                                      className="w-full rounded-xl border-2 border-gray-200 bg-white px-3 py-2.5 text-sm font-rubik focus:outline-none focus:border-primary2 transition-all"
                                     />
                                   </div>
                                   <div className="sm:col-span-1 flex items-center justify-end">
@@ -1592,7 +1617,7 @@ export default function AnnouncementsPage() {
                                     visibility: false,
                                   }));
                                 }}
-                                className={`flex items-center gap-3 rounded-2xl px-4 py-3.5 text-left border-2 transition-all duration-200 cursor-pointer ${isActive ? `${opt.bg} ${opt.color} ${opt.border} shadow-sm ring-4 ring-primary1/10 scale-[1.02]` : "bg-gray-50 text-gray-400 border-gray-200 hover:bg-white hover:border-gray-300 hover:text-gray-600"}`}
+                                className={`flex items-center gap-3 rounded-xl px-4 py-3.5 text-left border-2 transition-all duration-200 cursor-pointer ${isActive ? `${opt.bg} ${opt.color} ${opt.border} shadow-sm scale-[1.02]` : "bg-white text-gray-400 border-gray-100 hover:border-gray-300 hover:text-gray-600"}`}
                               >
                                 <span
                                   className={`w-2 h-2 rounded-full shrink-0 ${isActive ? opt.dot : "bg-gray-200"}`}
@@ -1632,11 +1657,11 @@ export default function AnnouncementsPage() {
                           </label>
                           <label className="flex items-center gap-2.5 cursor-pointer select-none">
                             <div
-                              className={`w-10 h-5 rounded-full transition-all duration-200 relative ${showSchedule ? "bg-primary2" : "bg-gray-200"}`}
+                              className={`w-10 h-5 rounded-full transition-all duration-300 relative cursor-pointer active:scale-95 ${showSchedule ? "bg-linear-to-r from-primary3 to-primary2 shadow-inner" : "bg-gray-200"}`}
                               onClick={() => setShowSchedule((p) => !p)}
                             >
                               <div
-                                className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-all duration-200 ${showSchedule ? "left-5" : "left-0.5"}`}
+                                className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow-md transition-all duration-300 ${showSchedule ? "left-5" : "left-0.5"}`}
                               />
                             </div>
                           </label>
@@ -1690,23 +1715,25 @@ export default function AnnouncementsPage() {
                         )}
                         <div className="flex flex-wrap gap-3 ml-auto">
                           {editingId && (
-                            <button
+                            <Button
                               type="button"
+                              variant="heroOutline"
                               onClick={handleCancelEdit}
-                              className="px-6 py-3 font-rubik font-bold text-gray-500 border-2 border-gray-200 hover:border-red-200 hover:text-red-400 rounded-2xl transition-all duration-300 cursor-pointer"
+                              className="px-6 py-3"
                             >
                               Cancel
-                            </button>
+                            </Button>
                           )}
                           {(!editingId || isEditingDraft) && (
-                            <button
+                            <Button
                               type="button"
+                              variant="heroOutline"
                               onClick={handleSaveDraft}
                               disabled={isSubmitting}
-                              className="px-6 py-3 font-rubik font-bold text-primary1 border-2 border-primary1/30 hover:border-primary1 hover:bg-primary1/5 rounded-2xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                              className="px-6 py-3"
                             >
                               {editingId ? "Update Draft" : "Save Draft"}
-                            </button>
+                            </Button>
                           )}
                           <Button
                             type="button"
@@ -1778,19 +1805,19 @@ export default function AnnouncementsPage() {
                         <table className="w-full text-left min-w-170">
                           <thead>
                             <tr className="bg-gray-50/80">
-                              <th className="px-8 py-3.5 text-[10px] font-bold uppercase tracking-widest text-gray-400 font-rubik">
+                              <th className="px-8 py-3.5 text-[10px] font-semibold uppercase tracking-widest text-gray-400 font-raleway">
                                 Title
                               </th>
-                              <th className="px-4 py-3.5 text-[10px] font-bold uppercase tracking-widest text-gray-400 font-rubik">
+                              <th className="px-4 py-3.5 text-[10px] font-semibold uppercase tracking-widest text-gray-400 font-raleway">
                                 Type
                               </th>
-                              <th className="px-4 py-3.5 text-[10px] font-bold uppercase tracking-widest text-gray-400 font-rubik">
+                              <th className="px-4 py-3.5 text-[10px] font-semibold uppercase tracking-widest text-gray-400 font-raleway">
                                 Date
                               </th>
-                              <th className="px-4 py-3.5 text-[10px] font-bold uppercase tracking-widest text-gray-400 font-rubik">
+                              <th className="px-4 py-3.5 text-[10px] font-semibold uppercase tracking-widest text-gray-400 font-raleway">
                                 Status
                               </th>
-                              <th className="px-8 py-3.5 text-right text-[10px] font-bold uppercase tracking-widest text-gray-400 font-rubik">
+                              <th className="px-8 py-3.5 text-right text-[10px] font-semibold uppercase tracking-widest text-gray-400 font-raleway">
                                 Actions
                               </th>
                             </tr>
@@ -1824,7 +1851,7 @@ export default function AnnouncementsPage() {
                                   </td>
                                   <td className="px-4 py-4">
                                     <span
-                                      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border ${meta.bg} ${meta.color} ${meta.border}`}
+                                      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-raleway font-semibold border ${meta.bg} ${meta.color} ${meta.border}`}
                                     >
                                       <span
                                         className={`w-1.5 h-1.5 rounded-full ${meta.dot}`}
@@ -1843,7 +1870,7 @@ export default function AnnouncementsPage() {
                                   </td>
                                   <td className="px-4 py-4">
                                     <span
-                                      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border ${item.isPublished ? "bg-emerald-50 text-emerald-700 border-emerald-200" : "bg-gray-100 text-gray-500 border-gray-200"}`}
+                                      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-raleway font-semibold border ${item.isPublished ? "bg-emerald-50 text-emerald-700 border-emerald-200" : "bg-gray-100 text-gray-500 border-gray-200"}`}
                                     >
                                       <span
                                         className={`w-1.5 h-1.5 rounded-full ${item.isPublished ? "bg-emerald-500" : "bg-gray-400"}`}

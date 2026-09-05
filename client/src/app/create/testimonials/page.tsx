@@ -271,9 +271,16 @@ export default function TestimonialsPage() {
       reader.readAsDataURL(file);
     });
 
+  const MAX_IMAGE_SIZE_MB = 5;
+
   const handleCoverChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    if (file.size > MAX_IMAGE_SIZE_MB * 1024 * 1024) {
+      alert(`Image must be ${MAX_IMAGE_SIZE_MB}MB or smaller.`);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      return;
+    }
     try {
       const resized = await resizeImage(file);
       setCover(resized);
@@ -289,6 +296,10 @@ export default function TestimonialsPage() {
     setIsDragging(false);
     const file = e.dataTransfer.files?.[0];
     if (!file || !file.type.startsWith("image/")) return;
+    if (file.size > MAX_IMAGE_SIZE_MB * 1024 * 1024) {
+      alert(`Image must be ${MAX_IMAGE_SIZE_MB}MB or smaller.`);
+      return;
+    }
     try {
       const resized = await resizeImage(file);
       setCover(resized);
@@ -532,13 +543,6 @@ export default function TestimonialsPage() {
 
                       {/* ── MESSAGE FIELD (full width) ── */}
                       <div className="mt-8 space-y-3">
-                        <div className="mb-8 flex items-center gap-2 pt-1">
-                          <div className="flex-1 h-px bg-gray-200" />
-                          <p className="text-[11px] text-gray-300 font-raleway">
-                            testimonial message below
-                          </p>
-                          <div className="flex-1 h-px bg-gray-200" />
-                        </div>
                         <div className="flex items-center justify-between">
                           <label className="block text-sm font-bold font-raleway text-gray-700 mb-2 ml-1">
                             Testimonial Message{" "}
@@ -583,22 +587,24 @@ export default function TestimonialsPage() {
                         )}
                         <div className="flex flex-wrap gap-3 ml-auto">
                           {editingId && (
-                            <button
+                            <Button
                               type="button"
+                              variant="heroOutline"
                               onClick={handleCancelEdit}
-                              className="px-6 py-3 font-rubik font-bold text-gray-500 border-2 border-gray-200 hover:border-red-200 hover:text-red-400 rounded-2xl transition-all duration-300 cursor-pointer"
+                              className="px-6 py-3"
                             >
                               Cancel
-                            </button>
+                            </Button>
                           )}
                           {(!editingId || isEditingDraft) && (
-                            <button
+                            <Button
                               type="button"
+                              variant="heroOutline"
                               onClick={handleSaveDraft}
-                              className="px-6 py-3 font-rubik font-bold text-primary1 border-2 border-primary1/30 hover:border-primary1 hover:bg-primary1/5 rounded-2xl transition-all duration-300 cursor-pointer"
+                              className="px-6 py-3"
                             >
                               {editingId ? "Update Draft" : "Save Draft"}
-                            </button>
+                            </Button>
                           )}
                           <Button
                             type="button"
@@ -669,13 +675,13 @@ export default function TestimonialsPage() {
                         <table className="w-full text-left min-w-145">
                           <thead>
                             <tr className="bg-gray-50/80">
-                              <th className="px-6 sm:px-8 py-3.5 text-[10px] font-bold uppercase tracking-widest text-gray-400 font-rubik">
+                              <th className="px-6 sm:px-8 py-3.5 text-[10px] font-semibold uppercase tracking-widest text-gray-400 font-raleway">
                                 Author
                               </th>
-                              <th className="px-4 py-3.5 text-[10px] font-bold uppercase tracking-widest text-gray-400 font-rubik">
+                              <th className="px-4 py-3.5 text-[10px] font-semibold uppercase tracking-widest text-gray-400 font-raleway">
                                 Message
                               </th>
-                              <th className="px-6 sm:px-8 py-3.5 text-right text-[10px] font-bold uppercase tracking-widest text-gray-400 font-rubik">
+                              <th className="px-6 sm:px-8 py-3.5 text-right text-[10px] font-semibold uppercase tracking-widest text-gray-400 font-raleway">
                                 Actions
                               </th>
                             </tr>

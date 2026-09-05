@@ -136,9 +136,13 @@ export default function OfficersPage() {
   const [preview, setPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  // Shared dropdown styles
-  const dropdownContainerStyle =
-    "absolute z-30 w-full mt-2 bg-white border border-gray-100 rounded-2xl shadow-xl overflow-x-hidden flex flex-col gap-1 p-2 max-h-56 overflow-y-auto themed-scrollbar";
+  // Shared dropdown styles. Split into a non-scrolling outer wrapper (owns
+  // the rounding/border/shadow) and a scrolling inner container, so the
+  // scrollbar never pokes past the rounded corners.
+  const dropdownOuterStyle =
+    "absolute z-30 w-full mt-2 bg-white border border-gray-100 rounded-2xl shadow-xl overflow-hidden";
+  const dropdownInnerStyle =
+    "flex flex-col gap-1 p-2 max-h-56 overflow-y-auto themed-scrollbar";
   const dropdownItemStyle =
     "flex items-center justify-between px-4 py-2.5 rounded-xl cursor-pointer transition-colors font-rubik text-sm font-medium";
   const dropdownItemSelectedStyle = "bg-primary1/5 text-primary1";
@@ -302,8 +306,11 @@ export default function OfficersPage() {
   ): boolean => {
     const existing = officers.filter((o) => o.id !== currentId);
     if (dept === "executive") {
+      const executiveMembers = existing.filter(
+        (o) => o.departmentId === "executive",
+      );
       if (pos === "Batch Representative") {
-        const count = existing.filter(
+        const count = executiveMembers.filter(
           (o) => o.position === pos && o.role === role,
         ).length;
         if (count >= 2) {
@@ -311,13 +318,13 @@ export default function OfficersPage() {
           return false;
         }
       } else if (pos === "SSG Representative") {
-        const count = existing.filter((o) => o.position === pos).length;
+        const count = executiveMembers.filter((o) => o.position === pos).length;
         if (count >= 2) {
           setError("Max 2 SSG Representatives allowed.");
           return false;
         }
       } else {
-        const count = existing.filter((o) => o.position === pos).length;
+        const count = executiveMembers.filter((o) => o.position === pos).length;
         if (count >= 1) {
           setError(`The position of ${pos} is already filled.`);
           return false;
@@ -668,37 +675,39 @@ export default function OfficersPage() {
                                   className="w-full font-rubik text-base bg-gray-50 border border-gray-200 rounded-2xl pl-12 pr-4 py-3 outline-none transition-all placeholder-gray-400 focus:bg-white focus:border-primary1 focus:ring-4 focus:ring-primary1/10"
                                 />
                                 {searchResults.length > 0 && (
-                                  <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-xl border border-gray-100 max-h-60 overflow-y-auto themed-scrollbar z-50">
-                                    {searchResults.map((user) => (
-                                      <button
-                                        key={user._id}
-                                        type="button"
-                                        onClick={() => selectUser(user)}
-                                        className="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center gap-3 border-b border-gray-50 last:border-0 cursor-pointer"
-                                      >
-                                        <div className="w-8 h-8 rounded-full bg-gray-200 overflow-hidden shrink-0">
-                                          {user.profilePicture ? (
-                                            <img
-                                              src={user.profilePicture}
-                                              alt=""
-                                              className="w-full h-full object-cover"
-                                            />
-                                          ) : (
-                                            <div className="w-full h-full flex items-center justify-center text-gray-500 text-xs">
-                                              {user.firstName[0]}
-                                            </div>
-                                          )}
-                                        </div>
-                                        <div>
-                                          <p className="font-semibold text-gray-800 text-sm">
-                                            {user.firstName} {user.lastName}
-                                          </p>
-                                          <p className="text-xs text-gray-500">
-                                            {user.studentNumber}
-                                          </p>
-                                        </div>
-                                      </button>
-                                    ))}
+                                  <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden z-50">
+                                    <div className="max-h-60 overflow-y-auto themed-scrollbar">
+                                      {searchResults.map((user) => (
+                                        <button
+                                          key={user._id}
+                                          type="button"
+                                          onClick={() => selectUser(user)}
+                                          className="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center gap-3 border-b border-gray-50 last:border-0 cursor-pointer"
+                                        >
+                                          <div className="w-8 h-8 rounded-full bg-gray-200 overflow-hidden shrink-0">
+                                            {user.profilePicture ? (
+                                              <img
+                                                src={user.profilePicture}
+                                                alt=""
+                                                className="w-full h-full object-cover"
+                                              />
+                                            ) : (
+                                              <div className="w-full h-full flex items-center justify-center font-raleway text-gray-500 text-xs">
+                                                {user.firstName[0]}
+                                              </div>
+                                            )}
+                                          </div>
+                                          <div>
+                                            <p className="font-raleway font-semibold text-gray-800 text-sm">
+                                              {user.firstName} {user.lastName}
+                                            </p>
+                                            <p className="font-raleway text-xs text-gray-500">
+                                              {user.studentNumber}
+                                            </p>
+                                          </div>
+                                        </button>
+                                      ))}
+                                    </div>
                                   </div>
                                 )}
                                 {isSearching && (
@@ -747,33 +756,35 @@ export default function OfficersPage() {
                                         className="fixed inset-0 z-20"
                                         onClick={() => setActiveDropdown(null)}
                                       />
-                                      <div className={dropdownContainerStyle}>
-                                        {EXECUTIVE_POSITIONS.map((pos) => (
-                                          <div
-                                            key={pos}
-                                            className={`${dropdownItemStyle} ${
-                                              formData.position === pos
-                                                ? dropdownItemSelectedStyle
-                                                : dropdownItemHoverStyle
-                                            }`}
-                                            onClick={() => {
-                                              setFormData({
-                                                ...formData,
-                                                position: pos,
-                                                role:
-                                                  pos === "Batch Representative"
-                                                    ? formData.role
-                                                    : "",
-                                              });
-                                              setActiveDropdown(null);
-                                            }}
-                                          >
-                                            <span>{pos}</span>
-                                            {formData.position === pos && (
-                                              <Check className="w-4 h-4 text-primary1" />
-                                            )}
-                                          </div>
-                                        ))}
+                                      <div className={dropdownOuterStyle}>
+                                        <div className={dropdownInnerStyle}>
+                                          {EXECUTIVE_POSITIONS.map((pos) => (
+                                            <div
+                                              key={pos}
+                                              className={`${dropdownItemStyle} ${
+                                                formData.position === pos
+                                                  ? dropdownItemSelectedStyle
+                                                  : dropdownItemHoverStyle
+                                              }`}
+                                              onClick={() => {
+                                                setFormData({
+                                                  ...formData,
+                                                  position: pos,
+                                                  role:
+                                                    pos === "Batch Representative"
+                                                      ? formData.role
+                                                      : "",
+                                                });
+                                                setActiveDropdown(null);
+                                              }}
+                                            >
+                                              <span>{pos}</span>
+                                              {formData.position === pos && (
+                                                <Check className="w-4 h-4 text-primary1" />
+                                              )}
+                                            </div>
+                                          ))}
+                                        </div>
                                       </div>
                                     </>
                                   )}
@@ -815,26 +826,28 @@ export default function OfficersPage() {
                                           className="fixed inset-0 z-20"
                                           onClick={() => setActiveDropdown(null)}
                                         />
-                                        <div className={dropdownContainerStyle}>
-                                          {YEAR_LEVELS.map((yr) => (
-                                            <div
-                                              key={yr}
-                                              className={`${dropdownItemStyle} ${
-                                                formData.role === yr
-                                                  ? dropdownItemSelectedStyle
-                                                  : dropdownItemHoverStyle
-                                              }`}
-                                              onClick={() => {
-                                                setFormData({ ...formData, role: yr });
-                                                setActiveDropdown(null);
-                                              }}
-                                            >
-                                              <span>{yr}</span>
-                                              {formData.role === yr && (
-                                                <Check className="w-4 h-4 text-primary1" />
-                                              )}
-                                            </div>
-                                          ))}
+                                        <div className={dropdownOuterStyle}>
+                                          <div className={dropdownInnerStyle}>
+                                            {YEAR_LEVELS.map((yr) => (
+                                              <div
+                                                key={yr}
+                                                className={`${dropdownItemStyle} ${
+                                                  formData.role === yr
+                                                    ? dropdownItemSelectedStyle
+                                                    : dropdownItemHoverStyle
+                                                }`}
+                                                onClick={() => {
+                                                  setFormData({ ...formData, role: yr });
+                                                  setActiveDropdown(null);
+                                                }}
+                                              >
+                                                <span>{yr}</span>
+                                                {formData.role === yr && (
+                                                  <Check className="w-4 h-4 text-primary1" />
+                                                )}
+                                              </div>
+                                            ))}
+                                          </div>
                                         </div>
                                       </>
                                     )}
@@ -879,26 +892,28 @@ export default function OfficersPage() {
                                         className="fixed inset-0 z-20"
                                         onClick={() => setActiveDropdown(null)}
                                       />
-                                      <div className={dropdownContainerStyle}>
-                                        {COMMITTEES_LIST.map((comm) => (
-                                          <div
-                                            key={comm}
-                                            className={`${dropdownItemStyle} ${
-                                              formData.role === comm
-                                                ? dropdownItemSelectedStyle
-                                                : dropdownItemHoverStyle
-                                            }`}
-                                            onClick={() => {
-                                              setFormData({ ...formData, role: comm });
-                                              setActiveDropdown(null);
-                                            }}
-                                          >
-                                            <span>{comm}</span>
-                                            {formData.role === comm && (
-                                              <Check className="w-4 h-4 text-primary1" />
-                                            )}
-                                          </div>
-                                        ))}
+                                      <div className={dropdownOuterStyle}>
+                                        <div className={dropdownInnerStyle}>
+                                          {COMMITTEES_LIST.map((comm) => (
+                                            <div
+                                              key={comm}
+                                              className={`${dropdownItemStyle} ${
+                                                formData.role === comm
+                                                  ? dropdownItemSelectedStyle
+                                                  : dropdownItemHoverStyle
+                                              }`}
+                                              onClick={() => {
+                                                setFormData({ ...formData, role: comm });
+                                                setActiveDropdown(null);
+                                              }}
+                                            >
+                                              <span>{comm}</span>
+                                              {formData.role === comm && (
+                                                <Check className="w-4 h-4 text-primary1" />
+                                              )}
+                                            </div>
+                                          ))}
+                                        </div>
                                       </div>
                                     </>
                                   )}
@@ -939,26 +954,28 @@ export default function OfficersPage() {
                                         className="fixed inset-0 z-20"
                                         onClick={() => setActiveDropdown(null)}
                                       />
-                                      <div className={dropdownContainerStyle}>
-                                        {COMMITTEE_ROLES.map((role) => (
-                                          <div
-                                            key={role}
-                                            className={`${dropdownItemStyle} ${
-                                              formData.position === role
-                                                ? dropdownItemSelectedStyle
-                                                : dropdownItemHoverStyle
-                                            }`}
-                                            onClick={() => {
-                                              setFormData({ ...formData, position: role });
-                                              setActiveDropdown(null);
-                                            }}
-                                          >
-                                            <span>{role}</span>
-                                            {formData.position === role && (
-                                              <Check className="w-4 h-4 text-primary1" />
-                                            )}
-                                          </div>
-                                        ))}
+                                      <div className={dropdownOuterStyle}>
+                                        <div className={dropdownInnerStyle}>
+                                          {COMMITTEE_ROLES.map((role) => (
+                                            <div
+                                              key={role}
+                                              className={`${dropdownItemStyle} ${
+                                                formData.position === role
+                                                  ? dropdownItemSelectedStyle
+                                                  : dropdownItemHoverStyle
+                                              }`}
+                                              onClick={() => {
+                                                setFormData({ ...formData, position: role });
+                                                setActiveDropdown(null);
+                                              }}
+                                            >
+                                              <span>{role}</span>
+                                              {formData.position === role && (
+                                                <Check className="w-4 h-4 text-primary1" />
+                                              )}
+                                            </div>
+                                          ))}
+                                        </div>
                                       </div>
                                     </>
                                   )}
@@ -973,13 +990,14 @@ export default function OfficersPage() {
                     <div className="mt-10 flex flex-wrap justify-end gap-4">
                         <div className="flex flex-wrap gap-3 ml-auto">
                           {editingId && (
-                            <button
+                            <Button
                               type="button"
+                              variant="heroOutline"
                               onClick={handleCancelEdit}
-                              className="px-6 py-3 font-rubik font-bold text-gray-500 border-2 border-gray-200 hover:border-red-200 hover:text-red-400 rounded-2xl transition-all duration-300 cursor-pointer"
+                              className="px-6 py-3"
                             >
                               Cancel
-                            </button>
+                            </Button>
                           )}
                           <Button
                             variant="hero"
@@ -1079,21 +1097,21 @@ export default function OfficersPage() {
                         <table className="w-full text-left min-w-145">
                           <thead>
                             <tr className="bg-gray-50/80">
-                              <th className="px-6 sm:px-8 py-3.5 text-[10px] font-bold uppercase tracking-widest text-gray-400 font-rubik">
+                              <th className="px-6 sm:px-8 py-3.5 text-[10px] font-semibold uppercase tracking-widest text-gray-400 font-raleway">
                                 Photo
                               </th>
-                              <th className="px-4 py-3.5 text-[10px] font-bold uppercase tracking-widest text-gray-400 font-rubik">
+                              <th className="px-4 py-3.5 text-[10px] font-semibold uppercase tracking-widest text-gray-400 font-raleway">
                                 Name
                               </th>
-                              <th className="px-4 py-3.5 text-[10px] font-bold uppercase tracking-widest text-gray-400 font-rubik">
+                              <th className="px-4 py-3.5 text-[10px] font-semibold uppercase tracking-widest text-gray-400 font-raleway">
                                 Position
                               </th>
                               {activeTab === "committee" && (
-                                <th className="px-4 py-3.5 text-[10px] font-bold uppercase tracking-widest text-gray-400 font-rubik">
+                                <th className="px-4 py-3.5 text-[10px] font-semibold uppercase tracking-widest text-gray-400 font-raleway">
                                   Committee
                                 </th>
                               )}
-                              <th className="px-6 sm:px-8 py-3.5 text-right text-[10px] font-bold uppercase tracking-widest text-gray-400 font-rubik">
+                              <th className="px-6 sm:px-8 py-3.5 text-right text-[10px] font-semibold uppercase tracking-widest text-gray-400 font-raleway">
                                 Actions
                               </th>
                             </tr>
@@ -1142,7 +1160,7 @@ export default function OfficersPage() {
                                   {/* Position */}
                                   <td className="px-4 py-4">
                                     <span
-                                      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border ${dept.bg} ${dept.color} ${dept.border}`}
+                                      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-raleway font-semibold border ${dept.bg} ${dept.color} ${dept.border}`}
                                     >
                                       <span
                                         className={`w-1.5 h-1.5 rounded-full ${dept.dot}`}

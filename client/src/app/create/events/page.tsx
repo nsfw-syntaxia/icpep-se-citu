@@ -52,6 +52,42 @@ function formatDateLabel(dateStr: string): string {
   return `${monthName} ${parseInt(day)}, ${year}`;
 }
 
+function splitDateTime(isoStr: string): {
+  date: string;
+  hour: string;
+  minute: string;
+  period: string;
+} {
+  if (!isoStr) return { date: "", hour: "08", minute: "00", period: "AM" };
+  const d = new Date(isoStr);
+  if (isNaN(d.getTime())) return { date: "", hour: "08", minute: "00", period: "AM" };
+  const date = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  let h = d.getHours();
+  const period = h >= 12 ? "PM" : "AM";
+  h = h % 12;
+  if (h === 0) h = 12;
+  return {
+    date,
+    hour: String(h).padStart(2, "0"),
+    minute: String(d.getMinutes()).padStart(2, "0"),
+    period,
+  };
+}
+
+function combineDateTime(
+  dateStr: string,
+  hour: string,
+  minute: string,
+  period: string,
+): string {
+  if (!dateStr) return "";
+  let h = parseInt(hour, 10) % 12;
+  if (period === "PM") h += 12;
+  const time24 = `${String(h).padStart(2, "0")}:${minute}`;
+  const d = new Date(`${dateStr}T${time24}`);
+  return isNaN(d.getTime()) ? "" : d.toISOString();
+}
+
 function parseTimeToPicker(timeStr: string): { hour: string; minute: string; period: string } {
   if (!timeStr) return { hour: "08", minute: "00", period: "AM" };
   const ampm = timeStr.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
@@ -103,6 +139,7 @@ interface EventItem {
   registrationEnd?: string;
   targetAudience?: string[];
   details?: { title: string; items: string[] }[];
+  galleryImages?: string[];
 }
 
 const VISIBILITY_OPTIONS = [
@@ -146,6 +183,17 @@ export default function EventsPage() {
   const [registrationRequired, setRegistrationRequired] = useState(false);
   const [registrationStart, setRegistrationStart] = useState("");
   const [registrationEnd, setRegistrationEnd] = useState("");
+  // Custom date+time picker pieces for Registration Opens/Closes (mirrors
+  // the Event Schedule date/time pickers instead of a native datetime-local
+  // input); combined into registrationStart/registrationEnd below.
+  const [regStartDate, setRegStartDate] = useState("");
+  const [regStartHour, setRegStartHour] = useState("08");
+  const [regStartMinute, setRegStartMinute] = useState("00");
+  const [regStartPeriod, setRegStartPeriod] = useState("AM");
+  const [regEndDate, setRegEndDate] = useState("");
+  const [regEndHour, setRegEndHour] = useState("08");
+  const [regEndMinute, setRegEndMinute] = useState("00");
+  const [regEndPeriod, setRegEndPeriod] = useState("AM");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
@@ -189,6 +237,9 @@ export default function EventsPage() {
   const [images, setImages] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [galleryImages, setGalleryImages] = useState<string[]>([]);
+  const [isGalleryUploading, setIsGalleryUploading] = useState(false);
+  const galleryInputRef = useRef<HTMLInputElement | null>(null);
   const [tags, setTags] = useState<string[]>([]);
   const [mode, setMode] = useState<"Online" | "Onsite">("Onsite");
   const [showTagInput, setShowTagInput] = useState(false);
@@ -220,6 +271,19 @@ export default function EventsPage() {
   useEffect(() => {
     setFormData((prev) => ({ ...prev, time: `${timeHour}:${timeMinute} ${timePeriod}` }));
   }, [timeHour, timeMinute, timePeriod]);
+
+  // Sync the registration date+time picker pieces into single datetime strings
+  useEffect(() => {
+    setRegistrationStart(
+      combineDateTime(regStartDate, regStartHour, regStartMinute, regStartPeriod),
+    );
+  }, [regStartDate, regStartHour, regStartMinute, regStartPeriod]);
+
+  useEffect(() => {
+    setRegistrationEnd(
+      combineDateTime(regEndDate, regEndHour, regEndMinute, regEndPeriod),
+    );
+  }, [regEndDate, regEndHour, regEndMinute, regEndPeriod]);
 
   useEffect(() => {
     if (editIdParam) {
@@ -262,6 +326,9 @@ export default function EventsPage() {
             }
             if (data.details) setDetails(data.details);
             if (data.coverImage) setPreviews([data.coverImage]);
+            setGalleryImages(
+              Array.isArray(data.galleryImages) ? data.galleryImages : [],
+            );
             if (data.organizer)
               setOrganizer(
                 typeof data.organizer === "string"
@@ -270,14 +337,20 @@ export default function EventsPage() {
               );
             if (data.registrationRequired)
               setRegistrationRequired(data.registrationRequired);
-            if (data.registrationStart)
-              setRegistrationStart(
-                new Date(data.registrationStart).toISOString().split("T")[0],
-              );
-            if (data.registrationEnd)
-              setRegistrationEnd(
-                new Date(data.registrationEnd).toISOString().split("T")[0],
-              );
+            if (data.registrationStart) {
+              const parsed = splitDateTime(data.registrationStart);
+              setRegStartDate(parsed.date);
+              setRegStartHour(parsed.hour);
+              setRegStartMinute(parsed.minute);
+              setRegStartPeriod(parsed.period);
+            }
+            if (data.registrationEnd) {
+              const parsed = splitDateTime(data.registrationEnd);
+              setRegEndDate(parsed.date);
+              setRegEndHour(parsed.hour);
+              setRegEndMinute(parsed.minute);
+              setRegEndPeriod(parsed.period);
+            }
           }
         } catch (error) {
           console.error("Failed to fetch event for edit:", error);
@@ -337,16 +410,16 @@ export default function EventsPage() {
         : item.organizer || "",
     );
     setRegistrationRequired(!!item.registrationRequired);
-    setRegistrationStart(
-      item.registrationStart
-        ? new Date(item.registrationStart).toISOString().slice(0, 16)
-        : "",
-    );
-    setRegistrationEnd(
-      item.registrationEnd
-        ? new Date(item.registrationEnd).toISOString().slice(0, 16)
-        : "",
-    );
+    const startParsed = splitDateTime(item.registrationStart || "");
+    setRegStartDate(startParsed.date);
+    setRegStartHour(startParsed.hour);
+    setRegStartMinute(startParsed.minute);
+    setRegStartPeriod(startParsed.period);
+    const endParsed = splitDateTime(item.registrationEnd || "");
+    setRegEndDate(endParsed.date);
+    setRegEndHour(endParsed.hour);
+    setRegEndMinute(endParsed.minute);
+    setRegEndPeriod(endParsed.period);
     if (item.details && item.details.length > 0) {
       setDetails(
         item.details.map((d) => ({ title: d.title, body: d.items.join("\n") })),
@@ -358,6 +431,7 @@ export default function EventsPage() {
     }
     setPreviews(item.coverImage ? [item.coverImage] : []);
     setImages([]);
+    setGalleryImages(item.galleryImages || []);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -386,10 +460,19 @@ export default function EventsPage() {
     setRegistrationRequired(false);
     setRegistrationStart("");
     setRegistrationEnd("");
+    setRegStartDate("");
+    setRegStartHour("08");
+    setRegStartMinute("00");
+    setRegStartPeriod("AM");
+    setRegEndDate("");
+    setRegEndHour("08");
+    setRegEndMinute("00");
+    setRegEndPeriod("AM");
     setDetails([{ title: "", body: "" }]);
     setShowAdditionalInfo(false);
     setMode("Onsite");
     setDateConflictError(false);
+    setGalleryImages([]);
   };
 
   const handleCancelEdit = () => {
@@ -597,9 +680,16 @@ export default function EventsPage() {
       reader.readAsDataURL(file);
     });
 
+  const MAX_IMAGE_SIZE_MB = 5;
+
   const handleImagesChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    if (file.size > MAX_IMAGE_SIZE_MB * 1024 * 1024) {
+      alert(`Image must be ${MAX_IMAGE_SIZE_MB}MB or smaller.`);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      return;
+    }
     try {
       const resized = await resizeImage(file);
       setImages([resized]);
@@ -615,12 +705,66 @@ export default function EventsPage() {
     setIsDragging(false);
     const file = e.dataTransfer.files?.[0];
     if (!file || !file.type.startsWith("image/")) return;
+    if (file.size > MAX_IMAGE_SIZE_MB * 1024 * 1024) {
+      alert(`Image must be ${MAX_IMAGE_SIZE_MB}MB or smaller.`);
+      return;
+    }
     try {
       const resized = await resizeImage(file);
       setImages([resized]);
       setPreviews([URL.createObjectURL(resized)]);
     } catch (err) {
       console.error(err);
+    }
+  };
+
+  const handleGalleryFilesChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0 || !editingId) return;
+
+    const oversized = files.find(
+      (f) => f.size > MAX_IMAGE_SIZE_MB * 1024 * 1024,
+    );
+    if (oversized) {
+      alert(`Each image must be ${MAX_IMAGE_SIZE_MB}MB or smaller.`);
+      if (galleryInputRef.current) galleryInputRef.current.value = "";
+      return;
+    }
+
+    setIsGalleryUploading(true);
+    try {
+      const resized = await Promise.all(files.map((f) => resizeImage(f)));
+      const response = await eventService.updateEvent(
+        editingId,
+        {},
+        resized,
+      );
+      const updated = response.data as { galleryImages?: string[] };
+      setGalleryImages(updated?.galleryImages || []);
+      fetchEvents();
+    } catch (err) {
+      console.error("Failed to upload gallery photos:", err);
+      alert("Failed to upload gallery photos. Please try again.");
+    } finally {
+      setIsGalleryUploading(false);
+      if (galleryInputRef.current) galleryInputRef.current.value = "";
+    }
+  };
+
+  const handleRemoveGalleryImage = async (url: string) => {
+    if (!editingId) return;
+    const remaining = galleryImages.filter((img) => img !== url);
+    setGalleryImages(remaining);
+    try {
+      await eventService.updateEvent(editingId, {
+        galleryImages: remaining,
+      });
+      fetchEvents();
+    } catch (err) {
+      console.error("Failed to remove gallery photo:", err);
+      setGalleryImages(galleryImages);
     }
   };
 
@@ -637,8 +781,13 @@ export default function EventsPage() {
   const inputCls = (hasError: boolean) =>
     `${inputBaseStyle} ${inputFocusStyle} ${hasError ? errorInputStyle : ""}`;
 
-  const dropdownContainerStyle =
-    "absolute z-30 w-full min-w-20 mt-2 bg-white border border-gray-100 rounded-2xl shadow-xl overflow-x-hidden flex flex-col gap-1 p-2 max-h-56 overflow-y-auto themed-scrollbar";
+  // Split into a non-scrolling outer wrapper (owns the rounding/border/shadow)
+  // and a scrolling inner container, so the scrollbar never pokes past the
+  // rounded corners.
+  const dropdownOuterStyle =
+    "absolute z-30 w-full min-w-20 mt-2 bg-white border border-gray-100 rounded-2xl shadow-xl overflow-hidden";
+  const dropdownInnerStyle =
+    "flex flex-col gap-1 p-2 max-h-56 overflow-y-auto themed-scrollbar";
   const dropdownItemStyle =
     "flex items-center justify-between px-3 py-2 rounded-xl cursor-pointer transition-colors font-rubik text-sm font-medium";
   const dropdownItemSelectedStyle = "bg-primary1/5 text-primary1";
@@ -727,26 +876,28 @@ export default function EventsPage() {
         {isOpen && (
           <>
             <div
-              className={`${dropdownContainerStyle} left-1/2 -translate-x-1/2 text-center`}
+              className={`${dropdownOuterStyle} left-1/2 -translate-x-1/2 text-center`}
               onMouseDown={(e) => e.preventDefault()}
             >
-              {options.map((opt) => (
-                <div
-                  key={opt}
-                  className={`justify-center ${dropdownItemStyle} ${
-                    value === opt
-                      ? dropdownItemSelectedStyle
-                      : dropdownItemHoverStyle
-                  }`}
-                  onMouseDown={(e) => {
-                    e.preventDefault();
-                    setValue(opt);
-                    setActiveTimeDropdown(null);
-                  }}
-                >
-                  <span>{opt}</span>
-                </div>
-              ))}
+              <div className={dropdownInnerStyle}>
+                {options.map((opt) => (
+                  <div
+                    key={opt}
+                    className={`justify-center ${dropdownItemStyle} ${
+                      value === opt
+                        ? dropdownItemSelectedStyle
+                        : dropdownItemHoverStyle
+                    }`}
+                    onMouseDown={(e) => {
+                      e.preventDefault();
+                      setValue(opt);
+                      setActiveTimeDropdown(null);
+                    }}
+                  >
+                    <span>{opt}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </>
         )}
@@ -1004,9 +1155,14 @@ export default function EventsPage() {
 
                       {/* COVER IMAGE */}
                       <div className="space-y-3">
-                        <label className={labelStyle}>
-                          Cover Image
-                        </label>
+                        <div className="flex items-center justify-between">
+                          <label className={labelStyle}>
+                            Cover Image
+                          </label>
+                          <span className="text-xs text-gray-400 font-raleway">
+                            Max {MAX_IMAGE_SIZE_MB}MB
+                          </span>
+                        </div>
                         <input
                           type="file"
                           accept="image/*"
@@ -1078,6 +1234,71 @@ export default function EventsPage() {
                         )}
                       </div>
 
+                      {/* GALLERY (available once the event has ended) */}
+                      {editingId &&
+                        formData.date &&
+                        new Date(formData.date) < new Date() && (
+                          <>
+                            <Divider />
+                            <div className="space-y-3">
+                              <div className="flex items-center justify-between">
+                                <label className={labelStyle}>
+                                  Event Gallery
+                                </label>
+                                <span className="text-xs text-gray-400 font-raleway">
+                                  Max {MAX_IMAGE_SIZE_MB}MB per photo
+                                </span>
+                              </div>
+                              <input
+                                type="file"
+                                accept="image/*"
+                                multiple
+                                className="hidden"
+                                onChange={handleGalleryFilesChange}
+                                ref={galleryInputRef}
+                              />
+                              <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
+                                {galleryImages.map((url) => (
+                                  <div
+                                    key={url}
+                                    className="group relative aspect-square rounded-xl overflow-hidden border-2 border-gray-100 bg-gray-50"
+                                  >
+                                    <img
+                                      src={url}
+                                      alt="Gallery photo"
+                                      className="w-full h-full object-cover"
+                                    />
+                                    <button
+                                      type="button"
+                                      onClick={() =>
+                                        handleRemoveGalleryImage(url)
+                                      }
+                                      className="absolute top-1.5 right-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-black/60 text-white opacity-0 transition-all duration-200 hover:bg-red-500 group-hover:opacity-100 cursor-pointer active:scale-90"
+                                    >
+                                      <X size={13} />
+                                    </button>
+                                  </div>
+                                ))}
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    galleryInputRef.current?.click()
+                                  }
+                                  disabled={isGalleryUploading}
+                                  className="aspect-square rounded-xl border-2 border-dashed border-gray-200 bg-gray-50/80 flex flex-col items-center justify-center gap-1.5 text-gray-400 transition-all duration-300 hover:border-primary2/60 hover:bg-primary2/3 hover:text-primary2 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+                                >
+                                  <Upload size={18} strokeWidth={2.5} />
+                                  <span className="text-[11px] font-bold font-raleway">
+                                    {isGalleryUploading
+                                      ? "Uploading..."
+                                      : "Add Photos"}
+                                  </span>
+                                </button>
+                              </div>
+                            </div>
+                          </>
+                        )}
+
                       <Divider />
 
                       {/* TAGS */}
@@ -1137,7 +1358,7 @@ export default function EventsPage() {
                                   setNewTag("");
                                   setShowTagInput(false);
                                 }}
-                                className="px-3 py-2 bg-linear-to-r from-primary1 to-primary2 text-white rounded-xl text-xs font-bold cursor-pointer"
+                                className="px-3 py-2 bg-linear-to-r from-primary1 to-primary2 text-white rounded-xl text-xs font-bold font-rubik shadow-sm transition-all cursor-pointer active:scale-95"
                               >
                                 Add
                               </button>
@@ -1147,9 +1368,9 @@ export default function EventsPage() {
                                   setNewTag("");
                                   setShowTagInput(false);
                                 }}
-                                className="px-3 py-2 border-2 border-gray-200 text-gray-500 rounded-xl text-xs font-bold cursor-pointer"
+                                className="px-3 py-2 border-2 border-gray-200 text-gray-500 rounded-xl text-xs font-bold font-rubik transition-all hover:border-red-200 hover:bg-red-50 hover:text-red-500 cursor-pointer active:scale-95"
                               >
-                                ✕
+                                <X size={12} />
                               </button>
                             </div>
                           )}
@@ -1314,15 +1535,19 @@ export default function EventsPage() {
                                 placeholder="Category (e.g., General)"
                                 value={category}
                                 onChange={(e) => setCategory(e.target.value)}
-                                className="flex-1 border-2 border-white bg-white rounded-xl px-4 py-2.5 font-rubik text-sm focus:outline-none focus:border-primary2 transition-all"
+                                className="flex-1 border-2 border-gray-200 bg-white rounded-xl px-4 py-2.5 font-rubik text-sm focus:outline-none focus:border-primary2 transition-all"
                                 autoFocus
                               />
                               <input
                                 type="text"
+                                inputMode="decimal"
                                 placeholder="Price"
                                 value={price}
-                                onChange={(e) => setPrice(e.target.value)}
-                                className="w-full sm:w-28 border-2 border-white bg-white rounded-xl px-4 py-2.5 font-rubik text-sm focus:outline-none focus:border-primary2 transition-all"
+                                onChange={(e) => {
+                                  const val = e.target.value;
+                                  if (/^\d*\.?\d*$/.test(val)) setPrice(val);
+                                }}
+                                className="w-full sm:w-28 border-2 border-gray-200 bg-white rounded-xl px-4 py-2.5 font-rubik text-sm focus:outline-none focus:border-primary2 transition-all"
                               />
                               <div className="flex gap-2">
                                 <button
@@ -1340,7 +1565,7 @@ export default function EventsPage() {
                                     setPrice("");
                                     setShowAdmissionInput(false);
                                   }}
-                                  className="px-5 py-2.5 bg-linear-to-r from-primary1 to-primary2 text-white rounded-xl font-bold text-xs font-rubik shadow-sm cursor-pointer"
+                                  className="px-5 py-2.5 bg-linear-to-r from-primary1 to-primary2 text-white rounded-xl font-bold text-xs font-rubik shadow-sm transition-all cursor-pointer active:scale-95"
                                 >
                                   Add
                                 </button>
@@ -1351,7 +1576,7 @@ export default function EventsPage() {
                                     setPrice("");
                                     setShowAdmissionInput(false);
                                   }}
-                                  className="px-4 py-2.5 border-2 border-gray-200 bg-white text-gray-500 rounded-xl font-bold text-xs font-rubik cursor-pointer"
+                                  className="px-4 py-2.5 border-2 border-gray-200 bg-white text-gray-500 rounded-xl font-bold text-xs font-rubik transition-all hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700 cursor-pointer active:scale-95"
                                 >
                                   Cancel
                                 </button>
@@ -1399,14 +1624,14 @@ export default function EventsPage() {
                           </label>
                           <label className="flex items-center gap-2.5 cursor-pointer select-none">
                             <div
-                              className={`w-10 h-5 rounded-full transition-all duration-200 relative ${registrationRequired ? "bg-primary2" : "bg-gray-200"}`}
+                              className={`w-10 h-5 rounded-full transition-all duration-300 relative cursor-pointer active:scale-95 ${registrationRequired ? "bg-linear-to-r from-primary3 to-primary2 shadow-inner" : "bg-gray-200"}`}
                               onClick={() => setRegistrationRequired((p) => !p)}
                             >
                               <div
-                                className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-all duration-200 ${registrationRequired ? "left-5" : "left-0.5"}`}
+                                className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow-md transition-all duration-300 ${registrationRequired ? "left-5" : "left-0.5"}`}
                               />
                             </div>
-                            <span className="text-xs font-bold text-gray-500 font-rubik">
+                            <span className="text-xs font-medium text-gray-500 font-raleway">
                               Required
                             </span>
                           </label>
@@ -1414,30 +1639,98 @@ export default function EventsPage() {
                         {registrationRequired && (
                           <div className="grid sm:grid-cols-2 gap-4">
                             <div className="space-y-2">
-                              <label className={labelStyle}>
-                                Opens
-                              </label>
-                              <input
-                                type="datetime-local"
-                                value={registrationStart}
-                                onChange={(e) =>
-                                  setRegistrationStart(e.target.value)
-                                }
-                                className={inputCls(false)}
-                              />
+                              <label className={labelStyle}>Opens</label>
+                              {renderDatePicker(
+                                "regStartDate",
+                                regStartDate,
+                                setRegStartDate,
+                                false,
+                                "Select date",
+                              )}
+                              <div
+                                className={`flex items-center gap-1 bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 transition-all ${
+                                  [
+                                    "regStart-hour",
+                                    "regStart-minute",
+                                    "regStart-period",
+                                  ].includes(activeTimeDropdown || "")
+                                    ? "bg-white border-primary1 ring-4 ring-primary1/10"
+                                    : ""
+                                }`}
+                              >
+                                {renderTimeInput(
+                                  "regStart-hour",
+                                  regStartHour,
+                                  setRegStartHour,
+                                  timeHours,
+                                  "hour",
+                                )}
+                                <span className="text-gray-400 font-bold">
+                                  :
+                                </span>
+                                {renderTimeInput(
+                                  "regStart-minute",
+                                  regStartMinute,
+                                  setRegStartMinute,
+                                  timeMinutes,
+                                  "minute",
+                                )}
+                                <div className="w-px h-6 bg-gray-200 mx-2" />
+                                {renderTimeInput(
+                                  "regStart-period",
+                                  regStartPeriod,
+                                  setRegStartPeriod,
+                                  timePeriods,
+                                  "period",
+                                )}
+                              </div>
                             </div>
                             <div className="space-y-2">
-                              <label className={labelStyle}>
-                                Closes
-                              </label>
-                              <input
-                                type="datetime-local"
-                                value={registrationEnd}
-                                onChange={(e) =>
-                                  setRegistrationEnd(e.target.value)
-                                }
-                                className={inputCls(false)}
-                              />
+                              <label className={labelStyle}>Closes</label>
+                              {renderDatePicker(
+                                "regEndDate",
+                                regEndDate,
+                                setRegEndDate,
+                                false,
+                                "Select date",
+                              )}
+                              <div
+                                className={`flex items-center gap-1 bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 transition-all ${
+                                  [
+                                    "regEnd-hour",
+                                    "regEnd-minute",
+                                    "regEnd-period",
+                                  ].includes(activeTimeDropdown || "")
+                                    ? "bg-white border-primary1 ring-4 ring-primary1/10"
+                                    : ""
+                                }`}
+                              >
+                                {renderTimeInput(
+                                  "regEnd-hour",
+                                  regEndHour,
+                                  setRegEndHour,
+                                  timeHours,
+                                  "hour",
+                                )}
+                                <span className="text-gray-400 font-bold">
+                                  :
+                                </span>
+                                {renderTimeInput(
+                                  "regEnd-minute",
+                                  regEndMinute,
+                                  setRegEndMinute,
+                                  timeMinutes,
+                                  "minute",
+                                )}
+                                <div className="w-px h-6 bg-gray-200 mx-2" />
+                                {renderTimeInput(
+                                  "regEnd-period",
+                                  regEndPeriod,
+                                  setRegEndPeriod,
+                                  timePeriods,
+                                  "period",
+                                )}
+                              </div>
                             </div>
                           </div>
                         )}
@@ -1587,7 +1880,7 @@ export default function EventsPage() {
                                         ),
                                       )
                                     }
-                                    className="flex-1 rounded-xl border-2 border-white bg-white px-4 py-2.5 text-sm font-rubik focus:outline-none focus:border-primary2 transition-all"
+                                    className="flex-1 rounded-xl border-2 border-gray-200 bg-white px-4 py-2.5 text-sm font-rubik focus:outline-none focus:border-primary2 transition-all"
                                   />
                                   <button
                                     type="button"
@@ -1613,7 +1906,7 @@ export default function EventsPage() {
                                       ),
                                     )
                                   }
-                                  className="w-full rounded-xl border-2 border-white bg-white px-4 py-3 text-sm font-raleway text-gray-600 h-28 focus:outline-none focus:border-primary2 transition-all resize-y"
+                                  className="w-full rounded-xl border-2 border-gray-200 bg-white px-4 py-3 text-sm font-raleway text-gray-600 h-28 focus:outline-none focus:border-primary2 transition-all resize-y"
                                 />
                               </div>
                             ))}
@@ -1707,23 +2000,25 @@ export default function EventsPage() {
                         )}
                         <div className="flex flex-wrap gap-3 ml-auto">
                           {editingId && (
-                            <button
+                            <Button
                               type="button"
+                              variant="heroOutline"
                               onClick={handleCancelEdit}
-                              className="px-6 py-3 font-rubik font-bold text-gray-500 border-2 border-gray-200 hover:border-red-200 hover:text-red-400 rounded-2xl transition-all duration-300 cursor-pointer"
+                              className="px-6 py-3"
                             >
                               Cancel
-                            </button>
+                            </Button>
                           )}
                           {(!editingId || isEditingDraft) && (
-                            <button
+                            <Button
                               type="button"
+                              variant="heroOutline"
                               onClick={handleSaveDraft}
                               disabled={isSubmitting}
-                              className="px-6 py-3 font-rubik font-bold text-primary1 border-2 border-primary1/30 hover:border-primary1 hover:bg-primary1/5 rounded-2xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                              className="px-6 py-3"
                             >
                               {editingId ? "Update Draft" : "Save Draft"}
-                            </button>
+                            </Button>
                           )}
                           <Button
                             type="button"
@@ -1793,19 +2088,19 @@ export default function EventsPage() {
                         <table className="w-full text-left min-w-160">
                           <thead>
                             <tr className="bg-gray-50/80">
-                              <th className="px-6 sm:px-8 py-3.5 text-[10px] font-bold uppercase tracking-widest text-gray-400 font-rubik">
+                              <th className="px-6 sm:px-8 py-3.5 text-[10px] font-semibold uppercase tracking-widest text-gray-400 font-raleway">
                                 Cover
                               </th>
-                              <th className="px-4 py-3.5 text-[10px] font-bold uppercase tracking-widest text-gray-400 font-rubik">
+                              <th className="px-4 py-3.5 text-[10px] font-semibold uppercase tracking-widest text-gray-400 font-raleway">
                                 Title
                               </th>
-                              <th className="px-4 py-3.5 text-[10px] font-bold uppercase tracking-widest text-gray-400 font-rubik">
+                              <th className="px-4 py-3.5 text-[10px] font-semibold uppercase tracking-widest text-gray-400 font-raleway">
                                 Date
                               </th>
-                              <th className="px-4 py-3.5 text-[10px] font-bold uppercase tracking-widest text-gray-400 font-rubik">
+                              <th className="px-4 py-3.5 text-[10px] font-semibold uppercase tracking-widest text-gray-400 font-raleway">
                                 Mode
                               </th>
-                              <th className="px-6 sm:px-8 py-3.5 text-right text-[10px] font-bold uppercase tracking-widest text-gray-400 font-rubik">
+                              <th className="px-6 sm:px-8 py-3.5 text-right text-[10px] font-semibold uppercase tracking-widest text-gray-400 font-raleway">
                                 Actions
                               </th>
                             </tr>
@@ -1861,7 +2156,7 @@ export default function EventsPage() {
                                   </td>
                                   <td className="px-4 py-4">
                                     <span
-                                      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border ${online ? "bg-emerald-50 text-emerald-700 border-emerald-200" : "bg-orange-50 text-orange-700 border-orange-200"}`}
+                                      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-raleway font-semibold border ${online ? "bg-emerald-50 text-emerald-700 border-emerald-200" : "bg-orange-50 text-orange-700 border-orange-200"}`}
                                     >
                                       <span
                                         className={`w-1.5 h-1.5 rounded-full ${online ? "bg-emerald-500" : "bg-orange-400"}`}
