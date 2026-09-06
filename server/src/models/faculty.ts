@@ -12,8 +12,8 @@ export interface IFaculty extends Document {
 
 const FacultySchema: Schema = new Schema(
   {
-    name: { type: String, required: true },
-    position: { type: String, required: true },
+    name: { type: String, required: true, trim: true },
+    position: { type: String, required: true, trim: true },
     image: { type: String, required: false },
     isActive: { type: Boolean, default: true },
     displayOrder: { type: Number, default: 0 },

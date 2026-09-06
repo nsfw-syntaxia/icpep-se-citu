@@ -14,9 +14,9 @@ export interface IAdvisor extends Document {
 
 const AdvisorSchema: Schema = new Schema(
   {
-    name: { type: String, required: true },
-    position: { type: String, required: true },
-    yearRange: { type: String, required: true },
+    name: { type: String, required: true, trim: true },
+    position: { type: String, required: true, trim: true },
+    yearRange: { type: String, required: true, trim: true },
     isCurrent: { type: Boolean, default: false },
     image: { type: String, required: false },
     isActive: { type: Boolean, default: true },

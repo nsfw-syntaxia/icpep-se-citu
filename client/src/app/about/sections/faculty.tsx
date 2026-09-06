@@ -24,7 +24,7 @@ const FacultySection: FC<FacultySectionProps> = ({ faculty }) => {
   const departmentHead = faculty[headIndex >= 0 ? headIndex : 0];
   const otherFaculty = faculty
     .filter((_, i) => i !== (headIndex >= 0 ? headIndex : 0))
-    .sort((a, b) => a.name.localeCompare(b.name));
+    .sort((a, b) => a.name.trim().localeCompare(b.name.trim()));
 
   return (
     <section className="mt-48">
