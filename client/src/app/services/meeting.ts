@@ -55,7 +55,6 @@ export async function listMeetings(params?: {
 
   if (!res.ok) throw new Error(json.message || "Failed to list meetings");
 
-  // FIX: Handle the { success: true, data: [...] } structure
   return json.data as Meeting[];
 }
 

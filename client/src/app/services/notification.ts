@@ -59,9 +59,9 @@ api.interceptors.response.use(
       data: responseData,
     };
 
-    // fix: do not log console error for auth failures (401/403) to prevent console spam
+    // Don't log auth failures (401/403) to avoid console spam
     if (error.code !== "ERR_CANCELED" && status !== 401 && status !== 403) {
-      console.error("❌ API Error:", JSON.stringify(errorDetails, null, 2));
+      console.error("API Error:", JSON.stringify(errorDetails, null, 2));
     }
 
     return Promise.reject(error);

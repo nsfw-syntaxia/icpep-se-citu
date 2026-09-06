@@ -20,12 +20,12 @@ if (CLOUDINARY_ENABLED) {
         api_secret: CLOUDINARY_API_SECRET,
     });
 } else {
-    console.warn('⚠️ Cloudinary credentials missing or incomplete. Uploads will use a placeholder URL in development.');
+    console.warn('Cloudinary credentials missing or incomplete. Uploads will use a placeholder URL in development.');
 }
 if (CLOUDINARY_ENABLED) {
     // Log masked info to help debugging without leaking secrets
     const masked = `${String(CLOUDINARY_CLOUD_NAME).slice(0, 3)}***`;
-    console.log(`✅ Cloudinary configured. cloud_name=${masked}`);
+    console.log(`Cloudinary configured. cloud_name=${masked}`);
 }
 
 /**
@@ -40,7 +40,7 @@ export const uploadToCloudinary = (
 ): Promise<UploadApiResponse> => {
     // If Cloudinary isn't configured, return a placeholder response to avoid 500s during local dev
     if (!CLOUDINARY_ENABLED) {
-        console.warn('⚠️ uploadToCloudinary called but Cloudinary is not configured. Returning placeholder URL.');
+        console.warn('uploadToCloudinary called but Cloudinary is not configured. Returning placeholder URL.');
         return Promise.resolve({ secure_url: 'https://via.placeholder.com/1200x630.png?text=No+Image' } as any);
     }
 
@@ -94,7 +94,7 @@ export const uploadToCloudinary = (
 export const deleteFromCloudinary = async (url: string): Promise<void> => {
     try {
         if (!CLOUDINARY_ENABLED) {
-            console.warn('⚠️ deleteFromCloudinary called but Cloudinary is not configured. Skipping delete.');
+            console.warn('deleteFromCloudinary called but Cloudinary is not configured. Skipping delete.');
             return;
         }
         // Extract public_id from URL
@@ -125,7 +125,7 @@ export const uploadMultipleToCloudinary = async (
         const results = await Promise.all(uploadPromises);
         return results;
     } catch (error) {
-        console.error('❌ Error uploading multiple files to Cloudinary:', error);
+        console.error('Error uploading multiple files to Cloudinary:', error);
         throw error;
     }
 };

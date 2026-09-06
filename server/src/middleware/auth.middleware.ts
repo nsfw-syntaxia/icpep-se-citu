@@ -28,7 +28,7 @@ export const authenticateToken = (
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
 
-    console.log('🔐 Token received:', token ? 'Yes' : 'No');
+    console.log('Token received:', token ? 'Yes' : 'No');
 
     if (!token) {
       return res.status(401).json({
@@ -39,13 +39,13 @@ export const authenticateToken = (
 
     const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
     
-    console.log('👤 Decoded token:', decoded);
-    console.log('🆔 User ID from token:', decoded.id);
+    console.log('Decoded token:', decoded);
+    console.log('User ID from token:', decoded.id);
     
     req.user = decoded;
     next();
   } catch (error) {
-    console.error('❌ Token verification failed:', error);
+    console.error('Token verification failed:', error);
     return res.status(403).json({
       success: false,
       message: 'Invalid or expired token.',

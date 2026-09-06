@@ -24,7 +24,7 @@ export const createMerch = async (req: Request, res: Response): Promise<void> =>
       }
     }
 
-    // ✅ FIX: Parse isActive properly from FormData
+    // FIX: Parse isActive properly from FormData
     // FormData sends everything as strings, so "false" becomes string "false"
     let parsedIsActive = true; // Default to true for new items
     if (isActive !== undefined) {
@@ -106,7 +106,7 @@ export const updateMerch = async (req: Request, res: Response): Promise<void> =>
     if (description) merch.description = description;
     if (orderLink) merch.orderLink = orderLink;
 
-    // ✅ FIX: Parse isActive properly from FormData
+    // FIX: Parse isActive properly from FormData
     if (isActive !== undefined) {
       if (typeof isActive === 'string') {
         merch.isActive = isActive === 'true';

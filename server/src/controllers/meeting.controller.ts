@@ -91,7 +91,7 @@ export const createMeeting = async (
           try {
             await Availability.insertMany(availabilityRecords);
             console.log(
-              `✅ Created ${availabilityRecords.length} availability records.`
+              `Created ${availabilityRecords.length} availability records.`
             );
           } catch (err) {
             console.error("Error creating availability records:", err);

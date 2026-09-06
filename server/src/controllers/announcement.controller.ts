@@ -39,11 +39,11 @@ export const createAnnouncement = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    console.log("🔵 CREATE ANNOUNCEMENT - START");
-    console.log("📦 Request body:", JSON.stringify(req.body, null, 2));
-    console.log("📷 File present:", !!req.file);
-    console.log("📷 Files present:", !!req.files && req.files.length);
-    console.log("👤 User:", req.user);
+    console.log("CREATE ANNOUNCEMENT - START");
+    console.log("Request body:", JSON.stringify(req.body, null, 2));
+    console.log("File present:", !!req.file);
+    console.log("Files present:", !!req.files && req.files.length);
+    console.log("User:", req.user);
 
     const {
       title,
@@ -69,7 +69,7 @@ export const createAnnouncement = async (
     const author = req.user?.id;
 
     if (!author) {
-      console.error("❌ No author ID found");
+      console.error("No author ID found");
       res.status(401).json({
         success: false,
         message: "User not authenticated",
@@ -91,7 +91,7 @@ export const createAnnouncement = async (
     if (filesArray.length > 0) {
       try {
         console.log(
-          `📷 Uploading ${filesArray.length} image(s) to Cloudinary...`
+          `Uploading ${filesArray.length} image(s) to Cloudinary...`
         );
         const results = await uploadMultipleToCloudinary(
           filesArray as { buffer: Buffer }[],
@@ -104,9 +104,9 @@ export const createAnnouncement = async (
           imageUrl = urls[0];
           galleryImages = urls;
         }
-        console.log("✅ Images uploaded:", urls);
+        console.log("Images uploaded:", urls);
       } catch (uploadError) {
-        console.error("❌ Cloudinary upload failed:", uploadError);
+        console.error("Cloudinary upload failed:", uploadError);
         res.status(500).json({
           success: false,
           message: "Failed to upload image(s)",
@@ -130,9 +130,9 @@ export const createAnnouncement = async (
         const result = await uploadToCloudinary(fileBuf, "announcements");
         imageUrl = result.secure_url;
         galleryImages = imageUrl ? [imageUrl] : undefined;
-        console.log("✅ Image uploaded (single):", imageUrl);
+        console.log("Image uploaded (single):", imageUrl);
       } catch (uploadError) {
-        console.error("❌ Cloudinary upload failed:", uploadError);
+        console.error("Cloudinary upload failed:", uploadError);
         res
           .status(500)
           .json({
@@ -157,7 +157,7 @@ export const createAnnouncement = async (
         ? JSON.parse(targetAudience)
         : ["all"];
     } catch (parseError) {
-      console.error("❌ JSON parsing failed:", parseError);
+      console.error("JSON parsing failed:", parseError);
       res.status(400).json({
         success: false,
         message: "Invalid JSON data in request",
@@ -167,7 +167,7 @@ export const createAnnouncement = async (
       return;
     }
 
-    console.log("📝 Creating announcement with data:", {
+    console.log("Creating announcement with data:", {
       title,
       type,
       author,
@@ -178,7 +178,7 @@ export const createAnnouncement = async (
 
     // Validate required fields
     if (!title || !description || !content) {
-      console.error("❌ Missing required fields");
+      console.error("Missing required fields");
       res.status(400).json({
         success: false,
         message: "Missing required fields: title, description, or content",
@@ -231,7 +231,7 @@ export const createAnnouncement = async (
       announcementData.scheduled = false;
     }
 
-    console.log("📝 Final announcement data (publishDate/isPublished):", {
+    console.log("Final announcement data (publishDate/isPublished):", {
       publishDate: announcementData.publishDate,
       isPublished: announcementData.isPublished,
       scheduled: announcementData.scheduled,
@@ -246,7 +246,7 @@ export const createAnnouncement = async (
         announcementData.galleryImages.length === 0)
     ) {
       console.error(
-        "❌ Attempted to publish announcement without a featured image"
+        "Attempted to publish announcement without a featured image"
       );
       res
         .status(400)
@@ -258,13 +258,13 @@ export const createAnnouncement = async (
       return;
     }
 
-    console.log("💾 Saving to database...");
+    console.log("Saving to database...");
     const announcement = await Announcement.create(announcementData);
 
-    console.log("👥 Populating author...");
+    console.log("Populating author...");
     await announcement.populate("author", "firstName lastName studentNumber");
 
-    console.log("✅ Announcement created successfully:", announcement._id);
+    console.log("Announcement created successfully:", announcement._id);
 
     // Send notification if published
     if (announcement.isPublished) {
@@ -285,7 +285,7 @@ export const createAnnouncement = async (
       data: announcement,
     });
   } catch (error) {
-    console.error("❌ FATAL ERROR in createAnnouncement:", error);
+    console.error("FATAL ERROR in createAnnouncement:", error);
     console.error(
       "Error stack:",
       error instanceof Error ? error.stack : "No stack"

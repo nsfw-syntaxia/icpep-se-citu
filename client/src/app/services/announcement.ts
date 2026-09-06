@@ -17,7 +17,7 @@ const API_URL = (() => {
                 const windowHost = window.location.host;
                 if (baseHost === windowHost && !process.env.NEXT_PUBLIC_API_URL) {
                     console.warn(
-                        '⚠️ WARNING: API base defaults to same origin. In production set `NEXT_PUBLIC_API_URL` to your backend (including protocol), e.g. https://my-backend.example.com'
+                        'API base defaults to same origin. In production set `NEXT_PUBLIC_API_URL` to your backend (including protocol), e.g. https://my-backend.example.com'
                     );
                 }
             } catch {
@@ -47,16 +47,6 @@ api.interceptors.request.use((config) => {
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
     }
-    
-    console.log('🔵 API Request:', {
-        method: config.method?.toUpperCase(),
-        url: config.url,
-        baseURL: config.baseURL,
-        fullURL: `${config.baseURL}${config.url}`,
-        hasAuth: !!token,
-        contentType: config.headers['Content-Type'],
-    });
-    
     // If sending FormData, allow browser/axios to set the Content-Type (including boundary)
     if (config.data instanceof FormData) {
         if (config.headers && 'Content-Type' in config.headers) {
@@ -70,29 +60,9 @@ api.interceptors.request.use((config) => {
     return config;
 });
 
-// Add response interceptor for debugging
 api.interceptors.response.use(
-    (response) => {
-        console.log('✅ API Response:', {
-            status: response.status,
-            url: response.config.url,
-            data: response.data,
-        });
-        return response;
-    },
-    (error: AxiosError) => {
-        // Safe error logging
-        const errorDetails = {
-            status: error.response?.status,
-            url: error.config?.url,
-            method: error.config?.method,
-            message: error.message,
-            data: error.response?.data,
-        };
-        
-        console.error('❌ API Error:', JSON.stringify(errorDetails, null, 2));
-        return Promise.reject(error);
-    }
+    (response) => response,
+    (error: AxiosError) => Promise.reject(error)
 );
 
 export interface ApiError {
@@ -218,8 +188,6 @@ class AnnouncementService {
      */
     async createAnnouncement(data: AnnouncementData, images?: File[] | File): Promise<AnnouncementResponse> {
         try {
-            console.log('📤 Creating announcement with data:', data);
-            
             const formData = new FormData();
 
             // Append simple fields directly (don't stringify)
@@ -254,20 +222,8 @@ class AnnouncementService {
             // Append image(s) if provided
             if (images) {
                 const imgs = Array.isArray(images) ? images : [images];
-                console.log(`📷 Appending ${imgs.length} image(s)`);
                 imgs.forEach((file) => formData.append('images', file));
             }
-
-            // Log FormData contents for debugging
-            console.log('📋 FormData contents:');
-            formData.forEach((value, key) => {
-                if (value instanceof File) {
-                    console.log(`  ${key}:`, `File(${value.name}, ${value.size} bytes)`);
-                } else {
-                    const displayValue = String(value).substring(0, 50);
-                    console.log(`  ${key}:`, displayValue + (String(value).length > 50 ? '...' : ''));
-                }
-            });
 
             const response = await api.post('/announcements', formData);
 

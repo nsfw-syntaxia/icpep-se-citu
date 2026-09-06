@@ -8,7 +8,7 @@ import { notifyTargetAudience } from './notification';
  * It will only publish announcements that have a publishDate <= now and are not yet published.
  */
 export function startAnnouncementScheduler(intervalMs = 30_000) {
-    console.log('🕒 Starting announcement scheduler (interval:', intervalMs, 'ms)');
+    console.log('Starting announcement scheduler (interval:', intervalMs, 'ms)');
 
     const publishDue = async () => {
         try {
@@ -25,7 +25,7 @@ export function startAnnouncementScheduler(intervalMs = 30_000) {
                     try {
                         const hasImage = (ann.imageUrl && ann.imageUrl.length > 0) || (ann.galleryImages && ann.galleryImages.length > 0);
                         if (!hasImage) {
-                            console.warn('🟠 Skipping publish for announcement', ann._id, '— at least one image is required (imageUrl or galleryImages)');
+                            console.warn('Skipping publish for announcement', ann._id, '— at least one image is required (imageUrl or galleryImages)');
                             continue;
                         }
 
@@ -34,7 +34,7 @@ export function startAnnouncementScheduler(intervalMs = 30_000) {
                         // If publishDate was missing, set it to now (but normally it will be set)
                         if (!ann.publishDate) ann.publishDate = new Date();
                         await ann.save();
-                        console.log('✅ Published scheduled announcement', ann._id, 'at', new Date().toISOString());
+                        console.log('Published scheduled announcement', ann._id, 'at', new Date().toISOString());
 
                         // Notify target audience
                         await notifyTargetAudience(
@@ -47,7 +47,7 @@ export function startAnnouncementScheduler(intervalMs = 30_000) {
                             `/announcements/${ann._id}`
                         );
                     } catch (err) {
-                        console.error('❌ Failed to publish scheduled announcement', ann._id, err);
+                        console.error('Failed to publish scheduled announcement', ann._id, err);
                     }
                 }
             }
@@ -64,7 +64,7 @@ export function startAnnouncementScheduler(intervalMs = 30_000) {
                     try {
                         const hasImage = (evt.coverImage && evt.coverImage.length > 0) || (evt.galleryImages && evt.galleryImages.length > 0);
                         if (!hasImage) {
-                            console.warn('🟠 Skipping publish for event', evt._id, '— at least one image is required (coverImage or galleryImages)');
+                            console.warn('Skipping publish for event', evt._id, '— at least one image is required (coverImage or galleryImages)');
                             continue;
                         }
 
@@ -73,7 +73,7 @@ export function startAnnouncementScheduler(intervalMs = 30_000) {
                         // If publishDate was missing, set it to now (but normally it will be set)
                         if (!evt.publishDate) evt.publishDate = new Date();
                         await evt.save();
-                        console.log('✅ Published scheduled event', evt._id, 'at', new Date().toISOString());
+                        console.log('Published scheduled event', evt._id, 'at', new Date().toISOString());
 
                         // Notify target audience
                         await notifyTargetAudience(
@@ -86,13 +86,13 @@ export function startAnnouncementScheduler(intervalMs = 30_000) {
                             `/events/${evt._id}`
                         );
                     } catch (err) {
-                        console.error('❌ Failed to publish scheduled event', evt._id, err);
+                        console.error('Failed to publish scheduled event', evt._id, err);
                     }
                 }
             }
 
         } catch (err) {
-            console.error('❌ Scheduler error:', err);
+            console.error('Scheduler error:', err);
         }
     };
 

@@ -37,12 +37,12 @@ export const sendBulkNotifications = async (
 ) => {
   try {
     if (recipientIds.length === 0) {
-      console.log("⚠️ No recipients for bulk notification");
+      console.log("No recipients for bulk notification");
       return;
     }
 
     console.log(
-      `📢 Sending bulk notifications to ${recipientIds.length} users. Title: ${title}`
+      `Sending bulk notifications to ${recipientIds.length} users. Title: ${title}`
     );
 
     const notifications = recipientIds.map((recipient) => ({
@@ -56,7 +56,7 @@ export const sendBulkNotifications = async (
     }));
 
     const result = await Notification.insertMany(notifications);
-    console.log(`✅ Successfully created ${result.length} notifications.`);
+    console.log(`Successfully created ${result.length} notifications.`);
   } catch (error) {
     console.error("Error sending bulk notifications:", error);
   }
@@ -71,9 +71,9 @@ export const notifyAllUsers = async (
   link?: string
 ) => {
   try {
-    console.log("🔍 Finding all active users for notification...");
+    console.log("Finding all active users for notification...");
     const users = await User.find({ isActive: true }, "_id");
-    console.log(`👥 Found ${users.length} active users.`);
+    console.log(`Found ${users.length} active users.`);
 
     const recipientIds = users.map((user) => user._id);
     await sendBulkNotifications(
@@ -100,7 +100,7 @@ export const notifyTargetAudience = async (
   link?: string
 ) => {
   try {
-    console.log(`🔍 Notifying target audience: ${targetAudience.join(", ")}`);
+    console.log(`Notifying target audience: ${targetAudience.join(", ")}`);
 
     // If 'all' is in the target audience, notify everyone
     if (targetAudience.includes("all")) {
@@ -130,7 +130,7 @@ export const notifyTargetAudience = async (
       // If target audience is empty or invalid, maybe define fallback? 
       // For now, if provided but no match logic, we might match nothing or everything.
       // Assuming empty targetAudience means no one if not 'all'.
-      console.log("⚠️ No valid target audience criteria found.");
+      console.log("No valid target audience criteria found.");
       return;
     }
     
@@ -138,7 +138,7 @@ export const notifyTargetAudience = async (
     const finalQuery = { $and: queryConditions };
 
     const users = await User.find(finalQuery, "_id");
-    console.log(`👥 Found ${users.length} users matching target audience.`);
+    console.log(`Found ${users.length} users matching target audience.`);
 
     if (users.length === 0) return;
 

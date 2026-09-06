@@ -23,18 +23,19 @@ import officerRoutes from "./routes/officer.routes";
 import advisorRoutes from "./routes/advisor.routes";
 import facultyRoutes from "./routes/faculty.routes";
 import officerTermRoutes from "./routes/officerTerm.routes";
+import membershipRoutes from "./routes/membership.routes";
 import startAnnouncementScheduler from "./utils/scheduler";
 
 // Global unhandled rejection handler to avoid process crash during development
 process.on("unhandledRejection", (reason, promise) => {
-  console.error("🚨 Unhandled Rejection at:", promise, "reason:", reason);
+  console.error("Unhandled Rejection at:", promise, "reason:", reason);
   // Do not exit the process in development; log and continue.
 });
 
 // Initialize express app
 const app: Application = express();
 
-// ✅ CRITICAL: Middleware MUST come BEFORE routes!
+// Middleware must come before routes.
 // 1. Body Parser - FIRST
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
@@ -66,15 +67,6 @@ const allowVercelSubdomains =
   String(process.env.ALLOW_VERCEL_SUBDOMAINS ?? "true").toLowerCase() ===
   "true";
 
-console.log(
-  "🌐 CORS configuration — allowedOrigins:",
-  allowedOrigins,
-  "ALLOW_ALL_ORIGINS=",
-  allowAllOrigins,
-  "ALLOW_VERCEL_SUBDOMAINS=",
-  allowVercelSubdomains
-);
-
 app.use(
   cors({
     origin: (origin, callback) => {
@@ -82,7 +74,6 @@ app.use(
       if (!origin) return callback(null, true);
 
       if (allowAllOrigins) {
-        console.log("✅ CORS allow-all enabled — allowing origin:", origin);
         return callback(null, true);
       }
 
@@ -91,13 +82,11 @@ app.use(
 
         // Allow vercel preview subdomains (e.g. *.vercel.app) when enabled
         if (allowVercelSubdomains && originHost.endsWith(".vercel.app")) {
-          console.log("✅ CORS allowed vercel subdomain:", origin);
           return callback(null, true);
         }
 
         // Direct match against configured allowed origins (may include protocol)
         if (allowedOrigins.includes(origin)) {
-          console.log("✅ CORS allowed for (direct match):", origin);
           return callback(null, true);
         }
 
@@ -106,7 +95,6 @@ app.use(
           try {
             const allowedHost = new URL(allowed).host;
             if (allowedHost === originHost) {
-              console.log("✅ CORS allowed for (host match):", origin);
               return callback(null, true);
             }
           } catch {
@@ -123,12 +111,6 @@ app.use(
               .replace(/\\\*/g, ".*");
             const re = new RegExp(`^${regexStr}$`);
             if (re.test(origin)) {
-              console.log(
-                "✅ CORS allowed by wildcard pattern:",
-                origin,
-                "pattern:",
-                allowed
-              );
               return callback(null, true);
             }
           }
@@ -137,7 +119,7 @@ app.use(
         // If URL parsing fails, fall through to blocked log
       }
 
-      console.log("❌ CORS blocked for:", origin);
+      console.log("CORS blocked for:", origin);
       callback(new Error("Not allowed by CORS"));
     },
     credentials: true,
@@ -159,33 +141,33 @@ const connectDB = async (): Promise<void> => {
   try {
     // Validate environment variables
     if (!process.env.MONGO_URI) {
-      throw new Error("❌ MONGO_URI environment variable is not defined!");
+      throw new Error("MONGO_URI environment variable is not defined!");
     }
 
     if (typeof process.env.MONGO_URI !== "string") {
-      throw new Error("❌ MONGO_URI must be a valid string!");
+      throw new Error("MONGO_URI must be a valid string!");
     }
 
     // Connect to MongoDB
     const conn = await mongoose.connect(process.env.MONGO_URI);
 
-    console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
-    console.log(`📦 Database: ${conn.connection.name}`);
+    console.log(`MongoDB Connected: ${conn.connection.host}`);
+    console.log(`Database: ${conn.connection.name}`);
 
     // Connection event listeners
     mongoose.connection.on("error", (err) => {
-      console.error(`❌ MongoDB connection error: ${err}`);
+      console.error(`MongoDB connection error: ${err}`);
     });
 
     mongoose.connection.on("disconnected", () => {
-      console.log("⚠️  MongoDB disconnected");
+      console.log("MongoDB disconnected");
     });
 
     mongoose.connection.on("reconnected", () => {
-      console.log("✅ MongoDB reconnected");
+      console.log("MongoDB reconnected");
     });
   } catch (error) {
-    console.error("❌ MongoDB connection error:", (error as Error).message);
+    console.error("MongoDB connection error:", (error as Error).message);
     console.error("Full error:", error);
     process.exit(1);
   }
@@ -211,7 +193,7 @@ app.get("/health", (req: Request, res: Response) => {
 app.get("/", (req: Request, res: Response) => {
   res.json({
     success: true,
-    message: "🚀 ICPEP CITU API Server",
+    message: "ICPEP CITU API Server",
     version: "1.0.0",
     endpoints: {
       health: "/health",
@@ -253,6 +235,7 @@ app.use("/api/sponsors", sponsorRoutes);
 app.use("/api/advisors", advisorRoutes);
 app.use("/api/faculty", facultyRoutes);
 app.use("/api/officer-terms", officerTermRoutes);
+app.use("/api/membership", membershipRoutes);
 app.use("/api/meetings", meetingRoutes);
 app.use("/api/availability", availabilityRoutes);
 app.use("/api/merch", merchRoutes);
@@ -287,7 +270,7 @@ app.use((req: Request, res: Response) => {
 
 // Global error handler - must be last
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  console.error("❌ Error:", err.stack);
+  console.error("Error:", err.stack);
 
   res.status(500).json({
     success: false,
@@ -301,15 +284,15 @@ const PORT = process.env.PORT || 5000;
 
 const server = app.listen(PORT, () => {
   console.log(
-    `🚀 Server running in ${
+    `Server running in ${
       process.env.NODE_ENV || "development"
     } mode on port ${PORT}`
   );
-  console.log(`📍 Health check: http://localhost:${PORT}/health`);
-  console.log(`📍 API: http://localhost:${PORT}/api`);
+  console.log(`Health check: http://localhost:${PORT}/health`);
+  console.log(`API: http://localhost:${PORT}/api`);
   console.log(
-    `📍 MongoDB: ${
-      mongoose.connection.readyState === 1 ? "✅ Connected" : "⏳ Connecting..."
+    `MongoDB: ${
+      mongoose.connection.readyState === 1 ? "Connected" : "Connecting..."
     }`
   );
 });
@@ -319,28 +302,28 @@ mongoose.connection.once("open", () => {
   try {
     startAnnouncementScheduler();
   } catch (err) {
-    console.error("❌ Failed to start announcement scheduler:", err);
+    console.error("Failed to start announcement scheduler:", err);
   }
 });
 
 // Graceful shutdown
 process.on("SIGTERM", () => {
-  console.log("👋 SIGTERM signal received: closing HTTP server");
+  console.log("SIGTERM signal received: closing HTTP server");
   server.close(() => {
-    console.log("💤 HTTP server closed");
+    console.log("HTTP server closed");
     mongoose.connection.close(false).then(() => {
-      console.log("💤 MongoDB connection closed");
+      console.log("MongoDB connection closed");
       process.exit(0);
     });
   });
 });
 
 process.on("SIGINT", () => {
-  console.log("👋 SIGINT signal received: closing HTTP server");
+  console.log("SIGINT signal received: closing HTTP server");
   server.close(() => {
-    console.log("💤 HTTP server closed");
+    console.log("HTTP server closed");
     mongoose.connection.close(false).then(() => {
-      console.log("💤 MongoDB connection closed");
+      console.log("MongoDB connection closed");
       process.exit(0);
     });
   });
@@ -348,7 +331,7 @@ process.on("SIGINT", () => {
 
 // Handle unhandled promise rejections
 process.on("unhandledRejection", (err: Error) => {
-  console.error(`❌ Unhandled Rejection: ${err.message}`);
+  console.error(`Unhandled Rejection: ${err.message}`);
   console.error(err.stack);
   // Close server & exit process
   server.close(() => process.exit(1));
@@ -356,7 +339,7 @@ process.on("unhandledRejection", (err: Error) => {
 
 // Handle uncaught exceptions
 process.on("uncaughtException", (err: Error) => {
-  console.error(`❌ Uncaught Exception: ${err.message}`);
+  console.error(`Uncaught Exception: ${err.message}`);
   console.error(err.stack);
   process.exit(1);
 });

@@ -145,12 +145,6 @@ export const createUser = async (
       membershipStatus,
     } = req.body;
 
-    console.log("📝 CREATE USER - req.user:", req.user);
-    console.log(
-      "📝 CREATE USER - membershipStatus received:",
-      membershipStatus,
-    );
-
     // Validation
     if (!studentNumber || !lastName || !firstName) {
       res.status(400).json({
@@ -172,7 +166,7 @@ export const createUser = async (
       return;
     }
 
-    // ✅ NEW: Handle membership status - supports both string and object formats
+    // Handle membership status - supports both string and object formats
     let membershipStatusObj: {
       isMember: boolean;
       membershipType: "local" | "regional" | "both" | null;
@@ -215,8 +209,6 @@ export const createUser = async (
       }
       // 'non-member' or any other value defaults to the initial values
     }
-
-    console.log("✅ Processed membershipStatus:", membershipStatusObj);
 
     // Create user
     const newUser = await User.create({
@@ -265,9 +257,6 @@ export const bulkUploadUsers = async (
       return;
     }
 
-    console.log(`📦 Processing bulk upload of ${users.length} users...`);
-    console.log("📦 BULK UPLOAD - req.user:", req.user);
-
     interface SuccessResult {
       studentNumber: string;
       fullName: string;
@@ -305,7 +294,7 @@ export const bulkUploadUsers = async (
           continue;
         }
 
-        // ✅ NEW: Handle membership status - supports both string and object formats
+        // Handle membership status - supports both string and object formats
         let membershipStatusObj: {
           isMember: boolean;
           membershipType: "local" | "regional" | "both" | null;
@@ -384,9 +373,6 @@ export const bulkUploadUsers = async (
             id: existingUser._id.toString(),
           });
 
-          console.log(
-            `🔄 Updated user: ${existingUser.fullName} (${existingUser.studentNumber}) - Member: ${membershipStatusObj.isMember}`,
-          );
           continue;
         }
 
@@ -408,13 +394,9 @@ export const bulkUploadUsers = async (
           fullName: newUser.fullName,
           id: newUser._id.toString(),
         });
-
-        console.log(
-          `✅ Created user: ${newUser.fullName} (${newUser.studentNumber}) - Member: ${membershipStatusObj.isMember}, Type: ${membershipStatusObj.membershipType}`,
-        );
       } catch (error: any) {
         console.error(
-          `❌ Failed to create user ${userData.studentNumber}:`,
+          `Failed to create user ${userData.studentNumber}:`,
           error.message,
         );
 
@@ -426,17 +408,13 @@ export const bulkUploadUsers = async (
       }
     }
 
-    console.log(
-      `✅ Bulk upload complete: ${results.success.length} succeeded, ${results.failed.length} failed`,
-    );
-
     res.status(201).json({
       success: true,
       message: `Bulk upload completed. ${results.success.length} succeeded, ${results.failed.length} failed`,
       data: results,
     });
   } catch (error: any) {
-    console.error("❌ Bulk upload error:", error);
+    console.error("Bulk upload error:", error);
     res.status(500).json({
       success: false,
       message: "Error during bulk upload",
@@ -460,8 +438,6 @@ export const syncDeleteUsers = async (
       });
       return;
     }
-
-    console.log(`🗑️ Sync delete phase: ${studentNumbers.length} student numbers in Excel...`);
 
     const uploadedStudentNumbers = new Set(
       studentNumbers.map((sn: string) => sn.toUpperCase())
@@ -491,11 +467,8 @@ export const syncDeleteUsers = async (
           fullName: existingUser.fullName,
           id: existingUser._id.toString(),
         });
-        console.log(`🗑️ Deleted user: ${existingUser.fullName} (${existingUser.studentNumber})`);
       }
     }
-
-    console.log(`✅ Delete phase complete: ${deleted.length} deleted, ${skippedAdmins.length} admins protected`);
 
     res.status(200).json({
       success: true,
@@ -503,7 +476,7 @@ export const syncDeleteUsers = async (
       data: { deleted, skippedAdmins },
     });
   } catch (error: any) {
-    console.error("❌ Sync delete error:", error);
+    console.error("Sync delete error:", error);
     res.status(500).json({
       success: false,
       message: "Error during sync delete",
@@ -586,7 +559,6 @@ export const syncUpsertBatch = async (
             if (userData.yearLevel) existingUser.yearLevel = userData.yearLevel;
             await existingUser.save();
             results.successful++;
-            console.log(`🛡️ Updated admin membership: ${existingUser.fullName} (${existingUser.studentNumber})`);
             continue;
           }
 
@@ -620,7 +592,6 @@ export const syncUpsertBatch = async (
 
           await existingUser.save();
           results.successful++;
-          console.log(`🔄 Updated user: ${existingUser.fullName} (${existingUser.studentNumber})`);
         } else {
           // Create new user
           const role = userData.role?.toLowerCase() || "student";
@@ -643,10 +614,9 @@ export const syncUpsertBatch = async (
           });
 
           results.successful++;
-          console.log(`✅ Created user: ${userData.firstName} ${userData.lastName} (${userData.studentNumber})`);
         }
       } catch (error: any) {
-        console.error(`❌ Failed to process user ${userData.studentNumber}:`, error.message);
+        console.error(`Failed to process user ${userData.studentNumber}:`, error.message);
         results.failed++;
         results.failedUsers.push({
           studentNumber: userData.studentNumber || "UNKNOWN",
@@ -661,7 +631,7 @@ export const syncUpsertBatch = async (
       data: results,
     });
   } catch (error: any) {
-    console.error("❌ Sync upsert batch error:", error);
+    console.error("Sync upsert batch error:", error);
     res.status(500).json({
       success: false,
       message: "Error during sync upsert batch",

@@ -15,7 +15,7 @@ const API_URL = (() => {
                 const windowHost = window.location.host;
                 if (baseHost === windowHost && !process.env.NEXT_PUBLIC_API_URL) {
                     console.warn(
-                        '⚠️ WARNING: API base defaults to same origin. In production set `NEXT_PUBLIC_API_URL` to your backend (including protocol).'
+                        'API base defaults to same origin. In production set `NEXT_PUBLIC_API_URL` to your backend (including protocol).'
                     );
                 }
             } catch {
@@ -53,42 +53,12 @@ api.interceptors.request.use((config) => {
             }
         }
     }
-    
-    console.log('🔵 API Request:', {
-        method: config.method?.toUpperCase(),
-        url: config.url,
-        baseURL: config.baseURL,
-        fullURL: `${config.baseURL}${config.url}`,
-        hasAuth: !!token,
-        contentType: config.headers['Content-Type'],
-    });
-    
     return config;
 });
 
-// Add response interceptor for debugging
 api.interceptors.response.use(
-    (response) => {
-        console.log('✅ API Response:', {
-            status: response.status,
-            url: response.config.url,
-            data: response.data,
-        });
-        return response;
-    },
-    (error: AxiosError) => {
-        // Safe error logging
-        const errorDetails = {
-            status: error.response?.status,
-            url: error.config?.url,
-            method: error.config?.method,
-            message: error.message,
-            data: error.response?.data,
-        };
-        
-        console.error('❌ API Error:', JSON.stringify(errorDetails, null, 2));
-        return Promise.reject(error);
-    }
+    (response) => response,
+    (error: AxiosError) => Promise.reject(error)
 );
 
 export interface ApiError {
@@ -165,8 +135,6 @@ class EventService {
      */
     async createEvent(data: EventData, images?: File[]): Promise<EventResponse> {
         try {
-            console.log('📤 Creating event with data:', data);
-            
             const formData = new FormData();
 
             // Append simple fields directly
@@ -209,7 +177,6 @@ class EventService {
 
             // Append images if provided (multiple)
             if (Array.isArray(images) && images.length > 0) {
-                console.log(`📷 Appending ${images.length} images`);
                 images.forEach((file) => formData.append('images', file));
             }
 

@@ -41,11 +41,6 @@ export const createEvent = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    console.log("🔵 CREATE EVENT - START");
-    console.log("📦 Request body:", JSON.stringify(req.body, null, 2));
-    console.log("📷 File present:", !!req.file);
-    console.log("👤 User:", req.user);
-
     const {
       title,
       description,
@@ -73,7 +68,6 @@ export const createEvent = async (
     const author = req.user?.id;
 
     if (!author) {
-      console.error("❌ No author ID found");
       res.status(401).json({
         success: false,
         message: "User not authenticated",
@@ -90,9 +84,6 @@ export const createEvent = async (
 
     if (Array.isArray(multerFiles) && multerFiles.length > 0) {
       try {
-        console.log(
-          `📷 Uploading ${multerFiles.length} images to Cloudinary...`
-        );
         const buffers = multerFiles
           .filter((f) => !!f.buffer)
           .map((f) => ({ buffer: f.buffer as Buffer }));
@@ -103,14 +94,12 @@ export const createEvent = async (
         galleryImages = results
           .map((r) => (r as any).secure_url)
           .filter(Boolean);
-        console.log("✅ Images uploaded:", galleryImages);
         // Ensure coverImage is set to first uploaded image if not already
         if (!coverImage && galleryImages.length > 0) {
           coverImage = galleryImages[0];
         }
       } catch (uploadError) {
-        console.error("❌ Cloudinary multiple upload failed:", uploadError);
-        console.error("Attempting individual uploads as fallback...");
+        console.error("Cloudinary multiple upload failed:", uploadError);
         // Try uploading individually to get partial results
         try {
           for (const f of multerFiles) {
@@ -149,9 +138,8 @@ export const createEvent = async (
             });
             return;
           }
-          console.log("✅ Fallback uploaded images:", galleryImages);
         } catch (fallbackErr) {
-          console.error("❌ Fallback upload also failed:", fallbackErr);
+          console.error("Fallback upload also failed:", fallbackErr);
           res.status(500).json({
             success: false,
             message: "Failed to upload images",
@@ -166,7 +154,6 @@ export const createEvent = async (
     } else if (singleFile) {
       // Backwards compatible: if a single file was uploaded under req.file
       try {
-        console.log("📷 Uploading single cover image to Cloudinary...");
         const buf = singleFile.buffer as Buffer | undefined;
         if (!buf) {
           res
@@ -178,9 +165,8 @@ export const createEvent = async (
         const url = (result as any).secure_url;
         galleryImages = url ? [url] : [];
         coverImage = url || coverImage;
-        console.log("✅ Image uploaded:", url);
       } catch (uploadError) {
-        console.error("❌ Cloudinary upload failed:", uploadError);
+        console.error("Cloudinary upload failed:", uploadError);
         res.status(500).json({
           success: false,
           message: "Failed to upload cover image",
@@ -207,7 +193,7 @@ export const createEvent = async (
           ? JSON.parse(req.body.details)
           : req.body.details;
     } catch (parseError) {
-      console.error("❌ JSON parsing failed:", parseError);
+      console.error("JSON parsing failed:", parseError);
       res.status(400).json({
         success: false,
         message: "Invalid JSON data in request",
@@ -217,18 +203,8 @@ export const createEvent = async (
       return;
     }
 
-    console.log("📝 Creating event with data:", {
-      title,
-      author,
-      eventDate,
-      isPublished: String(isPublished) === "true",
-      targetAudience: parsedTargetAudience,
-      hasCoverImage: !!coverImage,
-    });
-
     // Validate required fields
     if (!title || !description || !content || !eventDate) {
-      console.error("❌ Missing required fields");
       res.status(400).json({
         success: false,
         message:
@@ -282,13 +258,8 @@ export const createEvent = async (
       eventData.scheduled = false;
     }
 
-    console.log("💾 Saving to database...");
     const event = await Event.create(eventData);
-
-    console.log("👥 Populating author...");
     await event.populate("author", "firstName lastName studentNumber");
-
-    console.log("✅ Event created successfully:", event._id);
 
     // Send notification if published
     if (event.isPublished) {
@@ -309,11 +280,7 @@ export const createEvent = async (
       data: event,
     });
   } catch (error) {
-    console.error("❌ FATAL ERROR in createEvent:", error);
-    console.error(
-      "Error stack:",
-      error instanceof Error ? error.stack : "No stack"
-    );
+    console.error("Failed to create event:", error);
 
     res.status(500).json({
       success: false,
@@ -457,7 +424,6 @@ export const updateEvent = async (
     const reqSingle = (req as any).file as MulterFile | undefined;
     if (Array.isArray(reqFiles) && reqFiles.length > 0) {
       try {
-        console.log(`📷 Uploading ${reqFiles.length} images for update...`);
         const buffers = reqFiles
           .filter((f) => !!f.buffer)
           .map((f) => ({ buffer: f.buffer as Buffer }));
@@ -475,9 +441,8 @@ export const updateEvent = async (
         req.body.galleryImages = JSON.stringify([...existing, ...newUrls]);
         if (!event.coverImage && newUrls.length > 0)
           req.body.coverImage = newUrls[0];
-        console.log("✅ Uploaded and appended images:", newUrls);
       } catch (err) {
-        console.error("❌ Failed uploading images on update:", err);
+        console.error("Failed uploading images on update:", err);
         res
           .status(500)
           .json({
@@ -520,7 +485,7 @@ export const updateEvent = async (
       try {
         req.body.details = JSON.parse(req.body.details);
       } catch (e) {
-        console.error("❌ Failed to parse details on update:", e);
+        console.error("Failed to parse details on update:", e);
       }
     }
 
