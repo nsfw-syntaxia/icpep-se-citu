@@ -4,6 +4,7 @@ import { FC, useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import AdvisorCard from "../components/advisor-card";
+import advisorService from "@/app/services/advisor";
 
 // Types
 interface AdvisorItem {
@@ -112,46 +113,32 @@ const AdvisorsCarousel: FC<{ items: AdvisorItem[] }> = ({ items }) => {
   );
 };
 
-const advisorHistory: AdvisorItem[] = [
-  {
-    year: "2022 - Present",
-    name: "Engr. Trixie Dolera",
-    position: "CPE Department Head",
-    imageUrl: "/gle.png",
-  },
-  {
-    year: "2021 - Present",
-    name: "Prof. Emily White",
-    position: "ICPEP.SE Adviser",
-    imageUrl: "/gle.png",
-  },
-  {
-    year: "2020 - 2022",
-    name: "Engr. John Smith",
-    position: "CPE Department Head",
-    imageUrl: "/gle.png",
-  },
-  {
-    year: "2018 - 2020",
-    name: "Dr. Alan Turing",
-    position: "CPE Department Head",
-    imageUrl: "/gle.png",
-  },
-  {
-    year: "2019 - 2021",
-    name: "Prof. Ada Lovelace",
-    position: "ICPEP.SE Adviser",
-    imageUrl: "/gle.png",
-  },
-  {
-    year: "2017 - 2019",
-    name: "Engr. Grace Hopper",
-    position: "ICPEP.SE Adviser",
-    imageUrl: "/gle.png",
-  },
-];
-
 const AdvisorsSection: FC = () => {
+  const [advisorHistory, setAdvisorHistory] = useState<AdvisorItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchAdvisors = async () => {
+      try {
+        const response = await advisorService.getAdvisors();
+        const data = Array.isArray(response.data) ? response.data : [];
+        setAdvisorHistory(
+          data.map((a: any) => ({
+            name: a.name,
+            position: a.position,
+            year: a.yearRange,
+            imageUrl: a.image || "/gle.png",
+          })),
+        );
+      } catch (error) {
+        console.error("Failed to fetch advisors", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAdvisors();
+  }, []);
+
   return (
     <section className="mt-40">
       <div className="w-full max-w-7xl mx-auto px-6">
@@ -163,9 +150,11 @@ const AdvisorsSection: FC = () => {
           strengthened our organization through the years.
         </p>
       </div>
-      <div className="w-full">
-        <AdvisorsCarousel items={advisorHistory} />
-      </div>
+      {!loading && advisorHistory.length > 0 && (
+        <div className="w-full">
+          <AdvisorsCarousel items={advisorHistory} />
+        </div>
+      )}
     </section>
   );
 };

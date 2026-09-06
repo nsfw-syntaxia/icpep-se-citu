@@ -3,6 +3,8 @@
 import { motion } from "framer-motion";
 import FacultyOfficerCard from "@/app/home/components/faculty-officer-card";
 import { useState, useEffect } from "react";
+import officerService from "@/app/services/officer";
+import advisorService from "@/app/services/advisor";
 
 const shimmerStyle = `
   @keyframes shimmer {
@@ -84,57 +86,54 @@ function FacultyOfficersSkeleton() {
   );
 }
 
+interface RosterEntry {
+  name: string;
+  title: string;
+  image: string;
+}
+
 export function FacultyOfficersSection() {
   const [loading, setLoading] = useState(true);
-
-  const facultyAndOfficers = [
-    {
-      name: "Dr. Maria L. Dizon",
-      title: "Faculty Adviser",
-      image: "/faculty.png",
-    },
-    {
-      name: "Engr. Rafael P. Cruz",
-      title: "Co-Adviser",
-      image: "/faculty.png",
-    },
-    {
-      name: "Gio Christian Macatual",
-      title: "President",
-      image: "/faculty.png",
-    },
-    {
-      name: "Alyssa Mae Reyes",
-      title: "Vice President",
-      image: "/faculty.png",
-    },
-    { name: "Daniel Perez", title: "Secretary", image: "/faculty.png" },
-    { name: "Hannah Lopez", title: "Treasurer", image: "/faculty.png" },
-    { name: "Kevin Torres", title: "Auditor", image: "/faculty.png" },
-    { name: "Isabelle Ramos", title: "PRO", image: "/faculty.png" },
-    { name: "Luis Mendoza", title: "PIO", image: "/faculty.png" },
-    { name: "Rachel Tan", title: "Assistant Secretary", image: "/faculty.png" },
-    { name: "Mark Villanueva", title: "Logistics Head", image: "/faculty.png" },
-    { name: "Jessa Lim", title: "Creative Director", image: "/faculty.png" },
-    { name: "Ethan Cruz", title: "Events Coordinator", image: "/faculty.png" },
-    { name: "Nina Santos", title: "Outreach Head", image: "/faculty.png" },
-    {
-      name: "Mikael Dela Cruz",
-      title: "Program Officer",
-      image: "/faculty.png",
-    },
-    { name: "Cheska Uy", title: "Finance Officer", image: "/faculty.png" },
-    {
-      name: "Jordan Pascual",
-      title: "Research Coordinator",
-      image: "/faculty.png",
-    },
-    { name: "Kyla Fernandez", title: "Technical Lead", image: "/faculty.png" },
-  ];
+  const [facultyAndOfficers, setFacultyAndOfficers] = useState<RosterEntry[]>(
+    [],
+  );
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 0);
-    return () => clearTimeout(timer);
+    const fetchRoster = async () => {
+      try {
+        const [advisors, officers] = await Promise.all([
+          advisorService.getAdvisors(true).catch(() => ({ data: [] })),
+          officerService
+            .getPublicOfficers("executive")
+            .catch(() => [] as any[]),
+        ]);
+
+        const advisorEntries: RosterEntry[] = (advisors.data || []).map(
+          (a: any) => ({
+            name: a.name,
+            title: a.position,
+            image: a.image || "/faculty.png",
+          }),
+        );
+
+        const officerEntries: RosterEntry[] = (officers || []).map(
+          (o: any) => ({
+            name: [o.firstName, o.middleName, o.lastName]
+              .filter(Boolean)
+              .join(" "),
+            title: o.position || "Officer",
+            image: o.profilePicture || "/faculty.png",
+          }),
+        );
+
+        setFacultyAndOfficers([...advisorEntries, ...officerEntries]);
+      } catch (error) {
+        console.error("Failed to fetch faculty/officers roster", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchRoster();
   }, []);
 
   const MINIMUM_BASE_LENGTH = 15;
@@ -154,7 +153,7 @@ export function FacultyOfficersSection() {
   const bottomRowOfficers = facultyAndOfficers.slice(half);
 
   useEffect(() => {
-    if (loading) return;
+    if (loading || topRowOfficers.length === 0) return;
     const interval = setInterval(() => {
       setActiveMobileSlide((prev) => (prev + 1) % topRowOfficers.length);
     }, 4000);
@@ -186,66 +185,76 @@ export function FacultyOfficersSection() {
         </div>
       </div>
 
-      {/* mobile marquee */}
-      <div className="relative z-10 w-full overflow-hidden block sm:hidden">
-        <motion.div
-          className="flex w-max gap-6 px-5"
-          animate={{ x: -activeMobileSlide * SLIDE_OFFSET }}
-          transition={{ type: "spring", stiffness: 100, damping: 20 }}
-        >
-          {topRowOfficers.map((officer, i) => (
-            <FacultyOfficerCard
-              key={`mobile-top-${i}`}
-              {...officer}
-              forceHoverState={i === activeMobileSlide}
-            />
-          ))}
-        </motion.div>
-        <motion.div
-          className="flex w-max gap-6 px-5 mt-6"
-          animate={{ x: -activeMobileSlide * SLIDE_OFFSET }}
-          transition={{
-            type: "spring",
-            stiffness: 100,
-            damping: 20,
-            delay: 0.1,
-          }}
-        >
-          {bottomRowOfficers.map((officer, i) => (
-            <FacultyOfficerCard
-              key={`mobile-bottom-${i}`}
-              {...officer}
-              forceHoverState={i === activeMobileSlide}
-            />
-          ))}
-        </motion.div>
-      </div>
+      {facultyAndOfficers.length === 0 ? (
+        <div className="relative z-10 text-center py-10">
+          <p className="text-gray-500 font-raleway text-lg">
+            No officers or advisors published yet.
+          </p>
+        </div>
+      ) : (
+        <>
+          {/* mobile marquee */}
+          <div className="relative z-10 w-full overflow-hidden block sm:hidden">
+            <motion.div
+              className="flex w-max gap-6 px-5"
+              animate={{ x: -activeMobileSlide * SLIDE_OFFSET }}
+              transition={{ type: "spring", stiffness: 100, damping: 20 }}
+            >
+              {topRowOfficers.map((officer, i) => (
+                <FacultyOfficerCard
+                  key={`mobile-top-${i}`}
+                  {...officer}
+                  forceHoverState={i === activeMobileSlide}
+                />
+              ))}
+            </motion.div>
+            <motion.div
+              className="flex w-max gap-6 px-5 mt-6"
+              animate={{ x: -activeMobileSlide * SLIDE_OFFSET }}
+              transition={{
+                type: "spring",
+                stiffness: 100,
+                damping: 20,
+                delay: 0.1,
+              }}
+            >
+              {bottomRowOfficers.map((officer, i) => (
+                <FacultyOfficerCard
+                  key={`mobile-bottom-${i}`}
+                  {...officer}
+                  forceHoverState={i === activeMobileSlide}
+                />
+              ))}
+            </motion.div>
+          </div>
 
-      {/* desktop marquee */}
-      <div className="relative z-10 w-full overflow-hidden hidden sm:block">
-        <motion.div
-          className="flex w-max gap-6 p-5"
-          animate={{ x: ["0%", "-50%"] }}
-          transition={{ repeat: Infinity, ease: "linear", duration: 35 }}
-        >
-          {duplicated.map((o, i) => (
-            <div key={`desktop-top-${i}`} className="shrink-0">
-              <FacultyOfficerCard {...o} />
-            </div>
-          ))}
-        </motion.div>
-        <motion.div
-          className="flex w-max gap-6 p-5 -mt-5"
-          animate={{ x: ["-50%", "0%"] }}
-          transition={{ repeat: Infinity, ease: "linear", duration: 60 }}
-        >
-          {duplicated.map((o, i) => (
-            <div key={`desktop-bottom-${i}`} className="shrink-0">
-              <FacultyOfficerCard {...o} />
-            </div>
-          ))}
-        </motion.div>
-      </div>
+          {/* desktop marquee */}
+          <div className="relative z-10 w-full overflow-hidden hidden sm:block">
+            <motion.div
+              className="flex w-max gap-6 p-5"
+              animate={{ x: ["0%", "-50%"] }}
+              transition={{ repeat: Infinity, ease: "linear", duration: 35 }}
+            >
+              {duplicated.map((o, i) => (
+                <div key={`desktop-top-${i}`} className="shrink-0">
+                  <FacultyOfficerCard {...o} />
+                </div>
+              ))}
+            </motion.div>
+            <motion.div
+              className="flex w-max gap-6 p-5 -mt-5"
+              animate={{ x: ["-50%", "0%"] }}
+              transition={{ repeat: Infinity, ease: "linear", duration: 60 }}
+            >
+              {duplicated.map((o, i) => (
+                <div key={`desktop-bottom-${i}`} className="shrink-0">
+                  <FacultyOfficerCard {...o} />
+                </div>
+              ))}
+            </motion.div>
+          </div>
+        </>
+      )}
     </section>
   );
 }

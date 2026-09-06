@@ -32,10 +32,10 @@ const AdvisorCard: FC<AdvisorCardProps> = ({
           </div>
 
           <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-8 h-1/2 sm:h-2/5 bg-linear-to-t from-[#002231] via-[#002231e6] to-transparent flex flex-col justify-end">
-            <h3 className="font-rubik text-xl sm:text-2xl font-bold leading-tight break-words">
+            <h3 className="font-rubik text-xl sm:text-2xl font-bold leading-tight wrap-break-words">
               {name}
             </h3>
-            <p className="font-raleway text-sm sm:text-base uppercase tracking-wider text-white/80 mt-1 sm:mt-2 break-words">
+            <p className="font-raleway text-sm sm:text-base uppercase tracking-wider text-white/80 mt-1 sm:mt-2 wrap-break-words">
               {position}
             </p>
           </div>
