@@ -57,6 +57,7 @@ const Menu: React.FC<MenuProps> = ({ userRole, onExit }) => {
           { label: "Announcements", href: "/create/announcements" },
           { label: "Events", href: "/create/events" },
           { label: "Merch", href: "/create/merch" },
+          { label: "Membership", href: "/create/membership" },
           { label: "Testimonials", href: "/create/testimonials" },
           { label: "Sponsors", href: "/create/sponsors" },
           { label: "Officers", href: "/create/officers" },

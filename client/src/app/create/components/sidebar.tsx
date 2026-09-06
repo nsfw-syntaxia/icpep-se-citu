@@ -14,6 +14,7 @@ import {
   FileText,
   ChevronRight,
   Check,
+  CreditCard,
 } from "lucide-react";
 import clsx from "clsx";
 
@@ -37,7 +38,10 @@ const sections = [
   },
   {
     label: "Commerce",
-    links: [{ name: "Merch", href: "/create/merch", icon: ShoppingBag }],
+    links: [
+      { name: "Merch", href: "/create/merch", icon: ShoppingBag },
+      { name: "Membership", href: "/create/membership", icon: CreditCard },
+    ],
   },
   {
     label: "Admin",

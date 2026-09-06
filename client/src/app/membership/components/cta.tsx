@@ -5,12 +5,15 @@ import Button from "../../components/button";
 
 interface InteractiveCtaProps {
   isOpen?: boolean;
+  registrationUrl?: string;
 }
 
-const InteractiveCta: FC<InteractiveCtaProps> = ({ isOpen = true }) => {
+const InteractiveCta: FC<InteractiveCtaProps> = ({
+  isOpen = true,
+  registrationUrl = "",
+}) => {
   const textRef = useRef<HTMLHeadingElement | null>(null);
 
-  const registrationUrl = "https://forms.gle/your-registration-form-link"; // add real gforms here if open lmao
   const announcementsUrl = "/announcements";
 
   const handleMouseMove = (e: MouseEvent<HTMLHeadingElement>) => {
@@ -81,7 +84,7 @@ const InteractiveCta: FC<InteractiveCtaProps> = ({ isOpen = true }) => {
       <Button
         variant="hero"
         onClick={() => {
-          if (isOpen) {
+          if (isOpen && registrationUrl) {
             window.open(registrationUrl, "_blank");
           } else {
             window.location.href = announcementsUrl;
