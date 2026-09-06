@@ -9,6 +9,9 @@ import {
   Handshake,
   ShoppingBag,
   Users,
+  GraduationCap,
+  BookOpen,
+  Archive,
   FileText,
   ChevronRight,
   Check,
@@ -29,6 +32,13 @@ const sections = [
       { name: "Testimonials", href: "/create/testimonials", icon: Quote },
       { name: "Sponsors", href: "/create/sponsors", icon: Handshake },
       { name: "Officers", href: "/create/officers", icon: Users },
+      { name: "Advisors", href: "/create/advisors", icon: GraduationCap },
+      { name: "Faculty", href: "/create/faculty", icon: BookOpen },
+      {
+        name: "Officers Archive",
+        href: "/create/officer-archive",
+        icon: Archive,
+      },
     ],
   },
   {

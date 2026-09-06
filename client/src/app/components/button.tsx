@@ -13,6 +13,8 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     | "secondary2"
     | "hero"
     | "heroOutline"
+    | "heroDanger"
+    | "heroWarning"
     | "danger"
     | "confirm"
     | "cancel";
@@ -47,6 +49,12 @@ const Button: React.FC<ButtonProps> = ({
     hero: `bg-primary1 hover:bg-primary2 disabled:bg-gray-300 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:shadow-none text-white font-raleway font-semibold px-8 py-3 ${rounded === "lg" ? "rounded-2xl" : "rounded-full"} shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer`,
     // Outline CTA, matches the home hero "Learn More" button (pill by default)
     heroOutline: `bg-transparent border-2 border-gray-300 text-gray-700 hover:bg-buttonbg1 hover:border-primary1 hover:text-primary1 font-raleway font-semibold px-8 py-3 ${rounded === "lg" ? "rounded-2xl" : "rounded-full"} transition-all duration-300 cursor-pointer`,
+    // Same CTA pill family as "hero", but red — for a destructive action that
+    // still needs to sit visually consistent next to hero/heroOutline buttons
+    heroDanger: `bg-red-500 hover:bg-red-600 disabled:bg-gray-300 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:shadow-none text-white font-raleway font-semibold px-8 py-3 ${rounded === "lg" ? "rounded-2xl" : "rounded-full"} shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer`,
+    // Same CTA pill family as "hero", but amber — for a cautionary action
+    // (e.g. deactivating an account) that isn't destructive enough for red
+    heroWarning: `bg-amber-500 hover:bg-amber-600 disabled:bg-gray-300 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:shadow-none text-white font-raleway font-semibold px-8 py-3 ${rounded === "lg" ? "rounded-2xl" : "rounded-full"} shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer`,
     // Destructive action (e.g. "Delete", "Yes, Delete")
     danger: "bg-red-500 hover:bg-red-600 text-white font-rubik font-semibold rounded-xl shadow-lg shadow-red-200 hover:-translate-y-0.5 transition-all duration-300 cursor-pointer",
     // Positive confirm/save action within compact editing UIs

@@ -18,6 +18,7 @@ import {
   X,
   Tag,
   ShoppingBag,
+  ArrowUpRight,
 } from "lucide-react";
 import merchService, { MerchItem } from "@/app/services/merch";
 
@@ -712,7 +713,7 @@ export default function MerchPage() {
                 </div>
 
                 {/* ── MANAGE LIST ── */}
-                <div className="bg-white rounded-4xl border transition-all duration-300 shadow-md hover:shadow-primary1/40 hover:-translate-y-2 border-gray-200">
+                <div className="bg-white rounded-4xl border transition-all duration-300 shadow-md hover:shadow-primary1/40 hover:-translate-y-2 border-gray-200 overflow-hidden">
                     {/* List Header */}
                     <div className="px-6 sm:px-8 py-6 border-b border-gray-100 flex flex-wrap justify-between items-center gap-4">
                       <div>
@@ -847,9 +848,10 @@ export default function MerchPage() {
                                       href={item.orderLink}
                                       target="_blank"
                                       rel="noreferrer"
-                                      className="text-xs font-bold text-primary2 hover:underline font-rubik truncate max-w-35 block"
+                                      className="inline-flex items-center gap-1 text-xs font-bold text-primary2 hover:underline font-rubik truncate max-w-35"
                                     >
-                                      View Form ↗
+                                      View Form
+                                      <ArrowUpRight size={12} className="shrink-0" />
                                     </a>
                                   </td>
 
@@ -909,18 +911,20 @@ export default function MerchPage() {
               cannot be undone.
             </p>
             <div className="flex gap-3">
-              <button
+              <Button
+                variant="heroOutline"
                 onClick={() => setShowDeleteModal(false)}
-                className="flex-1 py-3 text-sm font-bold font-rubik text-gray-500 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors cursor-pointer"
+                className="flex-1 py-3"
               >
                 Cancel
-              </button>
-              <button
+              </Button>
+              <Button
+                variant="heroDanger"
                 onClick={handleDelete}
-                className="flex-1 py-3 text-sm font-bold font-rubik text-white bg-red-500 hover:bg-red-600 rounded-xl transition-colors active:scale-95 shadow-lg shadow-red-500/25 cursor-pointer"
+                className="flex-1 py-3"
               >
                 Delete
-              </button>
+              </Button>
             </div>
           </div>
         </div>

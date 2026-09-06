@@ -127,27 +127,42 @@ const Footer = () => {
               Mobile: 'mb-6' 
             */}
             <div className="flex flex-col items-center gap-3 mb-6 sm:mb-0">
-              <Link
-                href="/contact"
-                className="inline-flex items-center gap-2 rounded-full border border-white/30 px-4 py-2 text-sm font-semibold text-sky-100 transition-all hover:border-white hover:bg-white hover:text-[#00609c]"
-              >
-                <MessageCircle className="h-4 w-4" aria-hidden="true" />
-                <span>Get in Touch</span>
-              </Link>
+              <span className="text-xs font-bold uppercase tracking-widest text-sky-200">
+                Contact Us
+              </span>
               <div className="flex items-center justify-center gap-4">
+                <Link
+                  href="/contact"
+                  className="inline-flex items-center gap-2 rounded-full border border-white/30 px-4 py-2 text-sm font-semibold text-sky-100 transition-all hover:border-white hover:bg-white hover:text-[#00609c] active:scale-95"
+                >
+                  <MessageCircle className="h-4 w-4" aria-hidden="true" />
+                  <span>Get in Touch</span>
+                </Link>
                 <a
                   href="https://www.facebook.com/cituicpep"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex hover:scale-110 transition-transform duration-300"
+                  className="group flex h-10 w-10 items-center justify-center rounded-full border border-white/30 transition-all hover:border-white hover:bg-white active:scale-95"
                 >
-                  <Image src="/fb.svg" alt="Facebook" width={28} height={28} />
+                  <Image
+                    src="/fb.svg"
+                    alt="Facebook"
+                    width={18}
+                    height={18}
+                    className="opacity-80 transition-all group-hover:opacity-100 group-hover:filter-[invert(28%)_sepia(95%)_saturate(1985%)_hue-rotate(186deg)_brightness(93%)_contrast(101%)]"
+                  />
                 </a>
                 <a
                   href="mailto:icpepse@cit.edu"
-                  className="flex hover:scale-110 transition-transform duration-300"
+                  className="group flex h-10 w-10 items-center justify-center rounded-full border border-white/30 transition-all hover:border-white hover:bg-white active:scale-95"
                 >
-                  <Image src="/email.svg" alt="Email" width={28} height={28} />
+                  <Image
+                    src="/email.svg"
+                    alt="Email"
+                    width={18}
+                    height={18}
+                    className="opacity-80 transition-all group-hover:opacity-100 group-hover:filter-[invert(28%)_sepia(95%)_saturate(1985%)_hue-rotate(186deg)_brightness(93%)_contrast(101%)]"
+                  />
                 </a>
               </div>
             </div>

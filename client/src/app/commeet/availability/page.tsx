@@ -1235,11 +1235,11 @@ const DeleteConfirmationModal = ({
         </div>
 
         <div className="flex justify-center gap-3 pt-8 mt-2">
-          <Button variant="cancel" onClick={onClose} className="w-full px-6 py-3">
+          <Button variant="heroOutline" onClick={onClose} className="w-full px-6 py-3">
             Cancel
           </Button>
           <Button
-            variant="danger"
+            variant="heroDanger"
             onClick={onConfirm}
             className="flex w-full items-center justify-center gap-2 px-6 py-3"
           >

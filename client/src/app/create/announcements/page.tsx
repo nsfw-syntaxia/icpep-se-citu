@@ -1657,11 +1657,11 @@ export default function AnnouncementsPage() {
                           </label>
                           <label className="flex items-center gap-2.5 cursor-pointer select-none">
                             <div
-                              className={`w-10 h-5 rounded-full transition-all duration-300 relative cursor-pointer active:scale-95 ${showSchedule ? "bg-linear-to-r from-primary3 to-primary2 shadow-inner" : "bg-gray-200"}`}
+                              className={`w-10 h-5 rounded-full transition-all duration-300 relative cursor-pointer active:scale-95 ${showSchedule ? "bg-primary2" : "bg-gray-200"}`}
                               onClick={() => setShowSchedule((p) => !p)}
                             >
                               <div
-                                className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow-md transition-all duration-300 ${showSchedule ? "left-5" : "left-0.5"}`}
+                                className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow-md transition-all duration-300 ${showSchedule ? "left-5.5" : "left-0.5"}`}
                               />
                             </div>
                           </label>
@@ -1754,7 +1754,7 @@ export default function AnnouncementsPage() {
                 </div>
 
                 {/* MANAGE LIST */}
-                  <div className="bg-white rounded-4xl border transition-all duration-300 shadow-md hover:shadow-primary1/40 hover:-translate-y-2 border-gray-200">
+                  <div className="bg-white rounded-4xl border transition-all duration-300 shadow-md hover:shadow-primary1/40 hover:-translate-y-2 border-gray-200 overflow-hidden">
                     <div className="px-6 sm:px-8 py-6 border-b border-gray-100 flex flex-wrap justify-between items-center gap-4">
                       <div>
                         <h2 className="text-xl font-bold font-rubik text-primary3">
@@ -1933,18 +1933,20 @@ export default function AnnouncementsPage() {
               be undone.
             </p>
             <div className="flex gap-3">
-              <button
+              <Button
+                variant="heroOutline"
                 onClick={() => setShowDeleteModal(false)}
-                className="flex-1 py-3 text-sm font-bold font-rubik text-gray-500 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors cursor-pointer"
+                className="flex-1 py-3"
               >
                 Cancel
-              </button>
-              <button
+              </Button>
+              <Button
+                variant="heroDanger"
                 onClick={handleDelete}
-                className="flex-1 py-3 text-sm font-bold font-rubik text-white bg-red-500 hover:bg-red-600 rounded-xl transition-colors active:scale-95 shadow-lg shadow-red-500/25 cursor-pointer"
+                className="flex-1 py-3"
               >
                 Delete
-              </button>
+              </Button>
             </div>
           </div>
         </div>

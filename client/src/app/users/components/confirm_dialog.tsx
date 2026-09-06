@@ -1,6 +1,7 @@
 "use client";
 
 import { AlertTriangle, X, Info, AlertCircle } from "lucide-react";
+import Button from "../../components/button";
 
 interface ConfirmDialogProps {
   isOpen: boolean;
@@ -32,7 +33,7 @@ export default function ConfirmDialog({
           bg: "bg-red-50",
           border: "border-red-200",
           icon: "text-red-600",
-          button: "bg-red-600 hover:bg-red-700",
+          buttonVariant: "heroDanger" as const,
           IconComponent: AlertTriangle,
         };
       case "warning":
@@ -40,7 +41,7 @@ export default function ConfirmDialog({
           bg: "bg-orange-50",
           border: "border-orange-200",
           icon: "text-orange-600",
-          button: "bg-orange-600 hover:bg-orange-700",
+          buttonVariant: "heroWarning" as const,
           IconComponent: AlertCircle,
         };
       case "info":
@@ -48,7 +49,7 @@ export default function ConfirmDialog({
           bg: "bg-blue-50",
           border: "border-blue-200",
           icon: "text-blue-600",
-          button: "bg-blue-600 hover:bg-blue-700",
+          buttonVariant: "hero" as const,
           IconComponent: Info,
         };
     }
@@ -87,21 +88,19 @@ export default function ConfirmDialog({
 
         {/* Actions */}
         <div className="px-6 py-4 bg-gray-50 flex items-center justify-end gap-3">
-          <button
-            onClick={onClose}
-            className="px-6 py-2 border-2 border-gray-300 text-gray-700 font-raleway font-semibold rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
-          >
+          <Button variant="heroOutline" onClick={onClose} className="px-6 py-2">
             {cancelText}
-          </button>
-          <button
+          </Button>
+          <Button
+            variant={styles.buttonVariant}
             onClick={() => {
               onConfirm();
               onClose();
             }}
-            className={`px-6 py-2 ${styles.button} text-white font-raleway font-semibold rounded-lg transition-colors cursor-pointer`}
+            className="px-6 py-2"
           >
             {confirmText}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

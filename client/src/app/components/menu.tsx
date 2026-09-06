@@ -60,6 +60,9 @@ const Menu: React.FC<MenuProps> = ({ userRole, onExit }) => {
           { label: "Testimonials", href: "/create/testimonials" },
           { label: "Sponsors", href: "/create/sponsors" },
           { label: "Officers", href: "/create/officers" },
+          { label: "Advisors", href: "/create/advisors" },
+          { label: "Faculty", href: "/create/faculty" },
+          { label: "Officers Archive", href: "/create/officer-archive" },
           { label: "Users", href: "/users" },
         ],
       });
@@ -359,8 +362,8 @@ const Menu: React.FC<MenuProps> = ({ userRole, onExit }) => {
                     <Image
                       src={social.src}
                       alt="Social"
-                      width={20}
-                      height={20}
+                      width={24}
+                      height={24}
                       className="opacity-70 group-hover:opacity-100 group-hover:filter-[invert(28%)_sepia(95%)_saturate(1985%)_hue-rotate(186deg)_brightness(93%)_contrast(101%)] transition-all"
                     />
                   </a>
