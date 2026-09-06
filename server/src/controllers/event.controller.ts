@@ -7,6 +7,7 @@ import {
 } from "../utils/cloudinary";
 import mongoose from "mongoose";
 import { notifyTargetAudience } from "../utils/notification";
+import sendEmail from "../utils/email";
 
 // Local Multer file shape (avoid relying on global Express.Multer augmentation)
 type MulterFile = MulterLocal.MulterFile;
@@ -759,6 +760,70 @@ export const getMyEvents = async (
         pages: Math.ceil(total / limitNum),
       },
     });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Report an event (sends an email to the organizing chapter's inbox)
+export const reportEvent = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const { reason, details } = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      res.status(400).json({ success: false, message: "Invalid event ID" });
+      return;
+    }
+
+    if (!reason || !details || !String(details).trim()) {
+      res.status(400).json({
+        success: false,
+        message: "Please provide a reason and details for the report",
+      });
+      return;
+    }
+
+    const event = await Event.findById(id);
+    if (!event) {
+      res.status(404).json({ success: false, message: "Event not found" });
+      return;
+    }
+
+    const reportRecipient =
+      process.env.REPORT_EMAIL ||
+      process.env.FROM_EMAIL ||
+      process.env.SMTP_EMAIL;
+
+    if (!reportRecipient) {
+      res.status(500).json({
+        success: false,
+        message: "Reporting is not configured on the server yet",
+      });
+      return;
+    }
+
+    const message = `Event reported: ${event.title}\n\nReason: ${reason}\n\nDetails:\n${details}`;
+    const html = `
+      <h2>Event Reported</h2>
+      <p><strong>Event:</strong> ${event.title}</p>
+      <p><strong>Reason:</strong> ${reason}</p>
+      <p><strong>Details:</strong></p>
+      <p>${String(details).replace(/\n/g, "<br/>")}</p>
+    `;
+
+    await sendEmail({
+      email: reportRecipient,
+      subject: `Event Report: ${event.title}`,
+      message,
+      html,
+    });
+
+    res.status(200).json({ success: true, message: "Report sent" });
   } catch (error) {
     next(error);
   }

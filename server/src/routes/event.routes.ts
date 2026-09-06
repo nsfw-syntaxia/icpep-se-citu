@@ -8,6 +8,7 @@ import {
     togglePublishStatus,
     getEventsByTag,
     getMyEvents,
+    reportEvent,
 } from '../controllers/event.controller';
 import { authenticate, authorizeRoles } from '../middleware/auth.middleware';
 import { upload } from '../middleware/upload.middleware';
@@ -17,6 +18,7 @@ const router = express.Router();
 // Public routes
 router.get('/', getEvents);
 router.get('/tag/:tag', getEventsByTag);
+router.post('/:id/report', reportEvent);
 router.get('/:id', getEventById);
 
 // Protected routes (require authentication)

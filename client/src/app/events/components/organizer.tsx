@@ -12,9 +12,10 @@ interface Props {
       }
     | string;
   eventTitle?: string;
+  eventId?: string;
 }
 
-export default function OrganizerCard({ organizer, eventTitle }: Props) {
+export default function OrganizerCard({ organizer, eventTitle, eventId }: Props) {
   const [imgError, setImgError] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
 
@@ -90,11 +91,14 @@ export default function OrganizerCard({ organizer, eventTitle }: Props) {
         </button>
       </div>
 
-      <ReportEventModal
-        isOpen={showReportModal}
-        onClose={() => setShowReportModal(false)}
-        eventTitle={eventTitle || name}
-      />
+      {eventId && (
+        <ReportEventModal
+          isOpen={showReportModal}
+          onClose={() => setShowReportModal(false)}
+          eventId={eventId}
+          eventTitle={eventTitle || name}
+        />
+      )}
     </div>
   );
 }

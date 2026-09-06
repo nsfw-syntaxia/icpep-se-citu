@@ -273,6 +273,7 @@ export default function EventDetailPage() {
                 <OrganizerCard
                   organizer={event.organizer}
                   eventTitle={event.title}
+                  eventId={event.id}
                 />
               </div>
 

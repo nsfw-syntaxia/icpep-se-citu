@@ -3,10 +3,12 @@
 import { useState, FormEvent } from "react";
 import { X, Flag, ChevronDown, Check } from "lucide-react";
 import Button from "../../components/button";
+import eventService from "../../services/event";
 
 interface ReportEventModalProps {
   isOpen: boolean;
   onClose: () => void;
+  eventId: string;
   eventTitle: string;
 }
 
@@ -21,12 +23,15 @@ const REASONS = [
 export default function ReportEventModal({
   isOpen,
   onClose,
+  eventId,
   eventTitle,
 }: ReportEventModalProps) {
   const [reason, setReason] = useState(REASONS[0]);
   const [isReasonOpen, setIsReasonOpen] = useState(false);
   const [details, setDetails] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   if (!isOpen) return null;
 
@@ -37,17 +42,27 @@ export default function ReportEventModal({
       setIsReasonOpen(false);
       setDetails("");
       setSubmitted(false);
+      setError(null);
     }, 300);
   };
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const subject = `Event Report: ${eventTitle}`;
-    const body = `Reason: ${reason}\n\nDetails:\n${details}`;
-    window.location.href = `mailto:icpep.seofficial2526@gmail.com?subject=${encodeURIComponent(
-      subject,
-    )}&body=${encodeURIComponent(body)}`;
-    setSubmitted(true);
+    setError(null);
+    setIsSubmitting(true);
+    try {
+      await eventService.reportEvent(eventId, reason, details);
+      setSubmitted(true);
+    } catch (err) {
+      console.error("Failed to send report:", err);
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Failed to send your report. Please try again.",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -78,8 +93,8 @@ export default function ReportEventModal({
         {submitted ? (
           <div className="px-6 py-10 text-center">
             <p className="font-raleway text-base text-gray-700">
-              Thanks for letting us know. Your email client should now be
-              open to send the report.
+              Thanks for letting us know — your report has been sent to the
+              chapter&apos;s team.
             </p>
             <Button variant="hero" onClick={handleClose} className="mt-6">
               Close
@@ -163,16 +178,26 @@ export default function ReportEventModal({
               />
             </div>
 
+            {error && (
+              <p className="font-raleway text-sm text-red-500">{error}</p>
+            )}
+
             <div className="flex items-center justify-end gap-3 pt-2">
-              <button
+              <Button
                 type="button"
+                variant="heroOutline"
                 onClick={handleClose}
-                className="cursor-pointer rounded-xl border border-gray-200 px-5 py-2.5 font-raleway font-semibold text-gray-600 transition-all duration-300 hover:border-gray-300 hover:bg-gray-50 active:scale-95"
+                className="px-5 py-2.5"
               >
                 Cancel
-              </button>
-              <Button type="submit" variant="hero" className="px-5 py-2.5">
-                Submit Report
+              </Button>
+              <Button
+                type="submit"
+                variant="hero"
+                disabled={isSubmitting}
+                className="px-5 py-2.5"
+              >
+                {isSubmitting ? "Sending..." : "Submit Report"}
               </Button>
             </div>
           </form>

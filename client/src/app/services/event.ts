@@ -294,6 +294,18 @@ class EventService {
     }
 
     /**
+     * Report an event (sends an email to the chapter's inbox)
+     */
+    async reportEvent(id: string, reason: string, details: string): Promise<EventResponse> {
+        try {
+            const response = await api.post(`/events/${id}/report`, { reason, details });
+            return response.data;
+        } catch (error) {
+            this.handleError(error);
+        }
+    }
+
+    /**
      * Delete an event
      */
     async deleteEvent(id: string): Promise<EventResponse> {
