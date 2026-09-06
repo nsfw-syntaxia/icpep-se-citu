@@ -62,7 +62,6 @@ const Menu: React.FC<MenuProps> = ({ userRole, onExit }) => {
           { label: "Officers", href: "/create/officers" },
           { label: "Advisors", href: "/create/advisors" },
           { label: "Faculty", href: "/create/faculty" },
-          { label: "Officers Archive", href: "/create/officer-archive" },
           { label: "Users", href: "/users" },
         ],
       });

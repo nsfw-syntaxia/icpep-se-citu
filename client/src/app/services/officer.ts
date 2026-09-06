@@ -58,6 +58,7 @@ export interface UpdateOfficerData {
   yearLevel?: number;
   profilePicture?: string;
   remove?: boolean;
+  termYear?: string;
 }
 
 const officerService = {

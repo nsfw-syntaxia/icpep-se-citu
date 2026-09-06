@@ -1,6 +1,31 @@
 import { Request, Response } from "express";
 import User from "../models/user";
+import OfficerTerm from "../models/officerTerm";
 import { uploadToCloudinary } from "../utils/cloudinary";
+import { getCurrentAcademicYear } from "../utils/academic-year";
+import { formatOfficerName } from "../utils/format-name";
+
+// Mirrors the client's splitCouncilPosition (client/src/app/officers/[slug]/page.tsx)
+// so a live assignment archives under the same {position, role} shape the
+// Officers Archive display already expects (e.g. "SSG Representative" ->
+// position "SSG", role "Representative").
+const ordinalYear = (n: number) => {
+  const suffix = n === 1 ? "st" : n === 2 ? "nd" : n === 3 ? "rd" : "th";
+  return `${n}${suffix} Year`;
+};
+
+const splitCouncilPosition = (
+  position: string,
+  yearLevel?: number | null
+): { position: string; role?: string } => {
+  if (position === "Batch Representative" && yearLevel) {
+    return { position: ordinalYear(yearLevel), role: "Batch Representative" };
+  }
+  if (position === "SSG Representative") {
+    return { position: "SSG", role: "Representative" };
+  }
+  return { position };
+};
 
 // Matches users who currently hold *any* officer assignment — either the new
 // independent council/committee fields, or (for records created before those
@@ -76,6 +101,7 @@ export const updateOfficer = async (req: Request, res: Response) => {
       yearLevel,
       profilePicture,
       remove,
+      termYear,
     } = req.body;
 
     const user = await User.findById(id);
@@ -149,6 +175,53 @@ export const updateOfficer = async (req: Request, res: Response) => {
     const updated = await User.findByIdAndUpdate(id, updateData, {
       new: true,
     });
+
+    // Auto-archive this assignment under its academic year, so it stays on
+    // record in the Officers Archive even after the officer is later
+    // removed/replaced. Only for the new council/committee flow, and never
+    // on removal — removing a live seat must not erase history.
+    if (assignmentType && !isRemoving && position) {
+      try {
+        const archiveTermYear =
+          (termYear && String(termYear).trim()) || getCurrentAcademicYear();
+        const departmentType =
+          assignmentType === "council" ? "executive" : "committee";
+        const committeeName =
+          assignmentType === "committee" ? department || null : null;
+        const { position: archivePosition, role: archiveRole } =
+          assignmentType === "council"
+            ? splitCouncilPosition(position, yearLevel)
+            : { position, role: undefined };
+
+        await OfficerTerm.findOneAndUpdate(
+          {
+            sourceUserId: user._id,
+            departmentType,
+            termYear: archiveTermYear,
+            committeeName,
+          },
+          {
+            $set: {
+              name: formatOfficerName(
+                user.firstName,
+                user.lastName,
+                user.middleName
+              ),
+              position: archivePosition,
+              role: archiveRole || null,
+              departmentType,
+              committeeName,
+              termYear: archiveTermYear,
+              image: updated?.profilePicture || null,
+              isActive: true,
+            },
+          },
+          { upsert: true, new: true, setDefaultsOnInsert: true }
+        );
+      } catch (archiveError) {
+        console.error("Failed to auto-archive officer term:", archiveError);
+      }
+    }
 
     res.status(200).json({ success: true, data: updated });
   } catch (error: any) {

@@ -11,7 +11,6 @@ import {
   Users,
   GraduationCap,
   BookOpen,
-  Archive,
   FileText,
   ChevronRight,
   Check,
@@ -34,11 +33,6 @@ const sections = [
       { name: "Officers", href: "/create/officers", icon: Users },
       { name: "Advisors", href: "/create/advisors", icon: GraduationCap },
       { name: "Faculty", href: "/create/faculty", icon: BookOpen },
-      {
-        name: "Officers Archive",
-        href: "/create/officer-archive",
-        icon: Archive,
-      },
     ],
   },
   {
