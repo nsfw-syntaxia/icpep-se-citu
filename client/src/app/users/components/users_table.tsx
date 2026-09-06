@@ -60,8 +60,13 @@ export default function UsersTable({
 
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
-  const dropdownContainerStyle =
-    "absolute z-30 w-full mt-2 bg-white border border-gray-100 rounded-2xl shadow-xl overflow-x-hidden flex flex-col gap-1 p-2 max-h-56 overflow-y-auto themed-scrollbar";
+  // Split into a non-scrolling outer wrapper (owns the rounding/border/
+  // shadow) and a scrolling inner container, so the scrollbar never pokes
+  // past the rounded corners.
+  const dropdownOuterStyle =
+    "absolute z-30 w-full mt-2 bg-white border border-gray-100 rounded-2xl shadow-xl overflow-hidden";
+  const dropdownInnerStyle =
+    "flex flex-col gap-1 p-2 max-h-56 overflow-y-auto themed-scrollbar";
   const dropdownItemStyle =
     "flex items-center justify-between px-4 py-2.5 rounded-xl cursor-pointer transition-colors font-rubik text-sm font-medium";
   const dropdownItemSelectedStyle = "bg-primary1/5 text-primary1";
@@ -129,26 +134,28 @@ export default function UsersTable({
                   className="fixed inset-0 z-20"
                   onClick={() => setActiveDropdown(null)}
                 />
-                <div className={dropdownContainerStyle}>
-                  {ROLE_OPTIONS.map((opt) => (
-                    <div
-                      key={opt.value}
-                      className={`${dropdownItemStyle} ${
-                        filterRole === opt.value
-                          ? dropdownItemSelectedStyle
-                          : dropdownItemHoverStyle
-                      }`}
-                      onClick={() => {
-                        onFilterChange("role", opt.value);
-                        setActiveDropdown(null);
-                      }}
-                    >
-                      <span>{opt.label}</span>
-                      {filterRole === opt.value && (
-                        <Check className="w-4 h-4 text-primary1" />
-                      )}
-                    </div>
-                  ))}
+                <div className={dropdownOuterStyle}>
+                  <div className={dropdownInnerStyle}>
+                    {ROLE_OPTIONS.map((opt) => (
+                      <div
+                        key={opt.value}
+                        className={`${dropdownItemStyle} ${
+                          filterRole === opt.value
+                            ? dropdownItemSelectedStyle
+                            : dropdownItemHoverStyle
+                        }`}
+                        onClick={() => {
+                          onFilterChange("role", opt.value);
+                          setActiveDropdown(null);
+                        }}
+                      >
+                        <span>{opt.label}</span>
+                        {filterRole === opt.value && (
+                          <Check className="w-4 h-4 text-primary1" />
+                        )}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </>
             )}
@@ -186,26 +193,28 @@ export default function UsersTable({
                   className="fixed inset-0 z-20"
                   onClick={() => setActiveDropdown(null)}
                 />
-                <div className={dropdownContainerStyle}>
-                  {MEMBERSHIP_OPTIONS.map((opt) => (
-                    <div
-                      key={opt.value}
-                      className={`${dropdownItemStyle} ${
-                        filterMembership === opt.value
-                          ? dropdownItemSelectedStyle
-                          : dropdownItemHoverStyle
-                      }`}
-                      onClick={() => {
-                        onFilterChange("membership", opt.value);
-                        setActiveDropdown(null);
-                      }}
-                    >
-                      <span>{opt.label}</span>
-                      {filterMembership === opt.value && (
-                        <Check className="w-4 h-4 text-primary1" />
-                      )}
-                    </div>
-                  ))}
+                <div className={dropdownOuterStyle}>
+                  <div className={dropdownInnerStyle}>
+                    {MEMBERSHIP_OPTIONS.map((opt) => (
+                      <div
+                        key={opt.value}
+                        className={`${dropdownItemStyle} ${
+                          filterMembership === opt.value
+                            ? dropdownItemSelectedStyle
+                            : dropdownItemHoverStyle
+                        }`}
+                        onClick={() => {
+                          onFilterChange("membership", opt.value);
+                          setActiveDropdown(null);
+                        }}
+                      >
+                        <span>{opt.label}</span>
+                        {filterMembership === opt.value && (
+                          <Check className="w-4 h-4 text-primary1" />
+                        )}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </>
             )}

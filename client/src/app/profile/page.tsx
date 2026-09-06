@@ -460,7 +460,7 @@ export default function ProfilePage() {
 
                       <div className="flex justify-end gap-3 pt-6 border-t border-gray-100 mt-2">
                         <Button
-                          variant="cancel"
+                          variant="heroOutline"
                           type="button"
                           onClick={closeEdit}
                           className="px-6 py-3"
@@ -533,11 +533,11 @@ function InputField({
         disabled={disabled}
         max={max}
         min={min}
-        className={`w-full font-rubik border border-gray-200 rounded-xl px-4 py-3.5 outline-none transition-all placeholder-gray-400
+        className={`w-full font-rubik text-base border border-gray-200 rounded-2xl px-4 py-3 outline-none transition-all placeholder-gray-400
           ${
             disabled
               ? "bg-gray-100 text-gray-500 cursor-not-allowed border-gray-100"
-              : "bg-slate-50 focus:bg-white focus:border-primary1 focus:ring-4 focus:ring-primary1/10 text-gray-800"
+              : "bg-gray-50 focus:bg-white focus:border-primary1 focus:ring-4 focus:ring-primary1/10 text-gray-800"
           }`}
       />
     </div>

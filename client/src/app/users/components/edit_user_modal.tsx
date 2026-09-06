@@ -1,8 +1,9 @@
 "use client";
 
-import { X, Save, ChevronDown, Check } from "lucide-react";
+import { X, ChevronDown, Check } from "lucide-react";
 import { User } from "../utils/user"; // Ensure this path is correct
 import { useState } from "react";
+import Button from "../../components/button";
 
 interface EditUserModalProps {
   isOpen: boolean;
@@ -35,8 +36,13 @@ export default function EditUserModal({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
-  const dropdownContainerStyle =
-    "absolute z-30 w-full mt-2 bg-white border border-gray-100 rounded-2xl shadow-xl overflow-x-hidden flex flex-col gap-1 p-2 max-h-56 overflow-y-auto themed-scrollbar";
+  // Split into a non-scrolling outer wrapper (owns the rounding/border/
+  // shadow) and a scrolling inner container, so the scrollbar never pokes
+  // past the rounded corners.
+  const dropdownOuterStyle =
+    "absolute z-30 w-full mt-2 bg-white border border-gray-100 rounded-2xl shadow-xl overflow-hidden";
+  const dropdownInnerStyle =
+    "flex flex-col gap-1 p-2 max-h-56 overflow-y-auto themed-scrollbar";
   const dropdownItemStyle =
     "flex items-center justify-between px-4 py-2.5 rounded-xl cursor-pointer transition-colors font-rubik text-sm font-medium";
   const dropdownItemSelectedStyle = "bg-primary1/5 text-primary1";
@@ -137,33 +143,33 @@ export default function EditUserModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-white shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-visible animate-scale-in">
-        {/* Header */}
-        <div className="bg-linear-to-r from-primary1 to-primary1/90 px-6 py-5">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="font-rubik text-2xl font-bold text-white">
-                Edit User
-              </h2>
-              <p className="font-raleway text-sm text-white/80">
-                Editing: {user.fullName}
-              </p>
-            </div>
-            <button
-              onClick={onClose}
-              className="p-2 hover:bg-white/20 rounded-full transition-colors cursor-pointer"
-            >
-              <X className="w-6 h-6 text-white" />
-            </button>
+    <div className="fixed inset-0 z-99999 flex items-center justify-center p-4">
+      <div
+        className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity"
+        onClick={onClose}
+      />
+      <div className="relative z-100000 w-full max-w-2xl bg-white rounded-4xl shadow-2xl border border-white/50 animate-scale-in flex flex-col max-h-[90vh] overflow-hidden">
+        {/* Header — fixed, never scrolls away */}
+        <div className="flex items-center justify-between px-6 sm:px-7 pt-6 sm:pt-7 pb-4 border-b border-gray-100 shrink-0">
+          <div>
+            <h3 className="text-xl font-rubik font-bold text-primary3">
+              Edit User
+            </h3>
+            <p className="text-sm font-raleway text-gray-500 mt-0.5">
+              Editing: {user.fullName}
+            </p>
           </div>
+          <button
+            onClick={onClose}
+            className="p-2 rounded-full bg-gray-50 hover:bg-gray-100 text-gray-500 transition-colors cursor-pointer"
+          >
+            <X className="w-5 h-5" />
+          </button>
         </div>
 
         {/* Form */}
-        <form
-          onSubmit={handleSubmit}
-          className="p-6 overflow-visible max-h-[calc(90vh-160px)]"
-        >
+        <form onSubmit={handleSubmit} className="flex flex-col flex-1 min-h-0">
+          <div className="overflow-y-auto themed-scrollbar px-6 sm:px-7 py-5 flex-1">
           {/* Student Number */}
           <div className="mb-4">
             <label className="block font-raleway text-sm font-semibold text-gray-700 mb-2">
@@ -174,10 +180,8 @@ export default function EditUserModal({
               name="studentNumber"
               value={formData.studentNumber}
               onChange={handleChange}
-              className={`w-full px-4 py-2 text-gray-400 border-2 rounded-lg font-raleway focus:outline-none focus:ring-2 focus:ring-primary1/50 ${
-                errors.studentNumber
-                  ? "border-red-500"
-                  : "border-gray-300 focus:border-primary1"
+              className={`w-full font-rubik text-base bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 outline-none transition-all placeholder-gray-400 text-gray-800 focus:bg-white focus:border-primary1 focus:ring-4 focus:ring-primary1/10 ${
+                errors.studentNumber ? "border-red-300 ring-2 ring-red-100" : ""
               }`}
               placeholder="XX-XXXX-XXX"
             />
@@ -199,10 +203,8 @@ export default function EditUserModal({
                 name="firstName"
                 value={formData.firstName}
                 onChange={handleChange}
-                className={`w-full px-4 py-2 text-gray-400 border-2 rounded-lg font-raleway focus:outline-none focus:ring-2 focus:ring-primary1/50 ${
-                  errors.firstName
-                    ? "border-red-500"
-                    : "border-gray-300 focus:border-primary1"
+                className={`w-full font-rubik text-base bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 outline-none transition-all placeholder-gray-400 text-gray-800 focus:bg-white focus:border-primary1 focus:ring-4 focus:ring-primary1/10 ${
+                  errors.firstName ? "border-red-300 ring-2 ring-red-100" : ""
                 }`}
                 placeholder="Juan"
               />
@@ -222,7 +224,7 @@ export default function EditUserModal({
                 name="middleName"
                 value={formData.middleName}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border-2 border-gray-300 text-gray-400 rounded-lg font-raleway focus:outline-none focus:ring-2 focus:ring-primary1/50 focus:border-primary1"
+                className="w-full font-rubik text-base bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 outline-none transition-all placeholder-gray-400 text-gray-800 focus:bg-white focus:border-primary1 focus:ring-4 focus:ring-primary1/10"
                 placeholder="Santos"
               />
             </div>
@@ -236,10 +238,8 @@ export default function EditUserModal({
                 name="lastName"
                 value={formData.lastName}
                 onChange={handleChange}
-                className={`w-full px-4 py-2 border-2 text-gray-400 rounded-lg font-raleway focus:outline-none focus:ring-2 focus:ring-primary1/50 ${
-                  errors.lastName
-                    ? "border-red-500"
-                    : "border-gray-300 focus:border-primary1"
+                className={`w-full font-rubik text-base bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 outline-none transition-all placeholder-gray-400 text-gray-800 focus:bg-white focus:border-primary1 focus:ring-4 focus:ring-primary1/10 ${
+                  errors.lastName ? "border-red-300 ring-2 ring-red-100" : ""
                 }`}
                 placeholder="Dela Cruz"
               />
@@ -279,30 +279,32 @@ export default function EditUserModal({
                 {activeDropdown === "role" && (
                   <>
                     <div className="fixed inset-0 z-20" onClick={() => setActiveDropdown(null)} />
-                    <div className={dropdownContainerStyle}>
-                      {ROLE_OPTIONS.map((opt) => {
-                        // Only show admin option if user already has admin role
-                        if (opt.value === "admin" && user.role !== "admin") return null;
-                        return (
-                          <div
-                            key={opt.value}
-                            className={`${dropdownItemStyle} ${
-                              formData.role === opt.value
-                                ? dropdownItemSelectedStyle
-                                : dropdownItemHoverStyle
-                            }`}
-                            onClick={() => {
-                              setFormData((prev) => ({ ...prev, role: opt.value as "council-officer" | "committee-officer" | "student" | "faculty" | "admin" }));
-                              setActiveDropdown(null);
-                            }}
-                          >
-                            <span>{opt.label}</span>
-                            {formData.role === opt.value && (
-                              <Check className="w-4 h-4 text-primary1" />
-                            )}
-                          </div>
-                        );
-                      })}
+                    <div className={dropdownOuterStyle}>
+                      <div className={dropdownInnerStyle}>
+                        {ROLE_OPTIONS.map((opt) => {
+                          // Only show admin option if user already has admin role
+                          if (opt.value === "admin" && user.role !== "admin") return null;
+                          return (
+                            <div
+                              key={opt.value}
+                              className={`${dropdownItemStyle} ${
+                                formData.role === opt.value
+                                  ? dropdownItemSelectedStyle
+                                  : dropdownItemHoverStyle
+                              }`}
+                              onClick={() => {
+                                setFormData((prev) => ({ ...prev, role: opt.value as "council-officer" | "committee-officer" | "student" | "faculty" | "admin" }));
+                                setActiveDropdown(null);
+                              }}
+                            >
+                              <span>{opt.label}</span>
+                              {formData.role === opt.value && (
+                                <Check className="w-4 h-4 text-primary1" />
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
                     </div>
                   </>
                 )}
@@ -336,26 +338,28 @@ export default function EditUserModal({
                 {activeDropdown === "yearLevel" && (
                   <>
                     <div className="fixed inset-0 z-20" onClick={() => setActiveDropdown(null)} />
-                    <div className={dropdownContainerStyle}>
-                      {YEAR_OPTIONS.filter((o) => o.value !== "").map((opt) => (
-                        <div
-                          key={opt.value}
-                          className={`${dropdownItemStyle} ${
-                            formData.yearLevel === opt.value
-                              ? dropdownItemSelectedStyle
-                              : dropdownItemHoverStyle
-                          }`}
-                          onClick={() => {
-                            setFormData((prev) => ({ ...prev, yearLevel: opt.value }));
-                            setActiveDropdown(null);
-                          }}
-                        >
-                          <span>{opt.label}</span>
-                          {formData.yearLevel === opt.value && (
-                            <Check className="w-4 h-4 text-primary1" />
-                          )}
-                        </div>
-                      ))}
+                    <div className={dropdownOuterStyle}>
+                      <div className={dropdownInnerStyle}>
+                        {YEAR_OPTIONS.filter((o) => o.value !== "").map((opt) => (
+                          <div
+                            key={opt.value}
+                            className={`${dropdownItemStyle} ${
+                              formData.yearLevel === opt.value
+                                ? dropdownItemSelectedStyle
+                                : dropdownItemHoverStyle
+                            }`}
+                            onClick={() => {
+                              setFormData((prev) => ({ ...prev, yearLevel: opt.value }));
+                              setActiveDropdown(null);
+                            }}
+                          >
+                            <span>{opt.label}</span>
+                            {formData.yearLevel === opt.value && (
+                              <Check className="w-4 h-4 text-primary1" />
+                            )}
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </>
                 )}
@@ -387,26 +391,28 @@ export default function EditUserModal({
               {activeDropdown === "membership" && (
                 <>
                   <div className="fixed inset-0 z-20" onClick={() => setActiveDropdown(null)} />
-                  <div className={dropdownContainerStyle}>
-                    {MEMBERSHIP_OPTIONS.map((opt) => (
-                      <div
-                        key={opt.value}
-                        className={`${dropdownItemStyle} ${
-                          formData.membershipStatus === opt.value
-                            ? dropdownItemSelectedStyle
-                            : dropdownItemHoverStyle
-                        }`}
-                        onClick={() => {
-                          setFormData((prev) => ({ ...prev, membershipStatus: opt.value }));
-                          setActiveDropdown(null);
-                        }}
-                      >
-                        <span>{opt.label}</span>
-                        {formData.membershipStatus === opt.value && (
-                          <Check className="w-4 h-4 text-primary1" />
-                        )}
-                      </div>
-                    ))}
+                  <div className={dropdownOuterStyle}>
+                    <div className={dropdownInnerStyle}>
+                      {MEMBERSHIP_OPTIONS.map((opt) => (
+                        <div
+                          key={opt.value}
+                          className={`${dropdownItemStyle} ${
+                            formData.membershipStatus === opt.value
+                              ? dropdownItemSelectedStyle
+                              : dropdownItemHoverStyle
+                          }`}
+                          onClick={() => {
+                            setFormData((prev) => ({ ...prev, membershipStatus: opt.value }));
+                            setActiveDropdown(null);
+                          }}
+                        >
+                          <span>{opt.label}</span>
+                          {formData.membershipStatus === opt.value && (
+                            <Check className="w-4 h-4 text-primary1" />
+                          )}
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </>
               )}
@@ -449,25 +455,22 @@ export default function EditUserModal({
               </label>
             </div>
           </div>
-        </form>
+          </div>
 
-        {/* Footer */}
-        <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 flex items-center justify-end gap-3">
-          <button
-            type="button"
-            onClick={onClose}
-            className="px-6 py-2 border-2 border-gray-300 text-gray-700 font-raleway font-semibold rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={handleSubmit}
-            className="flex items-center gap-2 px-6 py-2 bg-primary1 text-white font-raleway font-semibold rounded-lg hover:bg-primary1/90 transition-colors cursor-pointer"
-          >
-            <Save className="w-4 h-4" />
-            Save Changes
-          </button>
-        </div>
+          <div className="flex justify-end gap-3 px-6 sm:px-7 pt-4 pb-6 sm:pb-7 border-t border-gray-100 shrink-0">
+            <Button
+              variant="heroOutline"
+              type="button"
+              onClick={onClose}
+              className="px-6 py-3"
+            >
+              Cancel
+            </Button>
+            <Button variant="hero" type="submit" className="px-8 py-3">
+              Save Changes
+            </Button>
+          </div>
+        </form>
       </div>
     </div>
   );
