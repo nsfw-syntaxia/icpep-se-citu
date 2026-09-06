@@ -153,6 +153,20 @@ const Footer = () => {
                   />
                 </a>
                 <a
+                  href="https://tiktok.com/@icpep.se.citu"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex h-10 w-10 items-center justify-center rounded-full border border-white/30 transition-all hover:border-white hover:bg-white active:scale-95"
+                >
+                  <Image
+                    src="/tiktok.svg"
+                    alt="TikTok"
+                    width={18}
+                    height={18}
+                    className="opacity-80 transition-all group-hover:opacity-100 group-hover:filter-[invert(28%)_sepia(95%)_saturate(1985%)_hue-rotate(186deg)_brightness(93%)_contrast(101%)]"
+                  />
+                </a>
+                <a
                   href="mailto:icpepse@cit.edu"
                   className="group flex h-10 w-10 items-center justify-center rounded-full border border-white/30 transition-all hover:border-white hover:bg-white active:scale-95"
                 >

@@ -27,6 +27,11 @@ export default function SecuritySection({
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState({
+    current: false,
+    new: false,
+    confirm: false,
+  });
 
   const currentRef = useRef<HTMLInputElement | null>(null);
   const [showCurrent, setShowCurrent] = useState(false);
@@ -36,6 +41,7 @@ export default function SecuritySection({
   const openModal = () => {
     setError(null);
     setSuccess(null);
+    setFieldErrors({ current: false, new: false, confirm: false });
     setCurrentPassword("");
     setNewPassword("");
     setConfirmPassword("");
@@ -58,11 +64,26 @@ export default function SecuritySection({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    if (!currentPassword) return setError("Please enter your current password");
-    if (!newPassword || newPassword.length < 6)
-      return setError("New password must be at least 6 characters");
-    if (newPassword !== confirmPassword)
-      return setError("Passwords do not match");
+
+    const newFieldErrors = {
+      current: !currentPassword,
+      new: !newPassword || newPassword.length < 6,
+      confirm: !confirmPassword || newPassword !== confirmPassword,
+    };
+    setFieldErrors(newFieldErrors);
+
+    if (newFieldErrors.current) {
+      setError("Please enter your current password");
+      return;
+    }
+    if (newFieldErrors.new) {
+      setError("New password must be at least 6 characters");
+      return;
+    }
+    if (newFieldErrors.confirm) {
+      setError("Passwords do not match");
+      return;
+    }
 
     try {
       setSubmitting(true);
@@ -164,31 +185,50 @@ export default function SecuritySection({
                 </button>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form
+                onSubmit={handleSubmit}
+                noValidate
+                className="space-y-6"
+              >
                 <PasswordField
                   label="Current Password"
                   value={currentPassword}
-                  onChange={setCurrentPassword}
+                  onChange={(val: string) => {
+                    setCurrentPassword(val);
+                    if (fieldErrors.current)
+                      setFieldErrors((prev) => ({ ...prev, current: false }));
+                  }}
                   show={showCurrent}
                   onToggle={() => setShowCurrent(!showCurrent)}
                   ref={currentRef}
+                  error={fieldErrors.current}
                 />
 
                 <PasswordField
                   label="New Password"
                   value={newPassword}
-                  onChange={setNewPassword}
+                  onChange={(val: string) => {
+                    setNewPassword(val);
+                    if (fieldErrors.new)
+                      setFieldErrors((prev) => ({ ...prev, new: false }));
+                  }}
                   show={showNew}
                   onToggle={() => setShowNew(!showNew)}
                   hint="Must be at least 6 characters"
+                  error={fieldErrors.new}
                 />
 
                 <PasswordField
                   label="Confirm New Password"
                   value={confirmPassword}
-                  onChange={setConfirmPassword}
+                  onChange={(val: string) => {
+                    setConfirmPassword(val);
+                    if (fieldErrors.confirm)
+                      setFieldErrors((prev) => ({ ...prev, confirm: false }));
+                  }}
                   show={showConfirm}
                   onToggle={() => setShowConfirm(!showConfirm)}
+                  error={fieldErrors.confirm}
                 />
 
                 {error && (
@@ -241,6 +281,7 @@ function PasswordField({
   onToggle,
   hint,
   ref,
+  error = false,
 }: any) {
   return (
     <div>
@@ -253,8 +294,11 @@ function PasswordField({
           type={show ? "text" : "password"}
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="w-full font-rubik text-base bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 pr-12 outline-none focus:bg-white focus:border-primary1 focus:ring-4 focus:ring-primary1/10 transition-all text-gray-800 placeholder-gray-400"
-          required
+          className={`w-full font-rubik text-base border rounded-2xl px-4 py-3 pr-12 outline-none transition-all text-gray-800 placeholder-gray-400 ${
+            error
+              ? "bg-gray-50 border-red-300 ring-2 ring-red-100"
+              : "bg-gray-50 border-gray-200 focus:bg-white focus:border-primary1 focus:ring-4 focus:ring-primary1/10"
+          }`}
         />
         <button
           type="button"

@@ -354,6 +354,10 @@ const Menu: React.FC<MenuProps> = ({ userRole, onExit }) => {
                     src: "/fb.svg",
                     link: "https://www.facebook.com/cituicpep",
                   },
+                  {
+                    src: "/tiktok.svg",
+                    link: "https://tiktok.com/@icpep.se.citu",
+                  },
                   { src: "/email.svg", link: "mailto:icpepse@cit.edu" },
                 ].map((social, idx) => (
                   <a

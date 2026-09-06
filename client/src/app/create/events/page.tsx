@@ -116,7 +116,10 @@ type FormErrors = {
   title: boolean;
   description: boolean;
   body: boolean;
+  contact: boolean;
 };
+
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 interface EventItem {
   _id: string;
@@ -233,6 +236,7 @@ export default function EventsPage() {
     title: false,
     description: false,
     body: false,
+    contact: false,
   });
   const [images, setImages] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
@@ -552,6 +556,10 @@ export default function EventsPage() {
       title: !formData.title.trim(),
       description: !formData.description.trim(),
       body: !formData.body.trim(),
+      // Contact Email is optional — only flag it when something was typed
+      // in but doesn't look like an email.
+      contact:
+        !!formData.contact.trim() && !EMAIL_REGEX.test(formData.contact.trim()),
     };
     setErrors(newErrors);
     setDateConflictError(false);
@@ -1762,8 +1770,14 @@ export default function EventsPage() {
                             placeholder="organizer@example.com"
                             value={formData.contact}
                             onChange={handleInputChange}
-                            className={inputCls(false)}
+                            className={inputCls(errors.contact)}
                           />
+                          {errors.contact && (
+                            <p className="text-xs text-red-400 font-raleway flex items-center gap-1">
+                              <span className="inline-block w-1 h-1 bg-red-400 rounded-full" />
+                              Enter a valid email address
+                            </p>
+                          )}
                         </div>
                       </div>
 

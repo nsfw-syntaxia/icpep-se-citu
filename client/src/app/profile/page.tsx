@@ -16,6 +16,8 @@ import { PersonalInformation } from "./components/personal-information";
 import { RolenMembershipInformation } from "./components/role-membership";
 import SecuritySection from "./components/password";
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export default function ProfilePage() {
   const [user, setUser] = useState<CurrentUser | null>(null);
   const [loading, setLoading] = useState(true);
@@ -85,6 +87,7 @@ export default function ProfilePage() {
   const [editOpen, setEditOpen] = useState(false);
   const [editLoading, setEditLoading] = useState(false);
   const [editError, setEditError] = useState<string | null>(null);
+  const [emailError, setEmailError] = useState(false);
   const [editSuccess, setEditSuccess] = useState<string | null>(null);
   const [form, setForm] = useState({
     firstName: "",
@@ -99,6 +102,7 @@ export default function ProfilePage() {
 
   const openEdit = (focusField: "email" | "yearLevel" = "email") => {
     setEditError(null);
+    setEmailError(false);
     setEditSuccess(null);
     setForm({
       firstName: user?.firstName ?? "",
@@ -119,10 +123,16 @@ export default function ProfilePage() {
   const handleEditSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setEditError(null);
+    setEmailError(false);
     if (!user?.id) return setEditError("No user id");
     // Names are disabled but we still check if they exist in state
     if (!form.firstName || !form.lastName)
       return setEditError("First and last name are required");
+    if (form.email && !EMAIL_REGEX.test(form.email)) {
+      setEmailError(true);
+      emailFieldRef.current?.focus();
+      return;
+    }
 
     try {
       setEditLoading(true);
@@ -457,9 +467,14 @@ export default function ProfilePage() {
                       <InputField
                         label="Institutional Email"
                         value={form.email}
-                        onChange={(val) => setForm({ ...form, email: val })}
+                        onChange={(val) => {
+                          setForm({ ...form, email: val });
+                          if (emailError) setEmailError(false);
+                        }}
                         ref={emailFieldRef} // Focus starts here
                         type="email"
+                        error={emailError}
+                        errorMessage="Please enter a valid email address"
                       />
 
                       <InputField
@@ -543,6 +558,8 @@ interface InputFieldProps {
   disabled?: boolean;
   max?: string | number;
   min?: string | number;
+  error?: boolean;
+  errorMessage?: string;
 }
 
 function InputField({
@@ -554,6 +571,8 @@ function InputField({
   disabled,
   max,
   min,
+  error = false,
+  errorMessage,
 }: InputFieldProps) {
   return (
     <div>
@@ -568,13 +587,20 @@ function InputField({
         disabled={disabled}
         max={max}
         min={min}
-        className={`w-full font-rubik text-base border border-gray-200 rounded-2xl px-4 py-3 outline-none transition-all placeholder-gray-400
+        className={`w-full font-rubik text-base border rounded-2xl px-4 py-3 outline-none transition-all placeholder-gray-400
           ${
             disabled
               ? "bg-gray-100 text-gray-500 cursor-not-allowed border-gray-100"
-              : "bg-gray-50 focus:bg-white focus:border-primary1 focus:ring-4 focus:ring-primary1/10 text-gray-800"
+              : error
+                ? "bg-gray-50 border-red-300 ring-2 ring-red-100 text-gray-800"
+                : "bg-gray-50 border-gray-200 focus:bg-white focus:border-primary1 focus:ring-4 focus:ring-primary1/10 text-gray-800"
           }`}
       />
+      {error && errorMessage && (
+        <p className="mt-1.5 font-raleway text-xs text-red-400">
+          {errorMessage}
+        </p>
+      )}
     </div>
   );
 }
