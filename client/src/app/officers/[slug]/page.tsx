@@ -10,6 +10,7 @@ import OfficerCard from "../components/officer-card";
 import BackButton from "../../components/back-button";
 
 import { departments } from "../utils/officers";
+import { formatOfficerName, toTitleCase } from "../utils/format-name";
 import officerService from "../../services/officer";
 import officerTermService from "../../services/officerTerm";
 
@@ -75,13 +76,13 @@ const OfficersPage = () => {
           return {
             position,
             role,
-            name: `${o.lastName}, ${o.firstName}`,
+            name: formatOfficerName(o.firstName, o.lastName, o.middleName),
             image: o.profilePicture || "/faculty.png",
           };
         }
         return {
           position: o.committeeTitle || o.position || "",
-          name: `${o.lastName}, ${o.firstName}`,
+          name: formatOfficerName(o.firstName, o.lastName, o.middleName),
           image: o.profilePicture || "/faculty.png",
         };
       });
@@ -97,7 +98,9 @@ const OfficersPage = () => {
       return data.map((t: any) => ({
         position: t.position,
         role: t.role || undefined,
-        name: t.name,
+        // Manually-entered archive rows are already typed as "Last, First" —
+        // just normalize the casing rather than reordering them.
+        name: toTitleCase(t.name),
         image: t.image || "/faculty.png",
       }));
     };
