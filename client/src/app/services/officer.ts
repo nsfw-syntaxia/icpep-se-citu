@@ -43,14 +43,21 @@ export interface Officer {
   profilePicture?: string;
   email?: string;
   studentNumber: string;
+  // A student can hold both a council and a committee assignment at once —
+  // these two pairs are independent of each other and of the legacy fields above.
+  councilPosition?: string;
+  councilYearLevel?: number;
+  committeeDepartment?: string;
+  committeeTitle?: string;
 }
 
 export interface UpdateOfficerData {
-  role: "council-officer" | "committee-officer" | "student";
+  assignmentType: "council" | "committee";
   position?: string;
   department?: string;
   yearLevel?: number;
   profilePicture?: string;
+  remove?: boolean;
 }
 
 const officerService = {
@@ -61,9 +68,19 @@ const officerService = {
     return response.data.data;
   },
 
-  searchNonOfficers: async (query: string) => {
+  // Public roster (no auth required) for the About/Home pages
+  getPublicOfficers: async (department?: string) => {
     const response = await api.get<{ success: boolean; data: Officer[] }>(
-      `/officers/search?query=${query}`
+      "/officers/public",
+      { params: department ? { department } : undefined }
+    );
+    return response.data.data;
+  },
+
+  searchNonOfficers: async (query: string, type: "council" | "committee") => {
+    const response = await api.get<{ success: boolean; data: Officer[] }>(
+      "/officers/search",
+      { params: { query, type } }
     );
     return response.data.data;
   },

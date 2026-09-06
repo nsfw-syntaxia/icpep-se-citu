@@ -1,7 +1,7 @@
 "use client";
 
 import { FC } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import Header from "../components/header";
 import Footer from "../components/footer";
@@ -63,11 +63,15 @@ const committeeData = [
 
 const OfficerSelectionPage: FC = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const year = searchParams.get("year");
+  const yearQuery = year ? `?year=${encodeURIComponent(year)}` : "";
 
-  const pillText = "Organizational Structure";
+  const pillText = year ? `A.Y. ${year}` : "Organizational Structure";
   const title = "Council & Committees";
-  const subtitle =
-    "Select a department to view the officers and members dedicated to serving our chapter.";
+  const subtitle = year
+    ? `Browsing the officers and members who served during A.Y. ${year}.`
+    : "Select a department to view the officers and members dedicated to serving our chapter.";
 
   return (
     <div className="min-h-screen bg-[#004e89] flex flex-col relative overflow-x-hidden">
@@ -100,7 +104,7 @@ const OfficerSelectionPage: FC = () => {
                   shadowColorClass="hover:shadow-primary3/40"
                   className="h-48 sm:h-80"
                   paddingClass="px-6 pt-12 sm:pt-8 pb-6"
-                  onClick={() => router.push("/officers/council")}
+                  onClick={() => router.push(`/officers/council${yearQuery}`)}
                 />
               </div>
 
@@ -125,7 +129,9 @@ const OfficerSelectionPage: FC = () => {
                     title={committee.title}
                     gradient={committee.gradient}
                     shadowColorClass={committee.shadow}
-                    onClick={() => router.push(`/officers/${committee.slug}`)}
+                    onClick={() =>
+                      router.push(`/officers/${committee.slug}${yearQuery}`)
+                    }
                   />
                 ))}
               </div>

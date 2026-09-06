@@ -20,6 +20,9 @@ import merchRoutes from "./routes/merch.routes";
 import faqRoutes from "./routes/faq.routes";
 import notificationRoutes from "./routes/notification.routes";
 import officerRoutes from "./routes/officer.routes";
+import advisorRoutes from "./routes/advisor.routes";
+import facultyRoutes from "./routes/faculty.routes";
+import officerTermRoutes from "./routes/officerTerm.routes";
 import startAnnouncementScheduler from "./utils/scheduler";
 
 // Global unhandled rejection handler to avoid process crash during development
@@ -247,6 +250,9 @@ app.use("/api/announcements", announcementRoutes);
 app.use("/api/events", eventRoutes);
 app.use("/api/testimonials", testimonialRoutes);
 app.use("/api/sponsors", sponsorRoutes);
+app.use("/api/advisors", advisorRoutes);
+app.use("/api/faculty", facultyRoutes);
+app.use("/api/officer-terms", officerTermRoutes);
 app.use("/api/meetings", meetingRoutes);
 app.use("/api/availability", availabilityRoutes);
 app.use("/api/merch", merchRoutes);

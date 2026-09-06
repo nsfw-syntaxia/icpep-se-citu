@@ -10,12 +10,16 @@ import FacultySection from "./sections/faculty";
 
 import { Home } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import BackButton from "../components/back-button";
 import PageHeader from "../components/page-header";
+import facultyService from "../services/faculty";
+import officerTermService from "../services/officerTerm";
+import { getCurrentAcademicYear } from "../utils/academic-year";
 
 interface OfficerTerm {
   term: string;
+  href: string;
 }
 interface FacultyMember {
   name: string;
@@ -23,50 +27,60 @@ interface FacultyMember {
   imageUrl: string;
 }
 
-const officerHistory: OfficerTerm[] = [
-  { term: "A.Y. 2024 - 2025" },
-  { term: "A.Y. 2023 - 2024" },
-  { term: "A.Y. 2022 - 2023" },
-  { term: "A.Y. 2021 - 2022" },
-  { term: "A.Y. 2020 - 2021" },
-  { term: "A.Y. 2020 - 2020" },
-];
-
-const departmentFaculty: FacultyMember[] = [
-  {
-    name: "Engr. Roel P. Lauron",
-    position: "Department Head",
-    imageUrl: "/gle.png",
-  },
-  {
-    name: "Dr. Jane Doe",
-    position: "Professor, Embedded Systems",
-    imageUrl: "/gle.png",
-  },
-  {
-    name: "Engr. John Smith",
-    position: "Assoc. Professor, Networking",
-    imageUrl: "/gle.png",
-  },
-  {
-    name: "Dr. Emily White",
-    position: "Professor, VLSI Design",
-    imageUrl: "/gle.png",
-  },
-  {
-    name: "Engr. Michael Brown",
-    position: "Instructor, IoT",
-    imageUrl: "/gle.png",
-  },
-  {
-    name: "Dr. Sarah Green",
-    position: "Professor, Signal Processing",
-    imageUrl: "/gle.png",
-  },
-];
-
 const AboutPage: FC = () => {
   const router = useRouter();
+  const [departmentFaculty, setDepartmentFaculty] = useState<FacultyMember[]>(
+    [],
+  );
+  const [officerHistory, setOfficerHistory] = useState<OfficerTerm[]>([]);
+
+  useEffect(() => {
+    const fetchFaculty = async () => {
+      try {
+        const response = await facultyService.getFaculty();
+        const data = Array.isArray(response.data) ? response.data : [];
+        setDepartmentFaculty(
+          data.map((f: any) => ({
+            name: f.name,
+            position: f.position,
+            imageUrl: f.image || "/gle.png",
+          })),
+        );
+      } catch (error) {
+        console.error("Failed to fetch faculty", error);
+      }
+    };
+    fetchFaculty();
+
+    const fetchYears = async () => {
+      try {
+        const response = await officerTermService.getYears();
+        const years: string[] = Array.isArray(response.data)
+          ? response.data
+          : [];
+        const currentYear = getCurrentAcademicYear();
+
+        const cards: OfficerTerm[] = [
+          { term: `A.Y. ${currentYear}`, href: "/officers" },
+        ];
+        years
+          .filter((y) => y !== currentYear)
+          .forEach((y) => {
+            cards.push({
+              term: `A.Y. ${y}`,
+              href: `/officers?year=${encodeURIComponent(y)}`,
+            });
+          });
+        setOfficerHistory(cards);
+      } catch (error) {
+        console.error("Failed to fetch officer term years", error);
+        setOfficerHistory([
+          { term: `A.Y. ${getCurrentAcademicYear()}`, href: "/officers" },
+        ]);
+      }
+    };
+    fetchYears();
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col overflow-x-hidden bg-[#004e89]">

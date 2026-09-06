@@ -11,9 +11,18 @@ export interface IUser extends Document {
   middleName?: string;
   password: string;
   role: 'student' | 'council-officer' | 'committee-officer' | 'faculty' | 'admin';
+  // Legacy single-slot fields, kept for backward compatibility with any code
+  // still reading them directly. New code should use the council/committee
+  // fields below, which let a student hold both roles at once.
   position?: string;
   department?: string;
   yearLevel?: number;
+  // Executive Council assignment (independent of committee assignment)
+  councilPosition?: string;
+  councilYearLevel?: number;
+  // Committee assignment (independent of council assignment)
+  committeeDepartment?: string;
+  committeeTitle?: string;
   membershipStatus: {
     isMember: boolean;
     membershipType: "local" | "regional" | "both" | null;
@@ -91,6 +100,23 @@ const userSchema = new Schema<IUser>(
       type: Number,
       min: 1,
       max: 5,
+    },
+    councilPosition: {
+      type: String,
+      default: null,
+    },
+    councilYearLevel: {
+      type: Number,
+      min: 1,
+      max: 5,
+    },
+    committeeDepartment: {
+      type: String,
+      default: null,
+    },
+    committeeTitle: {
+      type: String,
+      default: null,
     },
     membershipStatus: {
       isMember: { type: Boolean, default: false },

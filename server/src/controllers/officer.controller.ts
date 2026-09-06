@@ -2,12 +2,62 @@ import { Request, Response } from "express";
 import User from "../models/user";
 import { uploadToCloudinary } from "../utils/cloudinary";
 
+// Matches users who currently hold *any* officer assignment — either the new
+// independent council/committee fields, or (for records created before those
+// fields existed) the legacy single-slot `role`.
+const ANY_OFFICER_QUERY = {
+  $or: [
+    { councilPosition: { $nin: [null, ""] } },
+    { committeeTitle: { $nin: [null, ""] } },
+    { role: { $in: ["council-officer", "committee-officer"] } },
+  ],
+};
+
 export const getOfficers = async (req: Request, res: Response) => {
   try {
-    const officers = await User.find({
-      role: { $in: ["council-officer", "committee-officer"] },
-    }).select(
-      "firstName lastName middleName role position department profilePicture email studentNumber yearLevel"
+    const officers = await User.find(ANY_OFFICER_QUERY).select(
+      "firstName lastName middleName role position department profilePicture email studentNumber yearLevel councilPosition councilYearLevel committeeDepartment committeeTitle"
+    );
+
+    res.status(200).json({ success: true, data: officers });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// Public, read-only roster for the About/Home pages (no sensitive fields)
+export const getPublicOfficers = async (req: Request, res: Response) => {
+  try {
+    const { department } = req.query;
+
+    // "executive" -> has a council position, "committee" -> has a committee
+    // title, a specific committee name -> members of that committee.
+    // Falls back to the legacy `role`/`department` fields for records
+    // predating the councilPosition/committeeDepartment columns.
+    let query: Record<string, unknown> = ANY_OFFICER_QUERY;
+    if (department === "executive") {
+      query = {
+        $or: [
+          { councilPosition: { $nin: [null, ""] } },
+          { role: "council-officer" },
+        ],
+      };
+    } else if (department === "committee") {
+      query = {
+        $or: [
+          { committeeTitle: { $nin: [null, ""] } },
+          { role: "committee-officer" },
+        ],
+      };
+    } else if (department) {
+      // A specific committee name (e.g. "Committee on Internal Affairs")
+      query = {
+        $or: [{ committeeDepartment: department }, { department }],
+      };
+    }
+
+    const officers = await User.find(query).select(
+      "firstName lastName middleName position department profilePicture role councilPosition councilYearLevel committeeDepartment committeeTitle"
     );
 
     res.status(200).json({ success: true, data: officers });
@@ -19,16 +69,28 @@ export const getOfficers = async (req: Request, res: Response) => {
 export const updateOfficer = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    let { role, position, department, yearLevel, profilePicture } = req.body;
+    let {
+      assignmentType, // "council" | "committee"
+      position,
+      department,
+      yearLevel,
+      profilePicture,
+      remove,
+    } = req.body;
+
+    const user = await User.findById(id);
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
 
     // Handle Base64 Image Upload
     if (profilePicture && profilePicture.startsWith("data:image")) {
       try {
-        // Extract base64 data
         const matches = profilePicture.match(
           /^data:([A-Za-z-+\/]+);base64,(.+)$/
         );
-
         if (matches && matches.length === 3) {
           const buffer = Buffer.from(matches[2], "base64");
           const uploadResult = await uploadToCloudinary(buffer, "officers");
@@ -36,24 +98,59 @@ export const updateOfficer = async (req: Request, res: Response) => {
         }
       } catch (uploadError) {
         console.error("Image upload failed:", uploadError);
-        // Continue without updating image if upload fails, or handle error
       }
     }
 
-    const updateData: any = { role, position, department, yearLevel };
-    if (profilePicture) {
-      updateData.profilePicture = profilePicture;
+    const isRemoving = remove === true || remove === "true";
+    const updateData: any = {};
+    if (profilePicture) updateData.profilePicture = profilePicture;
+
+    if (assignmentType === "council") {
+      updateData.councilPosition = isRemoving ? null : position;
+      updateData.councilYearLevel = isRemoving ? null : yearLevel ?? null;
+      // legacy fields, kept in sync for anything still reading them directly
+      updateData.position = isRemoving ? null : position;
+      updateData.yearLevel = isRemoving ? null : yearLevel ?? null;
+    } else if (assignmentType === "committee") {
+      updateData.committeeDepartment = isRemoving ? null : department;
+      updateData.committeeTitle = isRemoving ? null : position;
+      updateData.department = isRemoving ? null : department;
+    } else {
+      // Legacy call shape (no assignmentType) — behave as before for compatibility.
+      updateData.role = req.body.role;
+      updateData.position = position;
+      updateData.department = department;
+      updateData.yearLevel = yearLevel;
     }
 
-    const user = await User.findByIdAndUpdate(id, updateData, { new: true });
+    // Recompute the single `role` enum from the resulting assignments, since
+    // council-officer and committee-officer grant identical permissions and
+    // we must not clobber one assignment's role when only touching the other.
+    if (
+      assignmentType &&
+      ["student", "council-officer", "committee-officer"].includes(user.role)
+    ) {
+      const willHaveCouncil =
+        assignmentType === "council"
+          ? !isRemoving
+          : !!user.councilPosition;
+      const willHaveCommittee =
+        assignmentType === "committee"
+          ? !isRemoving
+          : !!user.committeeTitle;
 
-    if (!user) {
-      return res
-        .status(404)
-        .json({ success: false, message: "User not found" });
+      updateData.role = willHaveCouncil
+        ? "council-officer"
+        : willHaveCommittee
+          ? "committee-officer"
+          : "student";
     }
 
-    res.status(200).json({ success: true, data: user });
+    const updated = await User.findByIdAndUpdate(id, updateData, {
+      new: true,
+    });
+
+    res.status(200).json({ success: true, data: updated });
   } catch (error: any) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -61,7 +158,7 @@ export const updateOfficer = async (req: Request, res: Response) => {
 
 export const searchNonOfficers = async (req: Request, res: Response) => {
   try {
-    const { query } = req.query;
+    const { query, type } = req.query;
 
     if (!query) {
       return res
@@ -69,16 +166,40 @@ export const searchNonOfficers = async (req: Request, res: Response) => {
         .json({ success: false, message: "Query parameter is required" });
     }
 
+    // Only exclude students who already hold *this* specific assignment type,
+    // so a council officer can still be found and assigned a committee role
+    // (and vice versa).
+    const notAlreadyAssigned =
+      type === "committee"
+        ? {
+            $or: [
+              { committeeTitle: null },
+              { committeeTitle: "" },
+              { committeeTitle: { $exists: false } },
+            ],
+          }
+        : {
+            $or: [
+              { councilPosition: null },
+              { councilPosition: "" },
+              { councilPosition: { $exists: false } },
+            ],
+          };
+
     const users = await User.find({
-      role: { $nin: ["council-officer", "committee-officer"] },
-      $or: [
-        { firstName: { $regex: query, $options: "i" } },
-        { lastName: { $regex: query, $options: "i" } },
-        { studentNumber: { $regex: query, $options: "i" } },
+      $and: [
+        notAlreadyAssigned,
+        {
+          $or: [
+            { firstName: { $regex: query, $options: "i" } },
+            { lastName: { $regex: query, $options: "i" } },
+            { studentNumber: { $regex: query, $options: "i" } },
+          ],
+        },
       ],
     })
       .select(
-        "firstName lastName middleName studentNumber profilePicture email role"
+        "firstName lastName middleName studentNumber profilePicture email role councilPosition committeeTitle"
       )
       .limit(10);
 

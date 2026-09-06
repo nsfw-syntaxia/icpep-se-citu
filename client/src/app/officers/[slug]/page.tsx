@@ -1,7 +1,7 @@
 "use client";
 
-import React from "react";
-import { useParams, useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 
 import Header from "../../components/header";
 import Footer from "../../components/footer";
@@ -10,16 +10,109 @@ import OfficerCard from "../components/officer-card";
 import BackButton from "../../components/back-button";
 
 import { departments } from "../utils/officers";
+import officerService from "../../services/officer";
+import officerTermService from "../../services/officerTerm";
+
+interface DisplayOfficer {
+  position: string;
+  role?: string;
+  name: string;
+  image: string;
+}
+
+const ordinalYear = (n: number) => {
+  const suffix = n === 1 ? "st" : n === 2 ? "nd" : n === 3 ? "rd" : "th";
+  return `${n}${suffix} Year`;
+};
+
+// Splits a live council assignment into the {position, role} pair the
+// OfficerCard expects (e.g. "SSG Representative" -> position "SSG", role
+// "Representative"), matching the convention used by the archive too.
+const splitCouncilPosition = (
+  position: string,
+  yearLevel?: number,
+): { position: string; role?: string } => {
+  if (position === "Batch Representative" && yearLevel) {
+    return { position: ordinalYear(yearLevel), role: "Batch Representative" };
+  }
+  if (position === "SSG Representative") {
+    return { position: "SSG", role: "Representative" };
+  }
+  return { position };
+};
 
 const OfficersPage = () => {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const slug =
     (Array.isArray(params?.slug) ? params.slug[0] : params?.slug) || "";
-  const data = departments[slug];
+  const year = searchParams.get("year");
+  const meta = departments[slug];
 
-  if (!data) {
+  const [officers, setOfficers] = useState<DisplayOfficer[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!meta) {
+      setLoading(false);
+      return;
+    }
+
+    const isCouncil = slug === "council";
+
+    const fetchLive = async () => {
+      const raw = await officerService.getPublicOfficers(
+        isCouncil ? "executive" : meta.title,
+      );
+      return (raw || []).map((o: any) => {
+        if (isCouncil) {
+          const { position, role } = splitCouncilPosition(
+            o.councilPosition || o.position || "",
+            o.councilYearLevel ?? o.yearLevel,
+          );
+          return {
+            position,
+            role,
+            name: `${o.lastName}, ${o.firstName}`,
+            image: o.profilePicture || "/faculty.png",
+          };
+        }
+        return {
+          position: o.committeeTitle || o.position || "",
+          name: `${o.lastName}, ${o.firstName}`,
+          image: o.profilePicture || "/faculty.png",
+        };
+      });
+    };
+
+    const fetchArchived = async () => {
+      const response = await officerTermService.getOfficerTerms({
+        year: year || undefined,
+        departmentType: isCouncil ? "executive" : "committee",
+        committeeName: isCouncil ? undefined : meta.title,
+      });
+      const data = Array.isArray(response.data) ? response.data : [];
+      return data.map((t: any) => ({
+        position: t.position,
+        role: t.role || undefined,
+        name: t.name,
+        image: t.image || "/faculty.png",
+      }));
+    };
+
+    setLoading(true);
+    (year ? fetchArchived() : fetchLive())
+      .then(setOfficers)
+      .catch((error) => {
+        console.error("Failed to fetch officers:", error);
+        setOfficers([]);
+      })
+      .finally(() => setLoading(false));
+  }, [slug, year, meta]);
+
+  if (!meta) {
     return (
       <div className="min-h-screen bg-[#004e89] flex flex-col relative overflow-x-hidden">
         <main className="relative z-10 bg-white rounded-b-[40px] md:rounded-b-[50px] overflow-hidden grow">
@@ -64,30 +157,52 @@ const OfficersPage = () => {
 
             {/* header */}
             <div className="mb-16 text-left">
-              <h1 className="font-rubik text-4xl sm:text-5xl font-bold text-primary3 leading-tight mb-4">
-                {data.title}
-              </h1>
+              <div className="flex flex-wrap items-center gap-3 mb-4">
+                <h1 className="font-rubik text-4xl sm:text-5xl font-bold text-primary3 leading-tight">
+                  {meta.title}
+                </h1>
+                {year && (
+                  <span className="inline-flex items-center rounded-full bg-primary1/10 px-3 py-1 font-raleway text-sm font-semibold text-primary1">
+                    A.Y. {year}
+                  </span>
+                )}
+              </div>
 
               <p className="font-raleway text-gray-600 text-base sm:text-lg max-w-3xl">
-                {data.description}
+                {meta.description}
               </p>
             </div>
 
             {/* officers */}
             <div className="w-full mb-24">
-              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-8 justify-items-center">
-                {data.officers.map((officer, index) => (
-                  <OfficerCard
-                    key={index}
-                    position={officer.position}
-                    role={officer.role}
-                    name={officer.name}
-                    image="/faculty.png"
-                    gradient={data.gradient}
-                    shadow={data.shadow}
-                  />
-                ))}
-              </div>
+              {loading ? (
+                <div className="py-20 flex flex-col items-center gap-3 text-gray-300">
+                  <div className="w-8 h-8 border-2 border-gray-200 border-t-primary1 rounded-full animate-spin" />
+                  <p className="text-sm font-raleway">Loading officers...</p>
+                </div>
+              ) : officers.length === 0 ? (
+                <div className="py-20 text-center">
+                  <p className="text-gray-400 font-raleway text-lg">
+                    {year
+                      ? `No archived officers found for A.Y. ${year}.`
+                      : "No officers have been assigned to this department yet."}
+                  </p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-8 justify-items-center">
+                  {officers.map((officer, index) => (
+                    <OfficerCard
+                      key={index}
+                      position={officer.position}
+                      role={officer.role}
+                      name={officer.name}
+                      image={officer.image}
+                      gradient={meta.gradient}
+                      shadow={meta.shadow}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
           </div>
           <div className="h-20 md:h-32" />

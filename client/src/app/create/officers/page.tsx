@@ -92,13 +92,21 @@ const COMMITTEE_ROLES = [
 ];
 
 type Officer = {
-  id: string;
+  id: string; // composite key: `${userId}::${assignmentType}` — a student can have both
+  userId: string;
+  assignmentType: "council" | "committee";
   name: string;
   role: string;
   position: string;
   image: string;
   departmentId: string;
   studentNumber?: string;
+};
+
+const ordinalYear = (n: number) => {
+  const suffix =
+    n === 1 ? "st" : n === 2 ? "nd" : n === 3 ? "rd" : "th";
+  return `${n}${suffix} Year`;
 };
 
 export default function OfficersPage() {
@@ -110,7 +118,10 @@ export default function OfficersPage() {
   const [isLoadingList, setIsLoadingList] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [itemToDelete, setItemToDelete] = useState<string | null>(null);
+  const [itemToDelete, setItemToDelete] = useState<{
+    userId: string;
+    assignmentType: "council" | "committee";
+  } | null>(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [successMessage, setSuccessMessage] = useState({
     title: "",
@@ -158,34 +169,51 @@ export default function OfficersPage() {
     setIsLoadingList(true);
     try {
       const data = await officerService.getOfficers();
-      const mapped: Officer[] = data.map((o) => {
-        let role = "";
-        if (o.role === "council-officer") {
-          if (o.position === "Batch Representative" && o.yearLevel) {
-            role = `${o.yearLevel}${
-              o.yearLevel === 1
-                ? "st"
-                : o.yearLevel === 2
-                  ? "nd"
-                  : o.yearLevel === 3
-                    ? "rd"
-                    : "th"
-            } Year`;
-          }
-        } else {
-          role = o.department || "";
+      const mapped: Officer[] = [];
+
+      data.forEach((o) => {
+        // A student can independently hold a council seat, a committee seat,
+        // or both at once — each becomes its own row here.
+        const hasCouncil = !!o.councilPosition || o.role === "council-officer";
+        const hasCommittee = !!o.committeeTitle || o.role === "committee-officer";
+        const name = `${o.firstName} ${o.lastName}`;
+        const image = o.profilePicture || "/faculty.png";
+
+        if (hasCouncil) {
+          const councilPos = o.councilPosition || o.position || "";
+          const councilYear = o.councilYearLevel ?? o.yearLevel;
+          const role =
+            councilPos === "Batch Representative" && councilYear
+              ? ordinalYear(councilYear)
+              : "";
+          mapped.push({
+            id: `${o._id}::council`,
+            userId: o._id,
+            assignmentType: "council",
+            name,
+            role,
+            position: councilPos,
+            image,
+            departmentId: "executive",
+            studentNumber: o.studentNumber,
+          });
         }
-        return {
-          id: o._id,
-          name: `${o.firstName} ${o.lastName}`,
-          role,
-          position: o.position || "",
-          image: o.profilePicture || "/faculty.png",
-          departmentId:
-            o.role === "council-officer" ? "executive" : "committee",
-          studentNumber: o.studentNumber,
-        };
+
+        if (hasCommittee) {
+          mapped.push({
+            id: `${o._id}::committee`,
+            userId: o._id,
+            assignmentType: "committee",
+            name,
+            role: o.committeeDepartment || o.department || "",
+            position: o.committeeTitle || (hasCouncil ? "" : o.position) || "",
+            image,
+            departmentId: "committee",
+            studentNumber: o.studentNumber,
+          });
+        }
       });
+
       setOfficers(mapped);
     } catch (err) {
       console.error("Failed to fetch officers:", err);
@@ -204,7 +232,10 @@ export default function OfficersPage() {
     if (query.length > 2) {
       setIsSearching(true);
       try {
-        const results = await officerService.searchNonOfficers(query);
+        const results = await officerService.searchNonOfficers(
+          query,
+          activeTab === "executive" ? "council" : "committee",
+        );
         setSearchResults(results);
       } catch (err) {
         console.error(err);
@@ -235,7 +266,7 @@ export default function OfficersPage() {
 
   const handleEditClick = (officer: Officer) => {
     setError(null);
-    setEditingId(officer.id);
+    setEditingId(officer.userId);
     setActiveTab(officer.departmentId);
     setFormData({
       name: officer.name,
@@ -258,29 +289,34 @@ export default function OfficersPage() {
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
-  const confirmDelete = (id: string) => {
-    setItemToDelete(id);
+  const confirmDelete = (officer: Officer) => {
+    setItemToDelete({
+      userId: officer.userId,
+      assignmentType: officer.assignmentType,
+    });
     setShowDeleteModal(true);
   };
 
   const handleDelete = async () => {
     if (!itemToDelete) return;
     try {
-      await officerService.updateOfficer(itemToDelete, {
-        role: "student",
-        position: "",
-        department: "",
-        yearLevel: undefined,
+      await officerService.updateOfficer(itemToDelete.userId, {
+        assignmentType: itemToDelete.assignmentType,
+        remove: true,
       } as any);
       fetchOfficers();
       setShowDeleteModal(false);
+      const wasEditing = editingId === itemToDelete.userId;
       setItemToDelete(null);
       setSuccessMessage({
         title: "Removed Successfully!",
-        description: "The officer has been demoted to student.",
+        description:
+          itemToDelete.assignmentType === "council"
+            ? "The council seat has been removed."
+            : "The committee seat has been removed.",
       });
       setShowSuccessModal(true);
-      if (editingId === itemToDelete) handleCancelEdit();
+      if (wasEditing) handleCancelEdit();
     } catch (err) {
       console.error("Failed to remove officer:", err);
       setError("Failed to remove officer.");
@@ -304,7 +340,7 @@ export default function OfficersPage() {
     role: string,
     currentId: string | null,
   ): boolean => {
-    const existing = officers.filter((o) => o.id !== currentId);
+    const existing = officers.filter((o) => o.userId !== currentId);
     if (dept === "executive") {
       const executiveMembers = existing.filter(
         (o) => o.departmentId === "executive",
@@ -365,8 +401,7 @@ export default function OfficersPage() {
     setIsSubmitting(true);
     try {
       const updateData: any = {
-        role:
-          activeTab === "executive" ? "council-officer" : "committee-officer",
+        assignmentType: activeTab === "executive" ? "council" : "committee",
         position: formData.position,
         department: activeTab === "committee" ? formData.role : undefined,
         yearLevel:
@@ -1013,7 +1048,7 @@ export default function OfficersPage() {
                 </div>
 
                 {/* ── MANAGE LIST ── */}
-                <div className="bg-white rounded-4xl border transition-all duration-300 shadow-md hover:shadow-primary1/40 hover:-translate-y-2 border-gray-200">
+                <div className="bg-white rounded-4xl border transition-all duration-300 shadow-md hover:shadow-primary1/40 hover:-translate-y-2 border-gray-200 overflow-hidden">
                     {/* List Header */}
                     <div className="px-6 sm:px-8 py-6 border-b border-gray-100 flex flex-wrap justify-between items-center gap-4">
                       <div>
@@ -1159,17 +1194,27 @@ export default function OfficersPage() {
 
                                   {/* Position */}
                                   <td className="px-4 py-4">
-                                    <span
-                                      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-raleway font-semibold border ${dept.bg} ${dept.color} ${dept.border}`}
-                                    >
+                                    {officer.position ? (
                                       <span
-                                        className={`w-1.5 h-1.5 rounded-full ${dept.dot}`}
-                                      />
-                                      {officer.position ===
-                                      "Batch Representative"
-                                        ? `${officer.role} Batch Rep`
-                                        : officer.position}
-                                    </span>
+                                        className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-raleway font-semibold border ${dept.bg} ${dept.color} ${dept.border}`}
+                                      >
+                                        <span
+                                          className={`w-1.5 h-1.5 rounded-full ${dept.dot}`}
+                                        />
+                                        {officer.position ===
+                                        "Batch Representative"
+                                          ? `${officer.role} Batch Rep`
+                                          : officer.position}
+                                      </span>
+                                    ) : (
+                                      <span
+                                        className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-raleway font-semibold border bg-amber-50 text-amber-700 border-amber-200"
+                                        title="This officer hasn't been assigned a position yet — click Edit to set one."
+                                      >
+                                        <AlertCircle size={11} />
+                                        No Position Set
+                                      </span>
+                                    )}
                                   </td>
 
                                   {/* Committee (conditional) */}
@@ -1193,7 +1238,7 @@ export default function OfficersPage() {
                                       </button>
                                       <button
                                         onClick={() =>
-                                          confirmDelete(officer.id)
+                                          confirmDelete(officer)
                                         }
                                         className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all duration-150 cursor-pointer"
                                         title="Remove"
@@ -1239,18 +1284,20 @@ export default function OfficersPage() {
               cannot be undone.
             </p>
             <div className="flex gap-3">
-              <button
+              <Button
+                variant="heroOutline"
                 onClick={() => setShowDeleteModal(false)}
-                className="flex-1 py-3 text-sm font-bold font-rubik text-gray-500 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors cursor-pointer"
+                className="flex-1 py-3"
               >
                 Cancel
-              </button>
-              <button
+              </Button>
+              <Button
+                variant="heroDanger"
                 onClick={handleDelete}
-                className="flex-1 py-3 text-sm font-bold font-rubik text-white bg-red-500 hover:bg-red-600 rounded-xl transition-colors active:scale-95 shadow-lg shadow-red-500/25 cursor-pointer"
+                className="flex-1 py-3"
               >
                 Remove
-              </button>
+              </Button>
             </div>
           </div>
         </div>
