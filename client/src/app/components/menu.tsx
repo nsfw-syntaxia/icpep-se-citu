@@ -288,7 +288,11 @@ const Menu: React.FC<MenuProps> = ({ userRole, onExit }) => {
               <h3 className="text-white/50 text-sm font-raleway mb-6 uppercase tracking-wider">
                 {activeItem} Options
               </h3>
-              <div className="grid grid-cols-1 gap-6">
+              <div
+                className={`grid gap-x-10 gap-y-6 ${
+                  activeChildren.length > 5 ? "grid-cols-2" : "grid-cols-1"
+                }`}
+              >
                 {activeChildren.map((child) => (
                   <Link
                     key={child.label}
