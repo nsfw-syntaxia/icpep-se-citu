@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { Shield, Award, Users, X, Edit3 } from "lucide-react";
+import { Shield, Award, Users, X, Edit3, AlertCircle } from "lucide-react";
 import { useEffect, useState, useRef } from "react";
 import { createPortal } from "react-dom";
 import Button from "../components/button";
@@ -23,7 +23,11 @@ export default function ProfilePage() {
 
   // --- Formatters ---
   const formatYearLevel = (value: string | number | undefined | null) => {
-    if (value === undefined || value === null || value === "") return "";
+    // Year level isn't set automatically anywhere — it's filled in by an
+    // admin when the account is created (optional) or by the student via
+    // Edit Profile. Surface that instead of leaving a blank line.
+    if (value === undefined || value === null || value === "")
+      return "Year level not set";
     const n = typeof value === "number" ? value : parseInt(String(value), 10);
     if (Number.isNaN(n)) return String(value);
 
@@ -91,8 +95,9 @@ export default function ProfilePage() {
   });
   // Changed ref to point to Email since names are now disabled
   const emailFieldRef = useRef<HTMLInputElement | null>(null);
+  const yearLevelFieldRef = useRef<HTMLInputElement | null>(null);
 
-  const openEdit = () => {
+  const openEdit = (focusField: "email" | "yearLevel" = "email") => {
     setEditError(null);
     setEditSuccess(null);
     setForm({
@@ -103,7 +108,10 @@ export default function ProfilePage() {
       yearLevel: user?.yearLevel ? String(user.yearLevel) : "",
     });
     setEditOpen(true);
-    setTimeout(() => emailFieldRef.current?.focus(), 0);
+    setTimeout(() => {
+      const ref = focusField === "yearLevel" ? yearLevelFieldRef : emailFieldRef;
+      ref.current?.focus();
+    }, 0);
   };
 
   const closeEdit = () => setEditOpen(false);
@@ -197,6 +205,32 @@ export default function ProfilePage() {
               subtitleClassName="max-w-3xl"
               subtitle={subtitle}
             />
+
+            {/* --- Complete Your Profile Notice --- */}
+            {!loading && user && !user.yearLevel && (
+              <div className="mb-8 flex flex-col sm:flex-row items-start sm:items-center gap-4 bg-amber-50 border border-amber-200 rounded-3xl p-5 sm:p-6">
+                <div className="p-2.5 bg-amber-100 rounded-2xl text-amber-600 shrink-0">
+                  <AlertCircle className="w-5 h-5" />
+                </div>
+                <div className="flex-1">
+                  <p className="font-rubik font-bold text-sm text-amber-900">
+                    Complete your profile
+                  </p>
+                  <p className="font-raleway text-sm text-amber-700 mt-0.5">
+                    Your year level isn&apos;t set yet, so it&apos;s showing up
+                    blank on your profile card. Add it so your info is
+                    complete.
+                  </p>
+                </div>
+                <Button
+                  variant="heroWarning"
+                  onClick={() => openEdit("yearLevel")}
+                  className="px-5 py-2.5 text-sm whitespace-nowrap w-full sm:w-auto"
+                >
+                  Complete Now
+                </Button>
+              </div>
+            )}
 
             {/* --- Hero Profile Card (RESIZED & SCALED DOWN) --- */}
             <div className="relative mb-8 rounded-4xl overflow-hidden shadow-2xl shadow-blue-900/10 group transition-all duration-500 hover:shadow-3xl hover:-translate-y-0.5">
@@ -356,7 +390,7 @@ export default function ProfilePage() {
 
                     <Button
                       variant="hero"
-                      onClick={openEdit}
+                      onClick={() => openEdit()}
                       className="px-5 py-2.5 text-sm whitespace-nowrap"
                     >
                       Edit
@@ -440,6 +474,7 @@ export default function ProfilePage() {
                             setForm({ ...form, yearLevel: val });
                           }
                         }}
+                        ref={yearLevelFieldRef}
                         type="number"
                         min={1}
                         max={5}
