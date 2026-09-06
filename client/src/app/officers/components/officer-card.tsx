@@ -25,7 +25,7 @@ const OfficerCard: FC<OfficerCardProps> = ({
   return (
     <div
       className={`
-        relative w-full aspect-[3/4] 
+        relative w-full aspect-3/4
         max-w-70
         rounded-2xl sm:rounded-3xl 
         shadow-lg 
