@@ -14,6 +14,7 @@ import {
   User,
   Bell,
   Check,
+  Trash2,
 } from "lucide-react";
 
 type UserRole =
@@ -231,6 +232,17 @@ const Header = () => {
     }
   };
 
+  const handleDeleteNotif = async (e: React.MouseEvent, n: any) => {
+    e.stopPropagation();
+    try {
+      await notificationService.delete(n.id);
+      setNotifications((prev) => prev.filter((item) => item.id !== n.id));
+      if (!n.read) setUnreadCount((prev) => Math.max(0, prev - 1));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const handleNotifClick = async (n: any) => {
     if (!n.read) {
       try {
@@ -380,7 +392,11 @@ const Header = () => {
           <div className="flex items-center gap-1.5 sm:gap-5">
             {role === "guest" && (
               <Button
-                className="sm:block border-2 border-[#00a7ee] text-[#00a7ee] hover:bg-[#dbeeff]"
+                className="sm:block border-2 border-[#00a7ee] text-[#00a7ee] hover:bg-[#dbeeff] relative overflow-hidden
+                           before:absolute before:inset-0 before:bg-linear-to-r
+                           before:from-transparent before:via-white/40 before:to-transparent
+                           before:-translate-x-full hover:before:translate-x-full
+                           before:transition-transform before:duration-700"
                 onClick={handleLogin}
               >
                 Log In
@@ -477,20 +493,28 @@ const Header = () => {
                                     {n.date}
                                   </p>
                                 </div>
-                                <div className="flex flex-col items-center justify-center">
-                                  {!n.read ? (
-                                    <div className="flex flex-col items-center gap-3">
-                                      <div className="w-2 h-2 bg-primary1 rounded-full"></div>
+                                <div className="flex flex-col items-center justify-center gap-2">
+                                  {!n.read && (
+                                    <div className="w-2 h-2 bg-primary1 rounded-full shrink-0"></div>
+                                  )}
+                                  <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all">
+                                    {!n.read && (
                                       <button
                                         onClick={(e) => handleMarkRead(e, n.id)}
-                                        className="opacity-0 group-hover:opacity-100 transition-all p-1.5 bg-white text-gray-400 hover:text-green-500 rounded-lg border border-gray-100 shadow-sm cursor-pointer"
+                                        title="Mark as read"
+                                        className="p-1.5 bg-white text-gray-400 hover:text-green-500 rounded-lg border border-gray-100 shadow-sm cursor-pointer"
                                       >
                                         <Check size={14} strokeWidth={3} />
                                       </button>
-                                    </div>
-                                  ) : (
-                                    <div className="w-5" />
-                                  )}
+                                    )}
+                                    <button
+                                      onClick={(e) => handleDeleteNotif(e, n)}
+                                      title="Delete"
+                                      className="p-1.5 bg-white text-gray-400 hover:text-red-500 rounded-lg border border-gray-100 shadow-sm cursor-pointer"
+                                    >
+                                      <Trash2 size={14} />
+                                    </button>
+                                  </div>
                                 </div>
                               </div>
                             ))}
