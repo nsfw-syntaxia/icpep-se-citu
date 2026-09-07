@@ -8,7 +8,7 @@ import {
   deleteOfficerTerm,
 } from '../controllers/officerTerm.controller';
 import { upload } from '../middleware/upload.middleware';
-import { authenticateToken } from '../middleware/auth.middleware';
+import { authenticateToken, authorizeRoles } from '../middleware/auth.middleware';
 
 const router = express.Router();
 
@@ -16,10 +16,10 @@ const router = express.Router();
 router.get('/years', getOfficerTermYears);
 router.get('/', getOfficerTerms);
 
-// Protected routes
-router.get('/admin', authenticateToken, getAllOfficerTerms);
-router.post('/', upload.single('image'), createOfficerTerm);
-router.put('/:id', upload.single('image'), updateOfficerTerm);
-router.delete('/:id', deleteOfficerTerm);
+// Protected routes (council officers and admins/developers only)
+router.get('/admin', authenticateToken, authorizeRoles('council-officer'), getAllOfficerTerms);
+router.post('/', authenticateToken, authorizeRoles('council-officer'), upload.single('image'), createOfficerTerm);
+router.put('/:id', authenticateToken, authorizeRoles('council-officer'), upload.single('image'), updateOfficerTerm);
+router.delete('/:id', authenticateToken, authorizeRoles('council-officer'), deleteOfficerTerm);
 
 export default router;

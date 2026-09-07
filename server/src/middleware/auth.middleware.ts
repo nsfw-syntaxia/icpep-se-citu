@@ -85,3 +85,24 @@ export const authorizeRole = (...roles: string[]) => {
 
 // Alias for authorizeRole
 export const authorizeRoles = authorizeRole;
+
+// Like authorizeRole, but also lets a user act on their own record
+// (req.params.id matching their own id) regardless of role — for routes
+// like PUT /users/:id that are shared between self-service profile edits
+// and an officer/admin managing someone else's account.
+export const authorizeSelfOrRoles = (...roles: string[]) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        message: 'Authentication required.',
+      });
+    }
+
+    if (req.user.id === req.params.id) {
+      return next();
+    }
+
+    return authorizeRole(...roles)(req, res, next);
+  };
+};

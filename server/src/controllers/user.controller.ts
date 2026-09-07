@@ -443,16 +443,22 @@ export const syncDeleteUsers = async (
       studentNumbers.map((sn: string) => sn.toUpperCase())
     );
 
-    const deleted: { studentNumber: string; fullName: string; id: string }[] = [];
+    const deactivated: { studentNumber: string; fullName: string; id: string }[] = [];
     const skippedAdmins: { studentNumber: string; fullName: string; id: string }[] = [];
 
-    // Find all non-admin users NOT in the uploaded list and delete them
+    // Find all non-admin users NOT in the uploaded list and deactivate them.
+    // This used to hard-delete the record, but that permanently destroyed
+    // anything referencing them (the Officers Archive's sourceUserId link,
+    // registeredBy on other accounts, etc.) every time a graduated officer
+    // dropped off a re-uploaded roster. Deactivating already fully blocks
+    // login (see auth.controller's isActive check) with none of the data
+    // loss — and syncUpsertBatch below reactivates anyone who reappears.
     const allExistingUsers = await User.find({});
 
     for (const existingUser of allExistingUsers) {
       if (!uploadedStudentNumbers.has(existingUser.studentNumber.toUpperCase())) {
         if (existingUser.role === "admin") {
-          // Never delete admins
+          // Never deactivate admins
           skippedAdmins.push({
             studentNumber: existingUser.studentNumber,
             fullName: existingUser.fullName,
@@ -461,19 +467,22 @@ export const syncDeleteUsers = async (
           continue;
         }
 
-        await User.findByIdAndDelete(existingUser._id);
-        deleted.push({
-          studentNumber: existingUser.studentNumber,
-          fullName: existingUser.fullName,
-          id: existingUser._id.toString(),
-        });
+        if (existingUser.isActive) {
+          existingUser.isActive = false;
+          await existingUser.save();
+          deactivated.push({
+            studentNumber: existingUser.studentNumber,
+            fullName: existingUser.fullName,
+            id: existingUser._id.toString(),
+          });
+        }
       }
     }
 
     res.status(200).json({
       success: true,
-      message: `Delete phase complete. ${deleted.length} deleted, ${skippedAdmins.length} admins protected.`,
-      data: { deleted, skippedAdmins },
+      message: `Delete phase complete. ${deactivated.length} deactivated, ${skippedAdmins.length} admins protected.`,
+      data: { deactivated, skippedAdmins },
     });
   } catch (error: any) {
     console.error("Sync delete error:", error);
@@ -552,6 +561,10 @@ export const syncUpsertBatch = async (
         });
 
         if (existingUser) {
+          // Being in the current roster means they're active again,
+          // regardless of whether a previous sync deactivated them.
+          existingUser.isActive = true;
+
           if (existingUser.role === "admin") {
             // Admin: update membership status and year level, clear position (role stays admin)
             existingUser.membershipStatus = membershipStatusObj;
@@ -670,6 +683,19 @@ export const updateUser = async (
     // Don't allow updating certain fields directly
     delete updates.createdAt;
     delete updates.registeredBy;
+
+    // Self-service edits (the route allows a user to update their own
+    // record) can only touch their own profile fields — role, membership,
+    // position and active status stay off-limits unless an officer/admin
+    // is editing someone else's record.
+    const isSelfEdit = req.user?.id === id;
+    const isPrivileged = req.user?.role === "council-officer" || req.user?.role === "admin";
+    if (isSelfEdit && !isPrivileged) {
+      delete updates.role;
+      delete updates.isActive;
+      delete updates.membershipStatus;
+      delete updates.position;
+    }
 
     // If updating password, it will be hashed by pre-save middleware
 

