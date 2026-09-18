@@ -16,11 +16,11 @@ interface DashboardHeaderProps {
 export const DashboardHeader: FC<DashboardHeaderProps> = ({
   userName,
   role,
-  position = "Committee Officer",
-  academicYear = "A.Y. 2025 - 2026",
-  membershipStatus = "Active",
-  membershipType = "All-Access Pass",
-  renewalDate = "July 2027",
+  position = "Officer",
+  academicYear,
+  membershipStatus = "Pending",
+  membershipType = "Non-Member",
+  renewalDate,
 }) => {
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -59,14 +59,18 @@ export const DashboardHeader: FC<DashboardHeaderProps> = ({
                 <p className="text-sm font-semibold">{position}</p>
               </div>
             </div>
-            <div className="h-8 w-px bg-white/20 hidden sm:block" />
-            <div className="flex items-center gap-2">
-              <Calendar className="h-5 w-5 text-[#45c7ff]" />
-              <div className="font-raleway">
-                <p className="text-xs text-white/60">Academic Year</p>
-                <p className="text-sm font-semibold">{academicYear}</p>
-              </div>
-            </div>
+            {academicYear && (
+              <>
+                <div className="h-8 w-px bg-white/20 hidden sm:block" />
+                <div className="flex items-center gap-2">
+                  <Calendar className="h-5 w-5 text-[#45c7ff]" />
+                  <div className="font-raleway">
+                    <p className="text-xs text-white/60">Academic Year</p>
+                    <p className="text-sm font-semibold">{academicYear}</p>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         ) : (
           <div className="flex flex-wrap items-center gap-4 bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/15">
@@ -85,14 +89,18 @@ export const DashboardHeader: FC<DashboardHeaderProps> = ({
                 <p className="text-sm font-semibold">{membershipType}</p>
               </div>
             </div>
-            <div className="h-8 w-px bg-white/20 hidden sm:block" />
-            <div className="flex items-center gap-2">
-              <Clock className="h-5 w-5 text-[#45c7ff]" />
-              <div className="font-raleway">
-                <p className="text-xs text-white/60">Renewal Date</p>
-                <p className="text-sm font-semibold">{renewalDate}</p>
-              </div>
-            </div>
+            {renewalDate && (
+              <>
+                <div className="h-8 w-px bg-white/20 hidden sm:block" />
+                <div className="flex items-center gap-2">
+                  <Clock className="h-5 w-5 text-[#45c7ff]" />
+                  <div className="font-raleway">
+                    <p className="text-xs text-white/60">Renewal Date</p>
+                    <p className="text-sm font-semibold">{renewalDate}</p>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         )}
       </div>

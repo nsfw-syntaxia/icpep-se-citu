@@ -48,6 +48,15 @@ export interface CurrentUser {
   position?: string;
   membership?: 'both' | 'local' | 'regional' | string;
   avatar?: string;
+  profilePicture?: string;
+  councilPosition?: string;
+  committeeDepartment?: string;
+  committeeTitle?: string;
+  membershipStatus?: {
+    isMember: boolean;
+    membershipType: 'local' | 'regional' | 'both' | null;
+    validUntil?: string;
+  };
 }
 
 class UserService {
@@ -87,6 +96,24 @@ class UserService {
         yearLevel: u.yearLevel,
         studentNumber: u.studentNumber,
       }));
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async getStats(): Promise<{
+    success: boolean;
+    data?: {
+      total: number;
+      active: number;
+      inactive: number;
+      members: number;
+      nonMembers: number;
+    };
+  }> {
+    try {
+      const res = await api.get('/users/stats');
+      return res.data;
     } catch (err) {
       throw err;
     }

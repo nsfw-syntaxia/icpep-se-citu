@@ -23,7 +23,7 @@ export default function DashboardIndexPage() {
       return;
     }
 
-    const officerRoles = ["council-officer", "committee-officer", "faculty"];
+    const officerRoles = ["council-officer", "committee-officer", "faculty", "admin"];
     if (officerRoles.includes(userRole)) {
       router.replace("/dashboard/officer");
     } else {

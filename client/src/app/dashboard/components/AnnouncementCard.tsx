@@ -19,9 +19,9 @@ export const AnnouncementCard: FC<AnnouncementCardProps> = ({
   return (
     <div
       onClick={onClick}
-      className="flex flex-col p-6 rounded-3xl border border-slate-100 bg-white hover:bg-white shadow-sm transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 group cursor-pointer"
+      className="flex h-full flex-col p-6 rounded-3xl border border-slate-100 bg-white hover:bg-white shadow-sm transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 group cursor-pointer"
     >
-      <div className="flex items-start gap-4">
+      <div className="flex items-start gap-4 grow">
         <div className="h-10 w-10 shrink-0 rounded-xl bg-purple-50 text-purple-600 border border-purple-100 flex items-center justify-center">
           <Megaphone className="h-5 w-5" />
         </div>
@@ -42,7 +42,7 @@ export const AnnouncementCard: FC<AnnouncementCardProps> = ({
         </div>
       </div>
 
-      <div className=" flex justify-end">
+      <div className="flex justify-end mt-4">
         <span className="inline-flex items-center gap-1 font-raleway text-xs font-semibold text-primary1 group-hover:text-primary3 transition-colors duration-300">
           View Announcement
           <ChevronRight className="h-3 w-3 transition-transform duration-300 group-hover:translate-x-0.5" />

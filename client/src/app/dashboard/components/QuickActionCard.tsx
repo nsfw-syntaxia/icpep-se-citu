@@ -9,6 +9,7 @@ interface QuickActionCardProps {
   icon: ReactNode;
   onClick?: () => void;
   accentColor?: "primary" | "steel" | "sky";
+  actionLabel?: string;
 }
 
 const accentStyles = {
@@ -38,6 +39,7 @@ export const QuickActionCard: FC<QuickActionCardProps> = ({
   icon,
   onClick,
   accentColor = "primary",
+  actionLabel = "Execute",
 }) => {
   const styles = accentStyles[accentColor];
 
@@ -59,7 +61,7 @@ export const QuickActionCard: FC<QuickActionCardProps> = ({
       <div
         className={`w-full py-1.5 px-3 rounded-lg flex items-center justify-center gap-1.5 font-raleway font-semibold text-[11px] transition-all duration-300 ${styles.button}`}
       >
-        <span>Execute</span>
+        <span>{actionLabel}</span>
         <ChevronRight className="h-3 w-3 transition-transform duration-300 group-hover:translate-x-1" />
       </div>
     </button>

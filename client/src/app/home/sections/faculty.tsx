@@ -194,7 +194,11 @@ export function FacultyOfficersSection() {
       ) : (
         <>
           {/* mobile marquee */}
-          <div className="relative z-10 w-full overflow-hidden block sm:hidden">
+          {/* py gives the hovered card's shadow room before the clip boundary
+              (overflow-x/y-hidden alone still clips vertically — per the CSS
+              overflow spec, setting overflow-y to visible while overflow-x is
+              hidden computes overflow-y as auto instead, which keeps clipping) */}
+          <div className="relative z-10 w-full overflow-hidden py-10 block sm:hidden">
             <motion.div
               className="flex w-max gap-6 px-5"
               animate={{ x: -activeMobileSlide * SLIDE_OFFSET }}
@@ -229,7 +233,7 @@ export function FacultyOfficersSection() {
           </div>
 
           {/* desktop marquee */}
-          <div className="relative z-10 w-full overflow-hidden hidden sm:block">
+          <div className="relative z-10 w-full overflow-hidden py-10 hidden sm:block">
             <motion.div
               className="flex w-max gap-6 p-5"
               animate={{ x: ["0%", "-50%"] }}
