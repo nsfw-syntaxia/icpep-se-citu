@@ -9,6 +9,7 @@ export interface CurrentUser {
   yearLevel?: string | number;
   role?: string;
   position?: string;
+  department?: string;
   membership?: 'both' | 'local' | 'regional' | string;
   avatar?: string;
   profilePicture?: string;
@@ -58,6 +59,10 @@ class UserService {
         email: u.email,
         yearLevel: u.yearLevel,
         studentNumber: u.studentNumber,
+        councilPosition: u.councilPosition,
+        committeeTitle: u.committeeTitle,
+        committeeDepartment: u.committeeDepartment,
+        department: u.department,
       }));
     } catch (err) {
       throw err;

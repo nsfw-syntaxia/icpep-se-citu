@@ -170,8 +170,7 @@ const AvailabilityPage: FunctionComponent = () => {
             const payload = JSON.parse(atob(token.split(".")[1]));
             if (payload.id) setCurrentUserId(payload.id);
             else if (payload._id) setCurrentUserId(payload._id);
-          } catch (e) {
-            console.error("Failed to decode token", e);
+          } catch {
           }
         }
       } catch {}
@@ -212,8 +211,7 @@ const AvailabilityPage: FunctionComponent = () => {
           setCurrentUserId(String((mine as any).user));
         }
         setCanEdit(true);
-      } catch (err) {
-        console.warn("My availability unavailable (likely guest)", err);
+      } catch {
         setMySavedSlots([]);
         setCanEdit(false);
       }
@@ -227,35 +225,32 @@ const AvailabilityPage: FunctionComponent = () => {
         const includesAll = depts.includes("All Officers");
         const includesExec = depts.includes("Executive Council");
 
-        let baseUsers: any[] = [];
+        const selectedCommittees = depts.filter(
+          (d: string) => d !== "All Officers" && d !== "Executive Council",
+        );
 
-        if (includesAll) {
-          const council = await userSvc.listUsers({
-            role: "council-officer",
-            isActive: true,
-            limit: 500,
-          });
-          const committee = await userSvc.listUsers({
-            role: "committee-officer",
-            isActive: true,
-            limit: 500,
-          });
-          const map = new Map();
-          [...council, ...committee].forEach((u) => map.set(u.id, u));
-          baseUsers = Array.from(map.values());
-        } else if (includesExec) {
-          baseUsers = await userSvc.listUsers({
-            role: "council-officer",
-            isActive: true,
-            limit: 500,
-          });
-        } else {
-          baseUsers = await userSvc.listUsers({
-            role: "committee-officer",
-            isActive: true,
-            limit: 500,
-          });
-        }
+        // A council officer can also sit on a committee (and vice versa), so
+        // load both roles and keep whoever belongs to a selected department.
+        const [council, committee] = await Promise.all([
+          userSvc.listUsers({ role: "council-officer", isActive: true, limit: 500 }),
+          userSvc.listUsers({ role: "committee-officer", isActive: true, limit: 500 }),
+        ]);
+        const officers = new Map<string, any>();
+        [...council, ...committee].forEach((u) => officers.set(u.id, u));
+
+        const baseUsers = Array.from(officers.values()).filter((u) => {
+          if (includesAll) return true;
+          const onCouncil = !!u.councilPosition || u.role === "council-officer";
+          const onCommittee =
+            !!u.committeeTitle || u.role === "committee-officer";
+          const committeeName = u.committeeDepartment || u.department;
+          return (
+            (includesExec && onCouncil) ||
+            (onCommittee &&
+              !!committeeName &&
+              selectedCommittees.includes(committeeName))
+          );
+        });
 
         const slotsByUserId = new Map<string, string[]>();
         submitted.forEach((item: any) => {
@@ -288,11 +283,7 @@ const AvailabilityPage: FunctionComponent = () => {
         });
 
         setResponders(mappedResponders);
-      } catch (e) {
-        console.warn(
-          "Failed to load responder users list, falling back to submitted only",
-          e
-        );
+      } catch {
         const mappedFallback = submitted.map((item: any, idx: number) => {
           const firstName = item.user?.firstName ?? "";
           const lastName = item.user?.lastName ?? "";
@@ -319,7 +310,7 @@ const AvailabilityPage: FunctionComponent = () => {
 
         setResponders(mappedFallback);
       }
-    })().catch(console.error);
+    })().catch(() => undefined);
   }, []);
 
   // --- Event Handlers ---
@@ -415,10 +406,9 @@ const AvailabilityPage: FunctionComponent = () => {
         });
 
         setIsEditing(false);
-      } catch (err) {
-        console.error("Failed to save availability", err);
+      } catch {
       }
-    })().catch(console.error);
+    })().catch(() => undefined);
   };
 
   const handleResponderClick = (id: string | null) => {
@@ -1048,8 +1038,7 @@ const AvailabilityPage: FunctionComponent = () => {
                       });
                       setMeetingDetails(updated);
                       setIsDetailsModalOpen(false);
-                    } catch (err) {
-                      console.error("Failed to update meeting", err);
+                    } catch {
                     }
                   }}
                 />
@@ -1068,8 +1057,7 @@ const AvailabilityPage: FunctionComponent = () => {
                     await deleteMeeting(meetingDetails._id);
                     setIsDeleteModalOpen(false);
                     router.push("/commeet");
-                  } catch (err) {
-                    console.error("Failed to delete meeting", err);
+                  } catch {
                   }
                 }}
                 meetingTitle={meetingDetails?.title || ""}
