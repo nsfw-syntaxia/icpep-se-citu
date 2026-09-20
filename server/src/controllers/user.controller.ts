@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import User, { IUser } from "../models/user";
 import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
 import { sendNotification } from "../utils/notification";
 
 // Interface for request with authenticated user
@@ -263,7 +264,6 @@ export const createUser = async (
       data: newUser,
     });
   } catch (error: any) {
-    console.error("Create user error:", error);
     res.status(500).json({
       success: false,
       message: "Error creating user",
@@ -292,6 +292,36 @@ interface UploadFailure {
 }
 
 const UPLOAD_BATCH_SIZE = 25;
+const MIN_PASSWORD_LENGTH = 6;
+
+// bcryptjs is pure JavaScript, so hashing one password per new account made big
+// uploads crawl (and block the server). Most rows share the default password,
+// so each distinct password is hashed once per upload and reused.
+const createPasswordHasher = () => {
+  const hashes = new Map<string, Promise<string>>();
+  return (plain: string) => {
+    let hash = hashes.get(plain);
+    if (!hash) {
+      hash = bcrypt.hash(plain, 10);
+      hashes.set(plain, hash);
+    }
+    return hash;
+  };
+};
+
+const createUserWithHashedPassword = async (
+  data: Record<string, unknown> & { password: string },
+  hashPassword: (plain: string) => Promise<string>,
+) => {
+  if (data.password.length < MIN_PASSWORD_LENGTH) {
+    throw new Error(
+      `Password must be at least ${MIN_PASSWORD_LENGTH} characters`,
+    );
+  }
+  const user = new User({ ...data, password: await hashPassword(data.password) });
+  user.$locals.passwordAlreadyHashed = true;
+  return user.save();
+};
 const MISSING_FIELDS_REASON =
   "Missing required fields (studentNumber, firstName, lastName)";
 
@@ -381,6 +411,7 @@ export const bulkUploadUsers = async (
       data: row,
     }));
     const outcomes: (UploadSuccess | null)[] = valid.map(() => null);
+    const hashPassword = createPasswordHasher();
 
     await inBatches(valid, async ([studentNumber, userData], index) => {
       try {
@@ -417,17 +448,20 @@ export const bulkUploadUsers = async (
           return;
         }
 
-        const newUser = await User.create({
-          studentNumber: userData.studentNumber,
-          lastName: userData.lastName,
-          firstName: userData.firstName,
-          middleName: userData.middleName || null,
-          password: userData.password || "123456",
-          role: assignableRole(userData.role, req.user?.role) || "student",
-          yearLevel: userData.yearLevel || null,
-          membershipStatus,
-          registeredBy: req.user?.id || null,
-        });
+        const newUser = await createUserWithHashedPassword(
+          {
+            studentNumber: userData.studentNumber,
+            lastName: userData.lastName,
+            firstName: userData.firstName,
+            middleName: userData.middleName || null,
+            password: userData.password || "123456",
+            role: assignableRole(userData.role, req.user?.role) || "student",
+            yearLevel: userData.yearLevel || null,
+            membershipStatus,
+            registeredBy: req.user?.id || null,
+          },
+          hashPassword,
+        );
 
         outcomes[index] = {
           studentNumber: userData.studentNumber,
@@ -553,6 +587,7 @@ export const syncUpsertBatch = async (
       data: row,
     }));
     let successful = 0;
+    const hashPassword = createPasswordHasher();
 
     await inBatches(valid, async ([studentNumber, userData]) => {
       try {
@@ -619,18 +654,21 @@ export const syncUpsertBatch = async (
             ? userData.position || null
             : null;
 
-        await User.create({
-          studentNumber: userData.studentNumber,
-          lastName: userData.lastName,
-          firstName: userData.firstName,
-          middleName: userData.middleName || null,
-          password: userData.password || "123456",
-          role,
-          yearLevel: userData.yearLevel || null,
-          position,
-          membershipStatus,
-          registeredBy: req.user?.id || null,
-        });
+        await createUserWithHashedPassword(
+          {
+            studentNumber: userData.studentNumber,
+            lastName: userData.lastName,
+            firstName: userData.firstName,
+            middleName: userData.middleName || null,
+            password: userData.password || "123456",
+            role,
+            yearLevel: userData.yearLevel || null,
+            position,
+            membershipStatus,
+            registeredBy: req.user?.id || null,
+          },
+          hashPassword,
+        );
         successful++;
       } catch (error: any) {
         failedUsers.push({

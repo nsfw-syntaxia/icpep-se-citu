@@ -180,7 +180,10 @@ userSchema.virtual("registeredByName").get(function (this: IUser) {
 
 // Pre-save middleware to hash password
 userSchema.pre("save", async function (this: IUser, next) {
-  if (!this.isModified("password")) return next();
+  // Bulk creates pre-hash their passwords (see user.controller), so skip re-hashing.
+  if (!this.isModified("password") || this.$locals.passwordAlreadyHashed) {
+    return next();
+  }
   this.password = await bcrypt.hash(this.password, 10);
   next();
 });
