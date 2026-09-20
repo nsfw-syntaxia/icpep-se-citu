@@ -6,6 +6,7 @@ import Announcement from "../models/announcement";
 import Event from "../models/event";
 import Meeting from "../models/meeting";
 import User from "../models/user";
+import { isInTargetAudience } from "../utils/notification";
 
 // Get all notifications for the current user
 export const getNotifications = async (
@@ -27,6 +28,10 @@ export const getNotifications = async (
     const pageNum = parseInt(page as string);
     const limitNum = parseInt(limit as string);
     const skip = (pageNum - 1) * limitNum;
+
+    const viewer = await User.findById(userId)
+      .select("role membershipStatus")
+      .lean();
 
     // 1. Fetch existing notifications
     const query: any = { recipient: userId };
@@ -101,7 +106,11 @@ export const getNotifications = async (
         .lean();
 
       recentAnnouncements = announcements
-        .filter((a) => !existingRelatedIds.has(a._id.toString()))
+        .filter(
+          (a) =>
+            isInTargetAudience(a.targetAudience, viewer) &&
+            !existingRelatedIds.has(a._id.toString())
+        )
         .map((a) => ({
           _id: a._id,
           recipient: userId,
@@ -128,7 +137,11 @@ export const getNotifications = async (
         .lean();
 
       upcomingEvents = events
-        .filter((e) => !existingRelatedIds.has(e._id.toString()))
+        .filter(
+          (e) =>
+            isInTargetAudience(e.targetAudience, viewer) &&
+            !existingRelatedIds.has(e._id.toString())
+        )
         .map((e) => ({
           _id: e._id,
           recipient: userId,
@@ -238,7 +251,6 @@ export const getNotifications = async (
       unreadCount,
     });
   } catch (error: any) {
-    console.error("Error fetching notifications:", error);
     res.status(500).json({
       success: false,
       message: "Error fetching notifications",
@@ -373,7 +385,6 @@ export const markAsRead = async (
       data: notification,
     });
   } catch (error: any) {
-    console.error("Error marking notification as read:", error);
     res.status(500).json({
       success: false,
       message: "Error marking notification as read",
@@ -408,7 +419,6 @@ export const markAllAsRead = async (
       message: "All notifications marked as read",
     });
   } catch (error: any) {
-    console.error("Error marking all notifications as read:", error);
     res.status(500).json({
       success: false,
       message: "Error marking all notifications as read",
@@ -546,7 +556,6 @@ export const deleteNotification = async (
       message: "Notification deleted",
     });
   } catch (error: any) {
-    console.error("Error deleting notification:", error);
     res.status(500).json({
       success: false,
       message: "Error deleting notification",
