@@ -49,24 +49,6 @@ export const authenticateToken = (
   }
 };
 
-// Like authenticateToken, but lets the request through anonymously when the
-// token is missing or invalid — for public routes that show more to logged-in users.
-export const optionalAuthenticate = (
-  req: Request,
-  _res: Response,
-  next: NextFunction
-) => {
-  const token = req.headers["authorization"]?.split(" ")[1];
-  if (token) {
-    try {
-      req.user = jwt.verify(token, JWT_SECRET) as JwtPayload;
-    } catch {
-      req.user = undefined;
-    }
-  }
-  next();
-};
-
 // Alias for authenticateToken
 export const protect = authenticateToken;
 export const authenticate = authenticateToken;

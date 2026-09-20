@@ -1,5 +1,5 @@
 import express from "express";
-import { authenticate, authorizeRoles, optionalAuthenticate } from "../middleware/auth.middleware";
+import { authenticate, authorizeRoles } from "../middleware/auth.middleware";
 import {
   createMeeting,
   getMeetings,
@@ -10,9 +10,9 @@ import {
 
 const router = express.Router();
 
-// Public (the meeting link is only included for people it is meant for)
-router.get("/", optionalAuthenticate, getMeetings);
-router.get("/:id", optionalAuthenticate, getMeetingById);
+// Any logged-in user can view meetings; the link is only included for the people it is meant for
+router.get("/", authenticate, getMeetings);
+router.get("/:id", authenticate, getMeetingById);
 
 // Protected (officers/faculty create & manage)
 router.post(
