@@ -15,6 +15,7 @@ import {
   Clock,
   Calendar,
   CalendarX,
+  Video,
 } from "lucide-react";
 
 // Define the Meeting Interface based on your API response
@@ -26,6 +27,7 @@ type Meeting = {
   selectedDates: string[]; // ISO strings
   startTime: string;
   endTime: string;
+  meetingLink?: string;
 };
 
 const CommeetPage: FunctionComponent = () => {
@@ -435,7 +437,7 @@ const CommeetPage: FunctionComponent = () => {
 
                         {/* Time */}
                         <div
-                          className={`flex items-center gap-2 text-xs text-gray-500 font-raleway ${
+                          className={`flex flex-wrap items-center gap-2 text-xs text-gray-500 font-raleway ${
                             viewMode === "list" ? "justify-end" : ""
                           }`}
                         >
@@ -445,6 +447,18 @@ const CommeetPage: FunctionComponent = () => {
                               {meeting.startTime} - {meeting.endTime}
                             </span>
                           </div>
+                          {meeting.meetingLink && (
+                            <a
+                              href={meeting.meetingLink}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={(e) => e.stopPropagation()}
+                              className="flex items-center gap-1 bg-primary1/10 text-primary1 hover:bg-primary1 hover:text-white px-2 py-1 rounded-md font-semibold transition-colors"
+                            >
+                              <Video className="w-3 h-3" />
+                              <span>Join</span>
+                            </a>
+                          )}
                         </div>
                       </div>
                     ))}

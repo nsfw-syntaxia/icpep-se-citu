@@ -7,6 +7,7 @@ export type Meeting = {
   startTime: string;
   endTime: string;
   timeLimit?: string;
+  meetingLink?: string;
 };
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";

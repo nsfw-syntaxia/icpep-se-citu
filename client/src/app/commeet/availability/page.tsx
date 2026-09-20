@@ -5,6 +5,11 @@ import Footer from "../../components/footer";
 import Grid from "../../components/grid";
 import BackButton from "../../components/back-button";
 import Button from "../../components/button";
+import {
+  normalizeMeetingLink,
+  isValidMeetingLink,
+  MEETING_LINK_ERROR,
+} from "../utils/meeting-link";
 import { FunctionComponent, useState, useEffect, useCallback } from "react";
 import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
@@ -47,6 +52,7 @@ type Meeting = {
   selectedDates: string[];
   startTime: string;
   endTime: string;
+  meetingLink?: string;
 };
 
 // Unified Avatar Gradient
@@ -541,6 +547,21 @@ const AvailabilityPage: FunctionComponent = () => {
                       {meetingDetails?.agenda || "..."}
                     </span>
                   </div>
+                  {meetingDetails?.meetingLink && (
+                    <div className="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-4">
+                      <span className="font-bold text-gray-800 w-28 shrink-0 font-rubik">
+                        Meeting Link
+                      </span>
+                      <a
+                        href={meetingDetails.meetingLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-medium text-primary1 underline underline-offset-2 break-all hover:text-primary3 transition-colors"
+                      >
+                        {meetingDetails.meetingLink}
+                      </a>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -1023,6 +1044,7 @@ const AvailabilityPage: FunctionComponent = () => {
                       const updated = await updateMeeting(newData._id, {
                         title: newData.title,
                         agenda: newData.agenda,
+                        meetingLink: newData.meetingLink ?? "",
                       });
                       setMeetingDetails(updated);
                       setIsDetailsModalOpen(false);
@@ -1079,9 +1101,13 @@ const MeetingDetailsModal = ({
   onSave,
 }: MeetingDetailsModalProps) => {
   const [formData, setFormData] = useState(data);
+  const [linkError, setLinkError] = useState("");
 
   useEffect(() => {
-    if (isOpen) setFormData(data);
+    if (isOpen) {
+      setFormData(data);
+      setLinkError("");
+    }
   }, [isOpen, data]);
 
   useEffect(() => {
@@ -1094,6 +1120,15 @@ const MeetingDetailsModal = ({
   }, [isOpen]);
 
   if (!isOpen) return null;
+
+  const handleSave = () => {
+    const cleanedLink = normalizeMeetingLink(formData.meetingLink ?? "");
+    if (!isValidMeetingLink(cleanedLink)) {
+      setLinkError(MEETING_LINK_ERROR);
+      return;
+    }
+    onSave({ ...formData, meetingLink: cleanedLink });
+  };
 
   return createPortal(
     <div className="fixed inset-0 z-99999 flex items-center justify-center p-4">
@@ -1166,6 +1201,34 @@ const MeetingDetailsModal = ({
               placeholder="What's this meeting about?"
             />
           </div>
+
+          <div>
+            <label className="block text-sm font-bold font-raleway text-gray-700 mb-2 ml-1">
+              Meeting Link{" "}
+              <span className="text-gray-400 font-medium">(optional)</span>
+            </label>
+            <input
+              type="text"
+              inputMode="url"
+              autoComplete="off"
+              value={formData.meetingLink ?? ""}
+              onChange={(e) => {
+                setFormData({ ...formData, meetingLink: e.target.value });
+                if (linkError) setLinkError("");
+              }}
+              className={`w-full font-rubik bg-slate-50 border rounded-xl px-4 py-3.5 outline-none focus:bg-white focus:ring-4 transition-all text-gray-800 placeholder-gray-400 shadow-sm focus:shadow-md ${
+                linkError
+                  ? "border-red-300 ring-2 ring-red-100 focus:border-red-300 focus:ring-red-100"
+                  : "border-gray-200 focus:border-sky-500 focus:ring-sky-500/10"
+              }`}
+              placeholder="https://meet.google.com/abc-defg-hij"
+            />
+            {linkError && (
+              <p className="text-red-500 text-xs mt-1.5 ml-2 font-raleway">
+                {linkError}
+              </p>
+            )}
+          </div>
         </div>
 
         <div className="flex justify-end gap-3 pt-6 mt-2 border-t border-gray-100">
@@ -1174,7 +1237,7 @@ const MeetingDetailsModal = ({
           </Button>
           <Button
             variant="confirm"
-            onClick={() => onSave(formData)}
+            onClick={handleSave}
             className="flex items-center gap-2 px-6 py-2.5"
           >
             Save Changes

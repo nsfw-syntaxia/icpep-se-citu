@@ -25,6 +25,7 @@ type Meeting = {
   selectedDates: string[];
   startTime: string;
   endTime: string;
+  meetingLink?: string;
 };
 
 const CommeetPage: FunctionComponent = () => {
@@ -277,6 +278,21 @@ const CommeetPage: FunctionComponent = () => {
                     </span>
                     <span className="leading-relaxed">{meeting?.agenda}</span>
                   </div>
+                  {meeting?.meetingLink && (
+                    <div className="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-0">
+                      <span className="font-bold text-gray-800 w-32 shrink-0 font-rubik">
+                        Meeting Link:
+                      </span>
+                      <a
+                        href={meeting.meetingLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-medium text-primary1 underline underline-offset-2 break-all hover:text-primary3 transition-colors"
+                      >
+                        {meeting.meetingLink}
+                      </a>
+                    </div>
+                  )}
                 </div>
               </div>
 

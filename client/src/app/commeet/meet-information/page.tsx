@@ -6,6 +6,11 @@ import Grid from "../../components/grid";
 import BackButton from "../../components/back-button";
 import PageHeader from "../../components/page-header";
 import Button from "../../components/button";
+import {
+  normalizeMeetingLink,
+  isValidMeetingLink,
+  MEETING_LINK_ERROR,
+} from "../utils/meeting-link";
 import { FunctionComponent, useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ChevronRight, Check, X, ChevronDown } from "lucide-react";
@@ -37,6 +42,7 @@ const MeetInfoPage: FunctionComponent = () => {
   // Form State
   const [title, setTitle] = useState("");
   const [agenda, setAgenda] = useState("");
+  const [meetingLink, setMeetingLink] = useState("");
 
   // Custom Time State
   const [startHour, setStartHour] = useState("08");
@@ -73,6 +79,9 @@ const MeetInfoPage: FunctionComponent = () => {
     const newErrors: Record<string, string> = {};
     if (!title) newErrors.title = "Meeting title is required";
     if (!agenda) newErrors.agenda = "Agenda is required";
+    const cleanedLink = normalizeMeetingLink(meetingLink);
+    if (!isValidMeetingLink(cleanedLink))
+      newErrors.meetingLink = MEETING_LINK_ERROR;
     if (selectedDepts.length === 0)
       newErrors.department = "Select at least one department";
 
@@ -99,6 +108,7 @@ const MeetInfoPage: FunctionComponent = () => {
         endTime: formattedEndTime,
         timeLimit: formattedLimit,
         departments: selectedDepts,
+        meetingLink: cleanedLink,
         // selectedDates should come from the previous step (commeet/page)
         // For now, read from query if present, else default to today's date
       } as any;
@@ -130,6 +140,7 @@ const MeetInfoPage: FunctionComponent = () => {
     selectedDepts,
     limitValue,
     limitUnit,
+    meetingLink,
     router,
   ]);
 
@@ -144,7 +155,11 @@ const MeetInfoPage: FunctionComponent = () => {
   const errorStyle = "border-red-300 ring-2 ring-red-100";
 
   const dropdownContainerStyle =
-    "absolute z-30 w-full min-w-20 mt-2 bg-white border border-gray-100 rounded-2xl shadow-xl overflow-x-hidden flex flex-col gap-1 p-2 max-h-56 overflow-y-auto themed-scrollbar";
+    "absolute z-30 w-full min-w-20 mt-2 bg-white border border-gray-100 rounded-2xl shadow-xl overflow-hidden";
+  // Scrolling lives on an inner wrapper so the scrollbar stays inside the
+  // rounded corners instead of poking past them.
+  const dropdownScrollStyle =
+    "flex flex-col gap-1 p-2 max-h-56 overflow-y-auto overflow-x-hidden themed-scrollbar";
   const dropdownItemStyle =
     "flex items-center justify-between px-3 py-2 rounded-xl cursor-pointer transition-colors font-rubik text-sm font-medium";
   const dropdownItemSelectedStyle = "bg-primary1/5 text-primary1";
@@ -250,6 +265,7 @@ const MeetInfoPage: FunctionComponent = () => {
               className={`${dropdownContainerStyle} left-1/2 -translate-x-1/2 text-center`}
               onMouseDown={(e) => e.preventDefault()}
             >
+              <div className={dropdownScrollStyle}>
               {options.map((opt) => (
                 <div
                   key={opt}
@@ -267,6 +283,7 @@ const MeetInfoPage: FunctionComponent = () => {
                   <span>{opt}</span>
                 </div>
               ))}
+              </div>
             </div>
           </>
         )}
@@ -356,6 +373,39 @@ const MeetInfoPage: FunctionComponent = () => {
                     {errors.agenda && (
                       <p className="text-red-500 text-xs mt-1 ml-2 font-raleway">
                         {errors.agenda}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Meeting Link */}
+                  <div className="w-full">
+                    <label className={labelStyle}>
+                      Meeting Link{" "}
+                      <span className="text-gray-400 font-medium">
+                        (optional)
+                      </span>
+                    </label>
+                    <input
+                      type="text"
+                      inputMode="url"
+                      autoComplete="off"
+                      className={`${inputBaseStyle} ${
+                        errors.meetingLink ? errorStyle : ""
+                      } ${inputFocusStyle}`}
+                      placeholder="e.g. https://meet.google.com/abc-defg-hij"
+                      value={meetingLink}
+                      onChange={(e) => {
+                        setMeetingLink(e.target.value);
+                        if (errors.meetingLink)
+                          setErrors({ ...errors, meetingLink: "" });
+                      }}
+                    />
+                    <p className="text-gray-400 text-xs mt-1 ml-2 font-raleway">
+                      Shared with the officers in the departments you select.
+                    </p>
+                    {errors.meetingLink && (
+                      <p className="text-red-500 text-xs mt-1 ml-2 font-raleway">
+                        {errors.meetingLink}
                       </p>
                     )}
                   </div>
@@ -501,6 +551,7 @@ const MeetInfoPage: FunctionComponent = () => {
                           onClick={() => setActiveDropdown(null)}
                         ></div>
                         <div className={dropdownContainerStyle}>
+                          <div className={dropdownScrollStyle}>
                           {departmentsList.map((dept) => (
                             <div
                               key={dept}
@@ -517,6 +568,7 @@ const MeetInfoPage: FunctionComponent = () => {
                               )}
                             </div>
                           ))}
+                          </div>
                         </div>
                       </>
                     )}
@@ -579,6 +631,7 @@ const MeetInfoPage: FunctionComponent = () => {
                               onClick={() => setActiveDropdown(null)}
                             ></div>
                             <div className={dropdownContainerStyle}>
+                              <div className={dropdownScrollStyle}>
                               {["Minutes", "Hours"].map((unit) => (
                                 <div
                                   key={unit}
@@ -598,6 +651,7 @@ const MeetInfoPage: FunctionComponent = () => {
                                   )}
                                 </div>
                               ))}
+                              </div>
                             </div>
                           </>
                         )}
