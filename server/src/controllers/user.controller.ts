@@ -272,6 +272,88 @@ export const createUser = async (
   }
 };
 
+type UserDoc = InstanceType<typeof User>;
+
+type MembershipStatus = {
+  isMember: boolean;
+  membershipType: "local" | "regional" | "both" | null;
+};
+
+interface UploadSuccess {
+  studentNumber: string;
+  fullName: string;
+  id: string;
+}
+
+interface UploadFailure {
+  studentNumber: string;
+  reason: string;
+  data?: any;
+}
+
+const UPLOAD_BATCH_SIZE = 25;
+const MISSING_FIELDS_REASON =
+  "Missing required fields (studentNumber, firstName, lastName)";
+
+// Accepts either an object (already processed by the client) or the string
+// found in an Excel cell.
+const parseMembershipStatus = (value: unknown): MembershipStatus => {
+  if (value && typeof value === "object") {
+    const status = value as Partial<MembershipStatus>;
+    return {
+      isMember: status.isMember || false,
+      membershipType: status.membershipType || null,
+    };
+  }
+  if (typeof value === "string") {
+    const status = value.toLowerCase().trim();
+    if (status === "local" || status === "regional" || status === "both") {
+      return { isMember: true, membershipType: status };
+    }
+    if (status === "member") {
+      return { isMember: true, membershipType: null };
+    }
+  }
+  return { isMember: false, membershipType: null };
+};
+
+// Splits an upload into the rows to process (the last row wins when a
+// student number repeats) and the rows missing required fields.
+const splitUploadRows = (rows: any[]) => {
+  const valid = new Map<string, any>();
+  const invalid: any[] = [];
+  for (const row of rows) {
+    if (row.studentNumber && row.firstName && row.lastName) {
+      valid.set(String(row.studentNumber).toUpperCase(), row);
+    } else {
+      invalid.push(row);
+    }
+  }
+  return { valid: [...valid.entries()], invalid };
+};
+
+const findUsersByStudentNumber = async (studentNumbers: string[]) => {
+  const users = await User.find({ studentNumber: { $in: studentNumbers } });
+  return new Map<string, UserDoc>(
+    users.map((user) => [user.studentNumber.toUpperCase(), user]),
+  );
+};
+
+// Runs the worker over the items a batch at a time, so a large roster
+// doesn't turn into hundreds of strictly sequential database round-trips.
+const inBatches = async <T>(
+  items: T[],
+  worker: (item: T, index: number) => Promise<void>,
+) => {
+  for (let i = 0; i < items.length; i += UPLOAD_BATCH_SIZE) {
+    await Promise.all(
+      items
+        .slice(i, i + UPLOAD_BATCH_SIZE)
+        .map((item, offset) => worker(item, i + offset)),
+    );
+  }
+};
+
 // Bulk upload users
 export const bulkUploadUsers = async (
   req: AuthRequest,
@@ -288,97 +370,24 @@ export const bulkUploadUsers = async (
       return;
     }
 
-    interface SuccessResult {
-      studentNumber: string;
-      fullName: string;
-      id: string;
-    }
+    const { valid, invalid } = splitUploadRows(users);
+    const existingUsers = await findUsersByStudentNumber(
+      valid.map(([studentNumber]) => studentNumber),
+    );
 
-    interface FailedResult {
-      studentNumber: string;
-      reason: string;
-      data?: any;
-    }
+    const failed: UploadFailure[] = invalid.map((row) => ({
+      studentNumber: row.studentNumber || "UNKNOWN",
+      reason: MISSING_FIELDS_REASON,
+      data: row,
+    }));
+    const outcomes: (UploadSuccess | null)[] = valid.map(() => null);
 
-    const results: {
-      success: SuccessResult[];
-      failed: FailedResult[];
-    } = {
-      success: [],
-      failed: [],
-    };
-
-    for (const userData of users) {
+    await inBatches(valid, async ([studentNumber, userData], index) => {
       try {
-        // Validate required fields
-        if (
-          !userData.studentNumber ||
-          !userData.firstName ||
-          !userData.lastName
-        ) {
-          results.failed.push({
-            studentNumber: userData.studentNumber || "UNKNOWN",
-            reason:
-              "Missing required fields (studentNumber, firstName, lastName)",
-            data: userData,
-          });
-          continue;
-        }
-
-        // Handle membership status - supports both string and object formats
-        let membershipStatusObj: {
-          isMember: boolean;
-          membershipType: "local" | "regional" | "both" | null;
-        } = {
-          isMember: false,
-          membershipType: null,
-        };
-
-        // Check if membershipStatus is already an object (from frontend processing)
-        if (
-          userData.membershipStatus &&
-          typeof userData.membershipStatus === "object"
-        ) {
-          membershipStatusObj = {
-            isMember: userData.membershipStatus.isMember || false,
-            membershipType: userData.membershipStatus.membershipType || null,
-          };
-        }
-        // Handle string format (from Excel file)
-        else if (
-          userData.membershipStatus &&
-          typeof userData.membershipStatus === "string"
-        ) {
-          const statusLower = userData.membershipStatus.toLowerCase().trim();
-
-          if (statusLower === "local") {
-            membershipStatusObj = {
-              isMember: true,
-              membershipType: "local",
-            };
-          } else if (statusLower === "regional") {
-            membershipStatusObj = {
-              isMember: true,
-              membershipType: "regional",
-            };
-          } else if (statusLower === "both") {
-            membershipStatusObj = {
-              isMember: true,
-              membershipType: "both",
-            };
-          } else if (statusLower === "member") {
-            membershipStatusObj = {
-              isMember: true,
-              membershipType: null, // Generic member
-            };
-          }
-          // 'non-member' or any other value defaults to initial values
-        }
-
-        // Check if user exists
-        const existingUser = await User.findOne({
-          studentNumber: userData.studentNumber.toUpperCase(),
-        });
+        const membershipStatus = parseMembershipStatus(
+          userData.membershipStatus,
+        );
+        const existingUser = existingUsers.get(studentNumber);
 
         if (existingUser) {
           // Update existing user but keep password
@@ -386,28 +395,28 @@ export const bulkUploadUsers = async (
           existingUser.lastName = userData.lastName;
           if (userData.middleName !== undefined)
             existingUser.middleName = userData.middleName || null;
-          
+
           if (userData.role && existingUser.role !== "admin") {
-            existingUser.role = assignableRole(userData.role, req.user?.role) as IUser["role"];
+            existingUser.role = assignableRole(
+              userData.role,
+              req.user?.role,
+            ) as IUser["role"];
           }
 
           if (userData.yearLevel) existingUser.yearLevel = userData.yearLevel;
 
-          existingUser.membershipStatus = membershipStatusObj;
-          // Do not update password
+          existingUser.membershipStatus = membershipStatus;
 
           await existingUser.save();
 
-          results.success.push({
+          outcomes[index] = {
             studentNumber: userData.studentNumber,
             fullName: existingUser.fullName,
             id: existingUser._id.toString(),
-          });
-
-          continue;
+          };
+          return;
         }
 
-        // Create new user
         const newUser = await User.create({
           studentNumber: userData.studentNumber,
           lastName: userData.lastName,
@@ -416,36 +425,34 @@ export const bulkUploadUsers = async (
           password: userData.password || "123456",
           role: assignableRole(userData.role, req.user?.role) || "student",
           yearLevel: userData.yearLevel || null,
-          membershipStatus: membershipStatusObj,
+          membershipStatus,
           registeredBy: req.user?.id || null,
         });
 
-        results.success.push({
+        outcomes[index] = {
           studentNumber: userData.studentNumber,
           fullName: newUser.fullName,
           id: newUser._id.toString(),
-        });
+        };
       } catch (error: any) {
-        console.error(
-          `Failed to create user ${userData.studentNumber}:`,
-          error.message,
-        );
-
-        results.failed.push({
+        failed.push({
           studentNumber: userData.studentNumber || "UNKNOWN",
           reason: error.message || "Unknown error occurred",
           data: userData,
         });
       }
-    }
+    });
+
+    const success = outcomes.filter(
+      (outcome): outcome is UploadSuccess => outcome !== null,
+    );
 
     res.status(201).json({
       success: true,
-      message: `Bulk upload completed. ${results.success.length} succeeded, ${results.failed.length} failed`,
-      data: results,
+      message: `Bulk upload completed. ${success.length} succeeded, ${failed.length} failed`,
+      data: { success, failed },
     });
   } catch (error: any) {
-    console.error("Bulk upload error:", error);
     res.status(500).json({
       success: false,
       message: "Error during bulk upload",
@@ -454,7 +461,7 @@ export const bulkUploadUsers = async (
   }
 };
 
-// Sync upload users - Phase 1: Delete users not in the Excel (protect admin accounts from deletion)
+// Sync upload users - Phase 1: deactivate users not in the Excel (admin accounts are never touched)
 export const syncDeleteUsers = async (
   req: AuthRequest,
   res: Response,
@@ -470,45 +477,40 @@ export const syncDeleteUsers = async (
       return;
     }
 
-    const uploadedStudentNumbers = new Set(
-      studentNumbers.map((sn: string) => sn.toUpperCase())
+    const uploadedStudentNumbers = studentNumbers.map((sn: string) =>
+      sn.toUpperCase(),
     );
 
-    const deactivated: { studentNumber: string; fullName: string; id: string }[] = [];
-    const skippedAdmins: { studentNumber: string; fullName: string; id: string }[] = [];
+    // Deactivate (rather than hard-delete) everyone missing from the roster:
+    // deleting permanently destroyed anything referencing them (the Officers
+    // Archive's sourceUserId link, registeredBy on other accounts, etc.) every
+    // time a graduated officer dropped off a re-uploaded roster. Deactivating
+    // already blocks login (see auth.controller's isActive check) with none of
+    // the data loss — and syncUpsertBatch reactivates anyone who reappears.
+    const missingUsers = await User.find({
+      studentNumber: { $nin: uploadedStudentNumbers },
+    }).select("studentNumber firstName middleName lastName role isActive");
 
-    // Find all non-admin users NOT in the uploaded list and deactivate them.
-    // This used to hard-delete the record, but that permanently destroyed
-    // anything referencing them (the Officers Archive's sourceUserId link,
-    // registeredBy on other accounts, etc.) every time a graduated officer
-    // dropped off a re-uploaded roster. Deactivating already fully blocks
-    // login (see auth.controller's isActive check) with none of the data
-    // loss — and syncUpsertBatch below reactivates anyone who reappears.
-    const allExistingUsers = await User.find({});
+    const summarize = (user: UserDoc) => ({
+      studentNumber: user.studentNumber,
+      fullName: user.fullName,
+      id: user._id.toString(),
+    });
 
-    for (const existingUser of allExistingUsers) {
-      if (!uploadedStudentNumbers.has(existingUser.studentNumber.toUpperCase())) {
-        if (existingUser.role === "admin") {
-          // Never deactivate admins
-          skippedAdmins.push({
-            studentNumber: existingUser.studentNumber,
-            fullName: existingUser.fullName,
-            id: existingUser._id.toString(),
-          });
-          continue;
-        }
+    const skippedAdmins = missingUsers
+      .filter((user) => user.role === "admin")
+      .map(summarize);
+    const toDeactivate = missingUsers.filter(
+      (user) => user.role !== "admin" && user.isActive,
+    );
 
-        if (existingUser.isActive) {
-          existingUser.isActive = false;
-          await existingUser.save();
-          deactivated.push({
-            studentNumber: existingUser.studentNumber,
-            fullName: existingUser.fullName,
-            id: existingUser._id.toString(),
-          });
-        }
-      }
+    if (toDeactivate.length > 0) {
+      await User.updateMany(
+        { _id: { $in: toDeactivate.map((user) => user._id) } },
+        { $set: { isActive: false } },
+      );
     }
+    const deactivated = toDeactivate.map(summarize);
 
     res.status(200).json({
       success: true,
@@ -516,7 +518,6 @@ export const syncDeleteUsers = async (
       data: { deactivated, skippedAdmins },
     });
   } catch (error: any) {
-    console.error("Sync delete error:", error);
     res.status(500).json({
       success: false,
       message: "Error during sync delete",
@@ -541,55 +542,24 @@ export const syncUpsertBatch = async (
       return;
     }
 
-    const results = {
-      successful: 0,
-      failed: 0,
-      failedUsers: [] as { studentNumber: string; reason: string; data?: any }[],
-    };
+    const { valid, invalid } = splitUploadRows(users);
+    const existingUsers = await findUsersByStudentNumber(
+      valid.map(([studentNumber]) => studentNumber),
+    );
 
-    for (const userData of users) {
+    const failedUsers: UploadFailure[] = invalid.map((row) => ({
+      studentNumber: row.studentNumber || "UNKNOWN",
+      reason: MISSING_FIELDS_REASON,
+      data: row,
+    }));
+    let successful = 0;
+
+    await inBatches(valid, async ([studentNumber, userData]) => {
       try {
-        if (!userData.studentNumber || !userData.firstName || !userData.lastName) {
-          results.failed++;
-          results.failedUsers.push({
-            studentNumber: userData.studentNumber || "UNKNOWN",
-            reason: "Missing required fields (studentNumber, firstName, lastName)",
-            data: userData,
-          });
-          continue;
-        }
-
-        // Parse membership status
-        let membershipStatusObj: {
-          isMember: boolean;
-          membershipType: "local" | "regional" | "both" | null;
-        } = {
-          isMember: false,
-          membershipType: null,
-        };
-
-        if (userData.membershipStatus && typeof userData.membershipStatus === "object") {
-          membershipStatusObj = {
-            isMember: userData.membershipStatus.isMember || false,
-            membershipType: userData.membershipStatus.membershipType || null,
-          };
-        } else if (userData.membershipStatus && typeof userData.membershipStatus === "string") {
-          const statusLower = userData.membershipStatus.toLowerCase().trim();
-          if (statusLower === "local") {
-            membershipStatusObj = { isMember: true, membershipType: "local" };
-          } else if (statusLower === "regional") {
-            membershipStatusObj = { isMember: true, membershipType: "regional" };
-          } else if (statusLower === "both") {
-            membershipStatusObj = { isMember: true, membershipType: "both" };
-          } else if (statusLower === "member") {
-            membershipStatusObj = { isMember: true, membershipType: null };
-          }
-        }
-
-        // Check if user exists
-        const existingUser = await User.findOne({
-          studentNumber: userData.studentNumber.toUpperCase(),
-        });
+        const membershipStatus = parseMembershipStatus(
+          userData.membershipStatus,
+        );
+        const existingUser = existingUsers.get(studentNumber);
 
         if (existingUser) {
           // Being in the current roster means they're active again,
@@ -598,25 +568,27 @@ export const syncUpsertBatch = async (
 
           if (existingUser.role === "admin") {
             // Admin: update membership status and year level, clear position (role stays admin)
-            existingUser.membershipStatus = membershipStatusObj;
+            existingUser.membershipStatus = membershipStatus;
             existingUser.position = undefined; // Admins don't need a position
             if (userData.yearLevel) existingUser.yearLevel = userData.yearLevel;
             await existingUser.save();
-            results.successful++;
-            continue;
+            successful++;
+            return;
           }
 
           // Non-admin user: update Year Level, Position, Membership Status, Role, and name fields
           if (userData.yearLevel) existingUser.yearLevel = userData.yearLevel;
 
-          // Update membership status
-          existingUser.membershipStatus = membershipStatusObj;
+          existingUser.membershipStatus = membershipStatus;
 
-          // Update role
           if (userData.role) {
             const newRole = userData.role.toLowerCase();
-            if (["student", "council-officer", "committee-officer", "faculty"].includes(newRole)) {
-              existingUser.role = newRole as any;
+            if (
+              ["student", "council-officer", "committee-officer", "faculty"].includes(
+                newRole,
+              )
+            ) {
+              existingUser.role = newRole as IUser["role"];
             }
           }
 
@@ -625,58 +597,55 @@ export const syncUpsertBatch = async (
           if (finalRole === "council-officer" || finalRole === "committee-officer") {
             existingUser.position = userData.position || null;
           } else {
-            // Students, faculty, etc. don't need positions — clear it
             existingUser.position = undefined;
           }
 
-          // Update name fields
           if (userData.firstName) existingUser.firstName = userData.firstName;
           if (userData.lastName) existingUser.lastName = userData.lastName;
-          if (userData.middleName !== undefined) existingUser.middleName = userData.middleName || null;
+          if (userData.middleName !== undefined)
+            existingUser.middleName = userData.middleName || null;
 
           await existingUser.save();
-          results.successful++;
-        } else {
-          // Create new user
-          const role =
-            assignableRole(userData.role?.toLowerCase(), req.user?.role) || "student";
-          // Only officers get positions
-          const position = (role === "council-officer" || role === "committee-officer")
-            ? (userData.position || null)
+          successful++;
+          return;
+        }
+
+        const role =
+          assignableRole(userData.role?.toLowerCase(), req.user?.role) ||
+          "student";
+        // Only officers get positions
+        const position =
+          role === "council-officer" || role === "committee-officer"
+            ? userData.position || null
             : null;
 
-          await User.create({
-            studentNumber: userData.studentNumber,
-            lastName: userData.lastName,
-            firstName: userData.firstName,
-            middleName: userData.middleName || null,
-            password: userData.password || "123456",
-            role: role,
-            yearLevel: userData.yearLevel || null,
-            position: position,
-            membershipStatus: membershipStatusObj,
-            registeredBy: req.user?.id || null,
-          });
-
-          results.successful++;
-        }
+        await User.create({
+          studentNumber: userData.studentNumber,
+          lastName: userData.lastName,
+          firstName: userData.firstName,
+          middleName: userData.middleName || null,
+          password: userData.password || "123456",
+          role,
+          yearLevel: userData.yearLevel || null,
+          position,
+          membershipStatus,
+          registeredBy: req.user?.id || null,
+        });
+        successful++;
       } catch (error: any) {
-        console.error(`Failed to process user ${userData.studentNumber}:`, error.message);
-        results.failed++;
-        results.failedUsers.push({
+        failedUsers.push({
           studentNumber: userData.studentNumber || "UNKNOWN",
           reason: error.message || "Unknown error occurred",
           data: userData,
         });
       }
-    }
+    });
 
     res.status(200).json({
       success: true,
-      data: results,
+      data: { successful, failed: failedUsers.length, failedUsers },
     });
   } catch (error: any) {
-    console.error("Sync upsert batch error:", error);
     res.status(500).json({
       success: false,
       message: "Error during sync upsert batch",
