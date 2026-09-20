@@ -1,3 +1,5 @@
+import { getDefaultPassword } from '../config/env';
+
 export interface PasswordValidationResult {
   isValid: boolean;
   errors: string[];
@@ -32,7 +34,7 @@ export const validatePassword = (password: string): PasswordValidationResult => 
   }
 
   // Check if it's the default password (without mentioning it explicitly)
-  if (password === '123456') {
+  if (password === getDefaultPassword()) {
     errors.push('This password is too common. Please choose a stronger password');
   }
 

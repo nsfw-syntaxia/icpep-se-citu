@@ -1,10 +1,12 @@
 import { Request, Response } from "express";
+import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import User from "../models/user";
 import { validatePassword } from "../utils/password_validator";
 import { sendNotification } from "../utils/notification";
 import sendEmail from "../utils/email";
 import { DEVELOPER_STUDENT_NUMBERS } from "../config/developers";
+import { getJwtSecret } from "../config/env";
 
 export interface AuthRequest extends Request {
   user?: {
@@ -13,13 +15,9 @@ export interface AuthRequest extends Request {
   };
 }
 
-// JWT Secret
-const JWT_SECRET =
-  process.env.JWT_SECRET || "your-secret-key-change-in-production";
-
 // Generate JWT Token
 const generateToken = (userId: string, role: string): string => {
-  return jwt.sign({ id: userId, role }, JWT_SECRET, { expiresIn: "7d" });
+  return jwt.sign({ id: userId, role }, getJwtSecret(), { expiresIn: "7d" });
 };
 
 // @desc    Login user
@@ -328,7 +326,7 @@ export const logout = async (req: Request, res: Response) => {
 
 // Helper to generate 6-digit code
 const generateResetCode = () => {
-  return Math.floor(100000 + Math.random() * 900000).toString();
+  return crypto.randomInt(100000, 1000000).toString();
 };
 
 // @desc    Forgot Password

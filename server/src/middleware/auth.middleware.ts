@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
+import mongoose from 'mongoose';
+import User from '../models/user';
+import { getJwtSecret } from '../config/env';
 
 export interface JwtPayload {
   id: string;
@@ -18,33 +19,57 @@ declare global {
   }
 }
 
-// Middleware to verify JWT token
-export const authenticateToken = (
+// Verifies the JWT, then checks the account behind it: a deactivated or
+// deleted user is rejected, and the role is the current one from the database
+// rather than whatever the token was issued with.
+export const authenticateToken = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token) {
+    return res.status(401).json({
+      success: false,
+      message: 'Access denied. No token provided.',
+    });
+  }
+
+  let decoded: JwtPayload;
   try {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
-
-
-    if (!token) {
-      return res.status(401).json({
-        success: false,
-        message: 'Access denied. No token provided.',
-      });
-    }
-
-    const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
-    
-    
-    req.user = decoded;
-    next();
+    decoded = jwt.verify(token, getJwtSecret()) as JwtPayload;
   } catch {
     return res.status(403).json({
       success: false,
       message: 'Invalid or expired token.',
+    });
+  }
+
+  if (!mongoose.isValidObjectId(decoded.id)) {
+    return res.status(403).json({
+      success: false,
+      message: 'Invalid or expired token.',
+    });
+  }
+
+  try {
+    const account = await User.findById(decoded.id).select('role isActive').lean();
+
+    if (!account || !account.isActive) {
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid token: this account is no longer active.',
+      });
+    }
+
+    req.user = { ...decoded, role: account.role };
+    next();
+  } catch {
+    return res.status(500).json({
+      success: false,
+      message: 'Could not verify your session.',
     });
   }
 };

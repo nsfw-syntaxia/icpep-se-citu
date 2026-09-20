@@ -26,6 +26,10 @@ import officerTermRoutes from "./routes/officerTerm.routes";
 import membershipRoutes from "./routes/membership.routes";
 import startAnnouncementScheduler from "./utils/scheduler";
 import { escapeRegExp } from "./utils/regex";
+import { getJwtSecret } from "./config/env";
+
+// Refuse to start without a usable JWT secret
+getJwtSecret();
 
 // Initialize express app
 const app: Application = express();
@@ -36,9 +40,11 @@ const trustedProxyHops = parseInt(process.env.TRUST_PROXY ?? "", 10);
 if (trustedProxyHops > 0) app.set("trust proxy", trustedProxyHops);
 
 // Middleware must come before routes.
-// 1. Body Parser - FIRST
-app.use(express.json({ limit: "50mb" }));
-app.use(express.urlencoded({ extended: true, limit: "50mb" }));
+// 1. Body Parser - FIRST. Small by default; the bulk user import sends a whole
+// roster as JSON, so only that route gets a larger limit.
+app.use("/api/users", express.json({ limit: "10mb" }));
+app.use(express.json({ limit: "1mb" }));
+app.use(express.urlencoded({ extended: true, limit: "1mb" }));
 
 // 2. Cookie Parser
 app.use(cookieParser());
@@ -151,26 +157,13 @@ const connectDB = async (): Promise<void> => {
     console.log(`MongoDB Connected: ${conn.connection.host}`);
     console.log(`Database: ${conn.connection.name}`);
 
-    // Connection event listeners
-    mongoose.connection.on("error", (err) => {
-      console.error(`MongoDB connection error: ${err}`);
-    });
-
-    mongoose.connection.on("disconnected", () => {
-      console.log("MongoDB disconnected");
-    });
-
-    mongoose.connection.on("reconnected", () => {
-      console.log("MongoDB reconnected");
-    });
   } catch (error) {
-    console.error("MongoDB connection error:", (error as Error).message);
-    console.error("Full error:", error);
-    process.exit(1);
+    // Nothing works without the database: exit with the error left to Node to print
+    process.exitCode = 1;
+    throw error;
   }
 };
 
-// Connect to database
 connectDB();
 
 // Health check route
@@ -240,21 +233,6 @@ app.use("/api/faqs", faqRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/officers", officerRoutes);
 
-app.get("/api/debug/env", (req: Request, res: Response) => {
-  res.json({
-    nodeEnv: process.env.NODE_ENV,
-    port: process.env.PORT,
-    mongoUri: process.env.MONGODB_URI ? "Set" : "Missing",
-    jwtSecret: process.env.JWT_SECRET ? "Set" : "Missing",
-    cloudinary: {
-      cloudName: process.env.CLOUDINARY_CLOUD_NAME ? "Set" : "Missing",
-      apiKey: process.env.CLOUDINARY_API_KEY ? "Set" : "Missing",
-      apiSecret: process.env.CLOUDINARY_API_SECRET ? "Set" : "Missing",
-    },
-    clientUrl: process.env.CLIENT_URL,
-  });
-});
-
 // 404 handler - must be after all routes
 app.use((req: Request, res: Response) => {
   res.status(404).json({
@@ -318,22 +296,6 @@ process.on("SIGINT", () => {
       process.exit(0);
     });
   });
-});
-
-// An unhandled rejection leaves the app in an unknown state: shut down in
-// production, but keep running in development so one bug doesn't end the session.
-process.on("unhandledRejection", (err: unknown) => {
-  console.error("Unhandled Rejection:", err);
-  if (process.env.NODE_ENV === "production") {
-    server.close(() => process.exit(1));
-  }
-});
-
-// Handle uncaught exceptions
-process.on("uncaughtException", (err: Error) => {
-  console.error(`Uncaught Exception: ${err.message}`);
-  console.error(err.stack);
-  process.exit(1);
 });
 
 export default app;

@@ -1,5 +1,6 @@
 import mongoose, { Schema, Document, Model } from "mongoose";
 import bcrypt from "bcryptjs";
+import { getDefaultPassword } from "../config/env";
 
 // Interface for User document
 export interface IUser extends Document {
@@ -80,7 +81,7 @@ const userSchema = new Schema<IUser>(
       type: String,
       required: [true, "Password is required"],
       minlength: 6,
-      default: "123456",
+      default: () => getDefaultPassword(),
       select: false,
     },
     role: {

@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import { sendNotification } from "../utils/notification";
 import { escapeRegExp } from "../utils/regex";
+import { getDefaultPassword } from "../config/env";
 
 // Interface for request with authenticated user
 export interface AuthRequest extends Request {
@@ -164,11 +165,12 @@ export const createUser = async (
       lastName,
       firstName,
       middleName,
-      password = "123456",
+      password: submittedPassword,
       role = "student",
       yearLevel,
       membershipStatus,
     } = req.body;
+    const password = submittedPassword || getDefaultPassword();
 
     // Validation
     if (!studentNumber || !lastName || !firstName) {
@@ -455,7 +457,7 @@ export const bulkUploadUsers = async (
             lastName: userData.lastName,
             firstName: userData.firstName,
             middleName: userData.middleName || null,
-            password: userData.password || "123456",
+            password: userData.password || getDefaultPassword(),
             role: assignableRole(userData.role, req.user?.role) || "student",
             yearLevel: userData.yearLevel || null,
             membershipStatus,
@@ -661,7 +663,7 @@ export const syncUpsertBatch = async (
             lastName: userData.lastName,
             firstName: userData.firstName,
             middleName: userData.middleName || null,
-            password: userData.password || "123456",
+            password: userData.password || getDefaultPassword(),
             role,
             yearLevel: userData.yearLevel || null,
             position,
