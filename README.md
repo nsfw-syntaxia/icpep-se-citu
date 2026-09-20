@@ -7,6 +7,8 @@ This project is the **official website of the ICPEP.SE CIT-U Chapter**, develope
 ## 📑 Table of Contents
 - [Prerequisites](#-prerequisites)  
 - [Setup Instructions](#-setup-instructions)  
+- [Environment Variables](#-environment-variables)  
+- [Tests & Checks](#-tests--checks)  
 - [Updating After Pulling New Code](#-updating-after-pulling-new-code)  
 - [Verify Setup](#-verify-setup)  
 - [Development Notes](#-development-notes)  
@@ -53,6 +55,36 @@ This project is the **official website of the ICPEP.SE CIT-U Chapter**, develope
    ```bash
    docker compose down
    ```
+
+---
+
+## 🔐 Environment Variables
+
+Copy `.env.example` and fill in real values. The ones that change behavior:
+
+| Variable | Purpose |
+| -------- | ------- |
+| `JWT_SECRET` | **Required.** The server refuses to start without it (at least 16 characters, use a long random string). |
+| `DEFAULT_PASSWORD` | Password given to new accounts when none is supplied; users must change it at first login. Falls back to `123456` when unset, so set your own in production. |
+| `TRUST_PROXY` | Number of reverse proxies in front of the server (e.g. `1` on Render) so rate limits see the real client IP. Leave unset when the server is exposed directly. |
+| `SMTP_TLS_REJECT_UNAUTHORIZED` | Certificates are verified by default. Set to `false` only for a local mail catcher with a self-signed certificate. |
+| `SMTP_HOST`, `SMTP_PORT`, `SMTP_EMAIL`, `SMTP_PASSWORD`, `FROM_EMAIL`, `FROM_NAME`, `REPORT_EMAIL` | Outgoing email (reset codes, event reports). |
+
+Login, forgot-password, verify-code and reset-password are rate limited per IP and per account (in memory, reset on restart).
+
+---
+
+## 🧪 Tests & Checks
+
+```bash
+npm --prefix server test          # role, ownership, whitelist and rate-limit rules
+npm --prefix server run typecheck
+(cd client && npx tsc --noEmit)
+npm --prefix client run lint
+npm run check:mirrors             # client/server copies of shared utils must match
+```
+
+The same checks run on every push through GitHub Actions (`.github/workflows/ci.yml`).
 
 ---
 
