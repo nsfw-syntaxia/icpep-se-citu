@@ -14,6 +14,7 @@ import { ActivityCard, type ActivityType } from "../components/ActivityCard";
 import { EventCard } from "../components/EventCard";
 import { AnnouncementCard } from "../components/AnnouncementCard";
 
+import { getCurrentAcademicYear } from "../../utils/academic-year";
 import userService, { CurrentUser } from "../../services/user";
 import eventService from "../../services/event";
 import announcementService from "../../services/announcement";
@@ -94,15 +95,8 @@ const formatEventDate = (eventDate: string, time?: string) => {
   return time ? `${formatted} · ${time}` : formatted;
 };
 
-// Current academic year, computed from today's date rather than hardcoded —
-// the school year runs August through July.
-const currentAcademicYear = () => {
-  const now = new Date();
-  const year = now.getFullYear();
-  return now.getMonth() >= 7 // August (0-indexed)
-    ? `A.Y. ${year} - ${year + 1}`
-    : `A.Y. ${year - 1} - ${year}`;
-};
+const currentAcademicYear = () =>
+  `A.Y. ${getCurrentAcademicYear().replace("-", " - ")}`;
 
 const officerPosition = (user: CurrentUser | null) => {
   if (!user) return undefined;
@@ -246,8 +240,7 @@ export default function OfficerDashboardPage() {
       );
       try {
         await notificationService.markAsRead(activity.id);
-      } catch (error) {
-        console.error(error);
+      } catch {
       }
     }
     router.push(activity.link);
@@ -256,6 +249,10 @@ export default function OfficerDashboardPage() {
   if (loading) {
     return <LoadingScreen showEntrance={false} />;
   }
+
+  // /create/* and /users only admit council officers and admins, so the
+  // shortcuts to them are only useful to those roles.
+  const canManage = user?.role === "council-officer" || user?.role === "admin";
 
   const officerStats = [
     {
@@ -324,7 +321,10 @@ export default function OfficerDashboardPage() {
                 Chapter Analytics
               </h3>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                {officerStats.map((stat) => (
+                {officerStats
+                  // the member count comes from an officer/admin-only endpoint
+                  .filter((stat) => canManage || stat.id !== "members")
+                  .map((stat) => (
                   <StatCard
                     key={stat.id}
                     icon={statIconMap[stat.id]}
@@ -349,6 +349,8 @@ export default function OfficerDashboardPage() {
                 Action Shortcuts
               </h3>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+                {canManage && (
+                  <>
                 <QuickActionCard
                   title="Create Event"
                   description="Publish a new event."
@@ -381,6 +383,8 @@ export default function OfficerDashboardPage() {
                   accentColor="steel"
                   actionLabel="Add"
                 />
+                  </>
+                )}
                 <QuickActionCard
                   title="Schedule Meeting"
                   description="Set office hours."
