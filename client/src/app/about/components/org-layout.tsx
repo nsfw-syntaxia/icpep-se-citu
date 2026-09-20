@@ -19,8 +19,18 @@ const OrgLayout: FC<{ section: SectionType }> = ({ section }) => {
   ];
 
   const CubeFace = ({ src, transform }: { src: string; transform: string }) => (
-    <div className="absolute w-full h-full" style={{ transform }}>
-      <Image src={src} alt={section.title} fill className="object-cover" />
+    <div
+      className="absolute inset-0 overflow-hidden bg-primary3"
+      style={{ transform, backfaceVisibility: "hidden" }}
+    >
+      <Image
+        src={src}
+        alt={section.title}
+        fill
+        sizes="(min-width: 640px) 18rem, 10rem"
+        loading="eager"
+        className="object-cover"
+      />
     </div>
   );
 
@@ -63,7 +73,7 @@ const OrgLayout: FC<{ section: SectionType }> = ({ section }) => {
       <div className="w-full h-64 sm:h-96 flex items-center justify-center [perspective:1000px] mt-4 sm:mt-0">
         <div
           className="relative w-40 h-40 sm:w-72 sm:h-72 [transform-style:preserve-3d] 
-                     animate-spin-3d hover:[animation-play-state:paused]
+                     animate-spin-3d will-change-transform hover:[animation-play-state:paused]
                      [--cube-size:10rem] sm:[--cube-size:18rem]"
         >
           <CubeFace

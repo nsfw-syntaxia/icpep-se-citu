@@ -476,11 +476,20 @@ html {
 }
 
 @keyframes spin-3d {
-  from {
-    transform: rotateX(0deg) rotateY(0deg);
+  0% {
+    transform: rotate3d(1, 1, 0, 20deg);
   }
-  to {
-    transform: rotateX(360deg) rotateY(360deg);
+  25% {
+    transform: rotate3d(1, 1, 0, 110deg);
+  }
+  50% {
+    transform: rotate3d(1, 1, 0, 200deg);
+  }
+  75% {
+    transform: rotate3d(1, 1, 0, 290deg);
+  }
+  100% {
+    transform: rotate3d(1, 1, 0, 380deg);
   }
 }
 
