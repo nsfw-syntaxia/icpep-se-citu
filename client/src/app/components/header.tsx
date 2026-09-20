@@ -411,7 +411,7 @@ const Header = () => {
             {isLoggedIn && (
               <div className="flex items-center gap-1.5 sm:gap-2">
                 {/* notification btn */}
-                <div className="relative" ref={notifDropdownRef}>
+                <div className="sm:relative" ref={notifDropdownRef}>
                   <style>{`
                     @keyframes bell-ring {
                       0% { transform: rotate(0deg); }
@@ -449,7 +449,7 @@ const Header = () => {
                   </div>
 
                   {notifDropdownOpen && (
-                    <div className="absolute top-[125%] -right-15 sm:right-0 w-80 sm:w-100 bg-white rounded-2xl shadow-[0_15px_50px_-12px_rgba(0,0,0,0.15)] border border-gray-100 z-50 animate-in fade-in slide-in-from-top-3 duration-200 origin-top-right overflow-hidden">
+                    <div className="absolute top-full mt-2 left-3 right-3 sm:top-[125%] sm:mt-0 sm:left-auto sm:right-0 sm:w-100 bg-white rounded-2xl shadow-[0_15px_50px_-12px_rgba(0,0,0,0.15)] border border-gray-100 z-50 animate-in fade-in slide-in-from-top-3 duration-200 origin-top-right overflow-hidden">
                       <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-white">
                         <h3 className="text-[#373d47] font-bold text-sm font-rubik tracking-tight">
                           Notifications
