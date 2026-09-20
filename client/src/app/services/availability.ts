@@ -40,18 +40,3 @@ export async function getAvailability(meetingId: string) {
   if (!res.ok) throw new Error(json.message || "Failed to fetch availability");
   return json.data as Array<{ user: any; slots: string[] }>;
 }
-
-export async function getAvailabilitySummary(meetingId: string) {
-  const res = await fetch(`${API_BASE}/availability/${meetingId}/summary`, {
-    headers: { ...authHeader() },
-  });
-  const json = await res.json();
-  if (!res.ok)
-    throw new Error(json.message || "Failed to fetch availability summary");
-  return json.data as {
-    selectedDates: string[];
-    startTime: string;
-    endTime: string;
-    counts: Record<string, number>;
-  };
-}
