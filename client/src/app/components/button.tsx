@@ -2,6 +2,7 @@
 
 import React from "react";
 import clsx from "clsx";
+import { twMerge } from "tailwind-merge";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?:
@@ -46,15 +47,15 @@ const Button: React.FC<ButtonProps> = ({
     primary3: "bg-primary1 text-white font-medium text-sm sm:text-base px-8 py-2.5 rounded-2xl border border-transparent hover:bg-(--primary3) hover:text-white hover:border-primary3",
     secondary2: "bg-lavender border border-primary1 rounded-lg text-primary1 px-4 py-2 hover:bg-primary3 hover:text-white focus-visible:ring-primary1",
     // Solid CTA, matches the home hero "Join Community" button (pill by default)
-    hero: `bg-primary1 hover:bg-primary2 disabled:bg-gray-300 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:shadow-none text-white font-raleway font-semibold px-8 py-3 ${rounded === "lg" ? "rounded-2xl" : "rounded-full"} shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer`,
+    hero: `bg-primary1 hover:bg-primary2 disabled:bg-gray-300 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:shadow-none text-white font-raleway font-semibold px-5 py-2 text-sm sm:px-8 sm:py-3 sm:text-base ${rounded === "lg" ? "rounded-2xl" : "rounded-full"} shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer`,
     // Outline CTA, matches the home hero "Learn More" button (pill by default)
-    heroOutline: `bg-transparent border-2 border-gray-300 text-gray-700 hover:bg-buttonbg1 hover:border-primary1 hover:text-primary1 font-raleway font-semibold px-8 py-3 ${rounded === "lg" ? "rounded-2xl" : "rounded-full"} transition-all duration-300 cursor-pointer`,
+    heroOutline: `bg-transparent border-2 border-gray-300 text-gray-700 hover:bg-buttonbg1 hover:border-primary1 hover:text-primary1 font-raleway font-semibold px-5 py-2 text-sm sm:px-8 sm:py-3 sm:text-base ${rounded === "lg" ? "rounded-2xl" : "rounded-full"} transition-all duration-300 cursor-pointer`,
     // Same CTA pill family as "hero", but red — for a destructive action that
     // still needs to sit visually consistent next to hero/heroOutline buttons
-    heroDanger: `bg-red-500 hover:bg-red-600 disabled:bg-gray-300 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:shadow-none text-white font-raleway font-semibold px-8 py-3 ${rounded === "lg" ? "rounded-2xl" : "rounded-full"} shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer`,
+    heroDanger: `bg-red-500 hover:bg-red-600 disabled:bg-gray-300 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:shadow-none text-white font-raleway font-semibold px-5 py-2 text-sm sm:px-8 sm:py-3 sm:text-base ${rounded === "lg" ? "rounded-2xl" : "rounded-full"} shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer`,
     // Same CTA pill family as "hero", but amber — for a cautionary action
     // (e.g. deactivating an account) that isn't destructive enough for red
-    heroWarning: `bg-amber-500 hover:bg-amber-600 disabled:bg-gray-300 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:shadow-none text-white font-raleway font-semibold px-8 py-3 ${rounded === "lg" ? "rounded-2xl" : "rounded-full"} shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer`,
+    heroWarning: `bg-amber-500 hover:bg-amber-600 disabled:bg-gray-300 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:shadow-none text-white font-raleway font-semibold px-5 py-2 text-sm sm:px-8 sm:py-3 sm:text-base ${rounded === "lg" ? "rounded-2xl" : "rounded-full"} shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer`,
     // Destructive action (e.g. "Delete", "Yes, Delete")
     danger: "bg-red-500 hover:bg-red-600 text-white font-rubik font-semibold rounded-xl shadow-lg shadow-red-200 hover:-translate-y-0.5 transition-all duration-300 cursor-pointer",
     // Positive confirm/save action within compact editing UIs
@@ -71,7 +72,9 @@ const Button: React.FC<ButtonProps> = ({
 
   return (
     <button
-      className={clsx(baseStyles, variantStyles[variant], sizeStyles[size], className)}
+      className={twMerge(
+        clsx(baseStyles, sizeStyles[size], variantStyles[variant], className),
+      )}
       {...props}
     >
       {children}

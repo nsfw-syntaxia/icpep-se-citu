@@ -508,7 +508,7 @@ export default function ProfilePage() {
                           variant="heroOutline"
                           type="button"
                           onClick={closeEdit}
-                          className="px-6 py-3"
+                          className="px-4 py-2 sm:px-6 sm:py-3"
                         >
                           Cancel
                         </Button>
@@ -516,7 +516,7 @@ export default function ProfilePage() {
                           variant="hero"
                           type="submit"
                           disabled={editLoading}
-                          className="px-8 py-3"
+                          className="px-5 py-2 sm:px-8 sm:py-3"
                         >
                           {editLoading ? "Saving Changes..." : "Save Changes"}
                         </Button>
