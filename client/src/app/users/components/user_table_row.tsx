@@ -65,9 +65,9 @@ export default function UserTableRow({
       <tr
         className="hover:bg-gray-50/50 transition-colors cursor-pointer"
         onClick={() => {
-          // On phones a tap expands the card (see responsive-table-toggle);
+          // Below lg a tap expands the card (see responsive-table-toggle);
           // View is still one of the action buttons.
-          if (window.matchMedia("(max-width: 639px)").matches) return;
+          if (window.matchMedia("(max-width: 1023px)").matches) return;
           onView(user);
         }}
       >
@@ -150,7 +150,7 @@ export default function UserTableRow({
           </div>
         </td>
         <td data-label="Actions" className="px-4 py-4 whitespace-nowrap text-center">
-          <div className="flex flex-nowrap items-center justify-end gap-1 sm:grid sm:grid-cols-2 sm:justify-start">
+          <div className="flex flex-nowrap items-center justify-end gap-1 lg:grid lg:grid-cols-2 lg:justify-start">
             <button
               onClick={(e) => {
                 e.stopPropagation();

@@ -962,11 +962,11 @@ html {
   }
 }
 
-/* Manage list tables become collapsible cards on phones, so nothing scrolls
+/* Manage list tables become collapsible cards below the lg breakpoint (1024px), so nothing scrolls
    sideways or gets cut off. A row shows its primary cells (data-primary) and a
    chevron; tapping it reveals the other cells, labelled by data-label. The
    tap toggling lives in components/responsive-table-toggle.tsx. */
-@media (max-width: 639px) {
+@media (max-width: 1023px) {
   .responsive-table {
     min-width: 0;
   }

@@ -2,13 +2,13 @@
 
 import { useEffect } from "react";
 
-// On phones the manage list tables are collapsible cards (see globals.css).
+// Below the lg breakpoint the manage list tables are collapsible cards (see globals.css).
 // One listener flips a row open/closed when it is tapped, so none of the
 // pages need per-row state.
 export default function ResponsiveTableToggle() {
   useEffect(() => {
     const onClick = (event: MouseEvent) => {
-      if (!window.matchMedia("(max-width: 639px)").matches) return;
+      if (!window.matchMedia("(max-width: 1023px)").matches) return;
 
       const target = event.target as HTMLElement;
       if (target.closest("button, a, input, select, textarea, label")) return;
