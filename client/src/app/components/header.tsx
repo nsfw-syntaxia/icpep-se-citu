@@ -15,6 +15,7 @@ import {
   Bell,
   Check,
   Trash2,
+  MoreVertical,
 } from "lucide-react";
 
 type UserRole =
@@ -38,6 +39,7 @@ const Header = () => {
   const [notifPage, setNotifPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isNotifLoading, setIsNotifLoading] = useState(false);
+  const [swipedNotifId, setSwipedNotifId] = useState<string | null>(null);
 
   const router = useRouter();
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -59,8 +61,9 @@ const Header = () => {
   // escape key to close menu
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape" && open) {
-        setOpen(false);
+      if (event.key === "Escape") {
+        setSwipedNotifId(null);
+        if (open) setOpen(false);
       }
     };
     window.addEventListener("keydown", handleKeyDown);
@@ -131,6 +134,10 @@ const Header = () => {
   // close dropdowns on outside click
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
+      const insideOpenNotif = (event.target as Element).closest?.(
+        "[data-notif-open]",
+      );
+      if (!insideOpenNotif) setSwipedNotifId(null);
       if (
         dropdownRef.current &&
         !dropdownRef.current.contains(event.target as Node)
@@ -257,6 +264,7 @@ const Header = () => {
   };
 
   const toggleNotifDropdown = () => {
+    setSwipedNotifId(null);
     if (!notifDropdownOpen) {
       setNotifPage(1);
       setHasMore(true);
@@ -466,58 +474,104 @@ const Header = () => {
                       >
                         {notifications.length > 0 ? (
                           <div className="flex flex-col">
-                            {notifications.map((n) => (
-                              <div
-                                key={n.id}
-                                onClick={() => handleNotifClick(n)}
-                                className={`group relative flex gap-4 px-6 py-4 border-b border-gray-50 cursor-pointer transition-all duration-200 ${!n.read ? "bg-blue-50/30" : "hover:bg-gray-50/80"}`}
-                              >
-                                <div className="shrink-0 flex items-center">
-                                  {n.type === "announcement" ? (
-                                    <Megaphone className="w-6 h-6 text-orange-500" />
-                                  ) : n.type === "event" ? (
-                                    <Calendar className="w-6 h-6 text-blue-500" />
-                                  ) : n.type === "membership" ? (
-                                    <User className="w-6 h-6 text-green-500" />
-                                  ) : (
-                                    <Bell className="w-6 h-6 text-primary1" />
-                                  )}
-                                </div>
-                                <div className="flex-1 min-w-0 flex flex-col justify-center">
-                                  <p
-                                    className={`text-xs leading-tight font-rubik ${!n.read ? "text-[#373d47] font-bold" : "text-gray-500 font-medium"}`}
+                            {notifications.map((n) => {
+                              const isSwiped = swipedNotifId === n.id;
+                              const actionsWidth = n.read ? 72 : 144;
+
+                              return (
+                                <div
+                                  key={n.id}
+                                  data-notif-open={isSwiped ? "" : undefined}
+                                  className="relative overflow-hidden border-b border-gray-50"
+                                >
+                                  <div
+                                    className="absolute inset-y-0 right-0 flex"
+                                    style={{ width: actionsWidth }}
                                   >
-                                    {n.title}
-                                  </p>
-                                  <p className="text-[12px] text-gray-400 font-raleway mt-0.5 font-medium tracking-tight">
-                                    {n.date}
-                                  </p>
-                                </div>
-                                <div className="flex flex-col items-center justify-center gap-2">
-                                  {!n.read && (
-                                    <div className="w-2 h-2 bg-primary1 rounded-full shrink-0"></div>
-                                  )}
-                                  <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all">
                                     {!n.read && (
                                       <button
-                                        onClick={(e) => handleMarkRead(e, n.id)}
-                                        title="Mark as read"
-                                        className="p-1.5 bg-white text-gray-400 hover:text-green-500 rounded-lg border border-gray-100 shadow-sm cursor-pointer"
+                                        tabIndex={isSwiped ? 0 : -1}
+                                        onClick={(e) => {
+                                          handleMarkRead(e, n.id);
+                                          setSwipedNotifId(null);
+                                        }}
+                                        className="flex-1 flex flex-col items-center justify-center gap-1 bg-emerald-500 hover:bg-emerald-600 text-white text-[11px] font-rubik font-semibold transition-colors cursor-pointer"
                                       >
-                                        <Check size={14} strokeWidth={3} />
+                                        <Check size={16} strokeWidth={3} />
+                                        Read
                                       </button>
                                     )}
                                     <button
-                                      onClick={(e) => handleDeleteNotif(e, n)}
-                                      title="Delete"
-                                      className="p-1.5 bg-white text-gray-400 hover:text-red-500 rounded-lg border border-gray-100 shadow-sm cursor-pointer"
+                                      tabIndex={isSwiped ? 0 : -1}
+                                      onClick={(e) => {
+                                        handleDeleteNotif(e, n);
+                                        setSwipedNotifId(null);
+                                      }}
+                                      className="flex-1 flex flex-col items-center justify-center gap-1 bg-red-500 hover:bg-red-600 text-white text-[11px] font-rubik font-semibold transition-colors cursor-pointer"
                                     >
-                                      <Trash2 size={14} />
+                                      <Trash2 size={16} />
+                                      Delete
                                     </button>
                                   </div>
+
+                                  <div
+                                    onClick={() =>
+                                      isSwiped
+                                        ? setSwipedNotifId(null)
+                                        : handleNotifClick(n)
+                                    }
+                                    style={{
+                                      transform: isSwiped
+                                        ? `translateX(-${actionsWidth}px)`
+                                        : "translateX(0)",
+                                    }}
+                                    className={`relative flex gap-4 px-6 py-4 cursor-pointer transition-[transform,background-color] duration-300 ease-out ${!n.read ? "bg-[#fafcff]" : "bg-white hover:bg-gray-50"}`}
+                                  >
+                                    <div className="shrink-0 flex items-center">
+                                      {n.type === "announcement" ? (
+                                        <Megaphone className="w-6 h-6 text-orange-500" />
+                                      ) : n.type === "event" ? (
+                                        <Calendar className="w-6 h-6 text-blue-500" />
+                                      ) : n.type === "membership" ? (
+                                        <User className="w-6 h-6 text-green-500" />
+                                      ) : (
+                                        <Bell className="w-6 h-6 text-primary1" />
+                                      )}
+                                    </div>
+                                    <div className="flex-1 min-w-0 flex flex-col justify-center">
+                                      <p
+                                        className={`text-xs leading-tight font-rubik ${!n.read ? "text-[#373d47] font-bold" : "text-gray-500 font-medium"}`}
+                                      >
+                                        {n.title}
+                                      </p>
+                                      <p className="text-[12px] text-gray-400 font-raleway mt-0.5 font-medium tracking-tight">
+                                        {n.date}
+                                      </p>
+                                    </div>
+                                    <div className="flex flex-col items-center justify-center gap-2">
+                                      {!n.read && (
+                                        <div className="w-2 h-2 bg-primary1 rounded-full shrink-0"></div>
+                                      )}
+                                      <button
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          setSwipedNotifId(isSwiped ? null : n.id);
+                                        }}
+                                        title="More actions"
+                                        aria-expanded={isSwiped}
+                                        className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
+                                          isSwiped
+                                            ? "bg-gray-100 text-gray-600"
+                                            : "text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+                                        }`}
+                                      >
+                                        <MoreVertical size={16} />
+                                      </button>
+                                    </div>
+                                  </div>
                                 </div>
-                              </div>
-                            ))}
+                              );
+                            })}
                             {isNotifLoading && (
                               <div className="py-6 flex justify-center">
                                 <Loader2 className="w-5 h-5 text-primary1 animate-spin" />
