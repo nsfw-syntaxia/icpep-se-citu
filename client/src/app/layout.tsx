@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import { Rubik, Raleway } from "next/font/google";
 import { LoadingScreen } from "./components/loading";
 import ApiErrorNotice from "./components/api-error-notice";
+import ResponsiveTableToggle from "./components/responsive-table-toggle";
 import "./globals.css";
 
 const raleway = Raleway({
@@ -50,6 +51,7 @@ export default function RootLayout({
         {/* Regular content - app/loading.jsx handles route changes automatically */}
         {children}
         <ApiErrorNotice />
+        <ResponsiveTableToggle />
       </body>
     </html>
   );

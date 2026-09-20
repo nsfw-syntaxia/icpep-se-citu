@@ -35,6 +35,8 @@ import officerTermService, {
   OfficerTermData,
 } from "@/app/services/officerTerm";
 import { getCurrentAcademicYear } from "@/app/utils/academic-year";
+import { shortDepartmentName } from "@/app/utils/department";
+import { useDropdownDismiss } from "@/app/utils/use-dropdown-dismiss";
 
 // --- DATA CONFIGURATION ---
 const departments: Record<string, any> = {
@@ -108,6 +110,9 @@ type Officer = {
   image: string;
   departmentId: string;
   studentNumber?: string;
+  // The officer's other assignment, so someone with both a council seat and a
+  // committee seat shows both wherever they appear.
+  also?: string;
 };
 
 const ordinalYear = (n: number) => {
@@ -125,6 +130,7 @@ interface OfficerTermRow {
   termYear: string;
   image?: string;
   isActive: boolean;
+  sourceUserId?: string;
 }
 
 type ArchiveFormErrors = {
@@ -133,6 +139,21 @@ type ArchiveFormErrors = {
   termYear: boolean;
   committeeName: boolean;
 };
+
+const archiveKey = (term: OfficerTermRow) =>
+  `${term.termYear}::${term.sourceUserId || term.name.trim().toLowerCase()}`;
+
+const archiveAssignmentLabel = (term: OfficerTermRow) =>
+  term.departmentType === "executive"
+    ? [term.position, term.role].filter(Boolean).join(" ")
+    : `${term.position} · ${shortDepartmentName(term.committeeName)}`;
+
+// A student can be an executive officer and sit on a committee (or several) in
+// the same year, so each row also lists that person's other assignments.
+const otherAssignments = (term: OfficerTermRow, all: OfficerTermRow[]) =>
+  all
+    .filter((other) => other._id !== term._id && archiveKey(other) === archiveKey(term))
+    .map(archiveAssignmentLabel);
 
 export default function OfficersPage() {
   // --- STATE ---
@@ -158,6 +179,7 @@ export default function OfficersPage() {
 
   // Dropdown State
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  useDropdownDismiss(activeDropdown !== null, () => setActiveDropdown(null));
 
   // Search State
   const [searchResults, setSearchResults] = useState<IOfficer[]>([]);
@@ -205,6 +227,7 @@ export default function OfficersPage() {
   const [archiveIsDragging, setArchiveIsDragging] = useState(false);
   const [archiveYearFilter, setArchiveYearFilter] = useState("all");
   const [archiveIsYearFilterOpen, setArchiveIsYearFilterOpen] = useState(false);
+  useDropdownDismiss(archiveIsYearFilterOpen, () => setArchiveIsYearFilterOpen(false));
   const [archiveIsCommitteeDropdownOpen, setArchiveIsCommitteeDropdownOpen] =
     useState(false);
   const [archiveShowGlobalError, setArchiveShowGlobalError] = useState(false);
@@ -251,9 +274,23 @@ export default function OfficersPage() {
         // or both at once — each becomes its own row here.
         const hasCouncil = !!o.councilPosition || o.role === "council-officer";
         const hasCommittee =
-          !!o.committeeTitle || o.role === "committee-officer";
+          !!o.committeeTitle ||
+          !!o.committeeDepartment ||
+          o.role === "committee-officer";
         const name = `${o.firstName} ${o.lastName}`;
         const image = o.profilePicture || "/faculty.png";
+
+        const committeeSummary = [
+          o.committeeTitle,
+          shortDepartmentName(o.committeeDepartment || o.department),
+        ]
+          .filter(Boolean)
+          .join(" · ");
+        const councilYearLevel = o.councilYearLevel ?? o.yearLevel;
+        const councilSummary =
+          o.councilPosition === "Batch Representative" && councilYearLevel
+            ? `${ordinalYear(councilYearLevel)} Batch Representative`
+            : o.councilPosition || o.position || "";
 
         if (hasCouncil) {
           const councilPos = o.councilPosition || o.position || "";
@@ -272,6 +309,7 @@ export default function OfficersPage() {
             image,
             departmentId: "executive",
             studentNumber: o.studentNumber,
+            also: hasCommittee ? committeeSummary : undefined,
           });
         }
 
@@ -286,6 +324,7 @@ export default function OfficersPage() {
             image,
             departmentId: "committee",
             studentNumber: o.studentNumber,
+            also: hasCouncil ? councilSummary : undefined,
           });
         }
       });
@@ -824,7 +863,7 @@ export default function OfficersPage() {
               </p>
             </div>
 
-            <div className="flex flex-col lg:flex-row gap-8 items-start">
+            <div className="flex flex-col lg:flex-row gap-8 items-stretch lg:items-start">
               <aside className="w-full lg:w-64 shrink-0">
                 <Sidebar />
               </aside>
@@ -1170,7 +1209,7 @@ export default function OfficersPage() {
                                   Position{" "}
                                   <span className="text-red-500">*</span>
                                 </label>
-                                <div className="relative">
+                                <div data-dropdown className="relative">
                                   <div
                                     className={`w-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 cursor-pointer flex items-center justify-between text-gray-700 transition-all hover:bg-gray-100 ${
                                       activeDropdown === "position"
@@ -1202,10 +1241,6 @@ export default function OfficersPage() {
                                   </div>
                                   {activeDropdown === "position" && (
                                     <>
-                                      <div
-                                        className="fixed inset-0 z-20"
-                                        onClick={() => setActiveDropdown(null)}
-                                      />
                                       <div className={dropdownOuterStyle}>
                                         <div className={dropdownInnerStyle}>
                                           {EXECUTIVE_POSITIONS.map((pos) => (
@@ -1249,7 +1284,7 @@ export default function OfficersPage() {
                                     Year Level{" "}
                                     <span className="text-red-500">*</span>
                                   </label>
-                                  <div className="relative">
+                                  <div data-dropdown className="relative">
                                     <div
                                       className={`w-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 cursor-pointer flex items-center justify-between text-gray-700 transition-all hover:bg-gray-100 ${
                                         activeDropdown === "yearLevel"
@@ -1281,12 +1316,6 @@ export default function OfficersPage() {
                                     </div>
                                     {activeDropdown === "yearLevel" && (
                                       <>
-                                        <div
-                                          className="fixed inset-0 z-20"
-                                          onClick={() =>
-                                            setActiveDropdown(null)
-                                          }
-                                        />
                                         <div className={dropdownOuterStyle}>
                                           <div className={dropdownInnerStyle}>
                                             {YEAR_LEVELS.map((yr) => (
@@ -1328,7 +1357,7 @@ export default function OfficersPage() {
                                   Committee Name{" "}
                                   <span className="text-red-500">*</span>
                                 </label>
-                                <div className="relative">
+                                <div data-dropdown className="relative">
                                   <div
                                     className={`w-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 cursor-pointer flex items-center justify-between text-gray-700 transition-all hover:bg-gray-100 ${
                                       activeDropdown === "committee"
@@ -1360,10 +1389,6 @@ export default function OfficersPage() {
                                   </div>
                                   {activeDropdown === "committee" && (
                                     <>
-                                      <div
-                                        className="fixed inset-0 z-20"
-                                        onClick={() => setActiveDropdown(null)}
-                                      />
                                       <div className={dropdownOuterStyle}>
                                         <div className={dropdownInnerStyle}>
                                           {COMMITTEES_LIST.map((comm) => (
@@ -1401,7 +1426,7 @@ export default function OfficersPage() {
                                   Specific Title{" "}
                                   <span className="text-red-500">*</span>
                                 </label>
-                                <div className="relative">
+                                <div data-dropdown className="relative">
                                   <div
                                     className={`w-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 cursor-pointer flex items-center justify-between text-gray-700 transition-all hover:bg-gray-100 ${
                                       activeDropdown === "title"
@@ -1433,10 +1458,6 @@ export default function OfficersPage() {
                                   </div>
                                   {activeDropdown === "title" && (
                                     <>
-                                      <div
-                                        className="fixed inset-0 z-20"
-                                        onClick={() => setActiveDropdown(null)}
-                                      />
                                       <div className={dropdownOuterStyle}>
                                         <div className={dropdownInnerStyle}>
                                           {COMMITTEE_ROLES.map((role) => (
@@ -1507,7 +1528,7 @@ export default function OfficersPage() {
                               type="button"
                               variant="heroOutline"
                               onClick={handleCancelEdit}
-                              className="px-6 py-3"
+                              className="px-4 py-2 sm:px-6 sm:py-3"
                             >
                               Cancel
                             </Button>
@@ -1516,7 +1537,7 @@ export default function OfficersPage() {
                             variant="hero"
                             onClick={handleSubmit}
                             disabled={isSubmitting}
-                            className="px-8 py-3"
+                            className="px-5 py-2 sm:px-8 sm:py-3"
                           >
                             {editingId ? "Update Officer" : "Add Officer"}
                           </Button>
@@ -1606,7 +1627,7 @@ export default function OfficersPage() {
                         </div>
                       ) : (
                         <div className="overflow-x-auto themed-scrollbar">
-                          <table className="w-full text-left min-w-145">
+                          <table className="responsive-table w-full text-left min-w-145">
                             <thead>
                               <tr className="bg-gray-50/80">
                                 <th className="px-6 sm:px-8 py-3.5 text-[10px] font-semibold uppercase tracking-widest text-gray-400 font-raleway">
@@ -1642,7 +1663,7 @@ export default function OfficersPage() {
                                     }`}
                                   >
                                     {/* Photo */}
-                                    <td className="px-6 sm:px-8 py-4">
+                                    <td data-label="Photo" data-primary="media" className="px-6 sm:px-8 py-4">
                                       <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-100 border-2 border-gray-200">
                                         <img
                                           src={officer.image}
@@ -1653,7 +1674,7 @@ export default function OfficersPage() {
                                     </td>
 
                                     {/* Name */}
-                                    <td className="px-4 py-4">
+                                    <td data-label="Name" data-primary="" className="px-4 py-4">
                                       <div className="flex items-center gap-2">
                                         {isEditing && (
                                           <span className="w-1.5 h-1.5 rounded-full bg-primary1 animate-pulse shrink-0" />
@@ -1670,7 +1691,8 @@ export default function OfficersPage() {
                                     </td>
 
                                     {/* Position */}
-                                    <td className="px-4 py-4">
+                                    <td data-label="Position" className="px-4 py-4">
+                                      <div className="flex flex-col items-start gap-1.5">
                                       {officer.position ? (
                                         <span
                                           className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-raleway font-semibold border ${dept.bg} ${dept.color} ${dept.border}`}
@@ -1692,35 +1714,44 @@ export default function OfficersPage() {
                                           No Position Set
                                         </span>
                                       )}
+                                      {officer.also && (
+                                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-raleway font-semibold border bg-gray-50 text-gray-600 border-gray-200">
+                                          <span aria-hidden>+</span>
+                                          {officer.also}
+                                        </span>
+                                      )}
+                                      </div>
                                     </td>
 
                                     {/* Committee (conditional) */}
                                     {activeTab === "committee" && (
-                                      <td className="px-4 py-4">
+                                      <td data-label="Committee" className="px-4 py-4">
                                         <span className="text-xs text-gray-500 font-raleway">
-                                          {officer.role}
+                                          {shortDepartmentName(officer.role)}
                                         </span>
                                       </td>
                                     )}
 
                                     {/* Actions */}
-                                    <td className="px-6 sm:px-8 py-4 text-right">
-                                      <div className="inline-flex items-center gap-1 opacity-0 group-hover:opacity-100 sm:opacity-100 transition-opacity">
+                                    <td data-label="Actions" className="px-6 sm:px-8 py-4 text-right">
+                                      <div className="inline-flex items-center gap-1 opacity-100 transition-opacity">
                                         <button
                                           onClick={() =>
                                             handleEditClick(officer)
                                           }
-                                          className="p-2 text-gray-400 hover:text-primary1 hover:bg-primary1/10 rounded-lg transition-all duration-150 cursor-pointer"
+                                          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-raleway font-semibold whitespace-nowrap text-gray-400 hover:text-primary1 hover:bg-primary1/10 rounded-lg transition-all duration-150 cursor-pointer"
                                           title="Edit"
                                         >
                                           <Pencil size={15} />
+                                        Edit
                                         </button>
                                         <button
                                           onClick={() => confirmDelete(officer)}
-                                          className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all duration-150 cursor-pointer"
+                                          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-raleway font-semibold whitespace-nowrap text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all duration-150 cursor-pointer"
                                           title="Remove"
                                         >
                                           <Trash2 size={15} />
+                                        Remove
                                         </button>
                                       </div>
                                     </td>
@@ -2103,7 +2134,7 @@ export default function OfficersPage() {
                               type="button"
                               variant="heroOutline"
                               onClick={handleArchiveCancelEdit}
-                              className="px-6 py-3"
+                              className="px-4 py-2 sm:px-6 sm:py-3"
                             >
                               Cancel
                             </Button>
@@ -2115,7 +2146,7 @@ export default function OfficersPage() {
                               variant="heroOutline"
                               onClick={handleArchiveSaveDraft}
                               disabled={archiveIsSubmitting}
-                              className="px-6 py-3"
+                              className="px-4 py-2 sm:px-6 sm:py-3"
                             >
                               {archiveEditingId ? "Update Draft" : "Save Draft"}
                             </Button>
@@ -2126,7 +2157,7 @@ export default function OfficersPage() {
                             variant="hero"
                             onClick={handleArchivePublish}
                             disabled={archiveIsSubmitting}
-                            className="px-8 py-3"
+                            className="px-5 py-2 sm:px-8 sm:py-3"
                           >
                             {archiveEditingId && !archiveIsEditingDraft
                               ? "Update Entry"
@@ -2152,7 +2183,7 @@ export default function OfficersPage() {
                         </div>
                         <div className="flex items-center gap-2">
                           {archiveYears.length > 0 && (
-                            <div className="relative">
+                            <div data-dropdown className="relative">
                               <button
                                 type="button"
                                 onClick={() =>
@@ -2178,12 +2209,6 @@ export default function OfficersPage() {
                               </button>
                               {archiveIsYearFilterOpen && (
                                 <>
-                                  <div
-                                    className="fixed inset-0 z-20"
-                                    onClick={() =>
-                                      setArchiveIsYearFilterOpen(false)
-                                    }
-                                  />
                                   <div className="absolute z-30 top-full right-0 mt-2 w-44 bg-white border border-gray-100 rounded-2xl shadow-xl overflow-hidden">
                                     <div className="flex flex-col gap-1 p-2 max-h-56 overflow-y-auto themed-scrollbar">
                                       <div
@@ -2265,7 +2290,7 @@ export default function OfficersPage() {
                         </div>
                       ) : (
                         <div className="overflow-x-auto themed-scrollbar">
-                          <table className="w-full text-left min-w-170">
+                          <table className="responsive-table w-full text-left min-w-170">
                             <thead>
                               <tr className="bg-gray-50/80">
                                 <th className="px-6 sm:px-8 py-3.5 text-[10px] font-semibold uppercase tracking-widest text-gray-400 font-raleway">
@@ -2296,7 +2321,7 @@ export default function OfficersPage() {
                                     key={item._id}
                                     className={`group border-t border-gray-50 transition-all duration-200 ${isEditing ? "bg-primary1/5" : "hover:bg-gray-50/70"}`}
                                   >
-                                    <td className="px-6 sm:px-8 py-4">
+                                    <td data-label="Photo" data-primary="media" className="px-6 sm:px-8 py-4">
                                       <div className="w-10 h-10 rounded-full bg-gray-100 border border-gray-200 overflow-hidden flex items-center justify-center">
                                         {item.image ? (
                                           <img
@@ -2312,7 +2337,7 @@ export default function OfficersPage() {
                                         )}
                                       </div>
                                     </td>
-                                    <td className="px-4 py-4">
+                                    <td data-label="Name" data-primary="" className="px-4 py-4">
                                       <div className="flex items-center gap-2">
                                         {isEditing && (
                                           <span className="w-1.5 h-1.5 rounded-full bg-primary1 animate-pulse shrink-0" />
@@ -2322,13 +2347,14 @@ export default function OfficersPage() {
                                         </span>
                                       </div>
                                     </td>
-                                    <td className="px-4 py-4">
+                                    <td data-label="Position" className="px-4 py-4">
                                       <span className="text-xs text-gray-600 font-raleway">
                                         {item.position}
                                         {item.role ? ` · ${item.role}` : ""}
                                       </span>
                                     </td>
-                                    <td className="px-4 py-4">
+                                    <td data-label="Department" className="px-4 py-4">
+                                      <div className="flex flex-col items-start gap-1.5">
                                       <span
                                         className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-raleway font-semibold border ${
                                           item.departmentType === "executive"
@@ -2338,33 +2364,46 @@ export default function OfficersPage() {
                                       >
                                         {item.departmentType === "executive"
                                           ? "Executive"
-                                          : item.committeeName || "Committee"}
+                                          : shortDepartmentName(item.committeeName) ||
+                                            "Committee"}
                                       </span>
+                                      {otherAssignments(item, archiveTerms).map((label) => (
+                                        <span
+                                          key={label}
+                                          className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-raleway font-semibold border bg-gray-50 text-gray-600 border-gray-200"
+                                        >
+                                          <span aria-hidden>+</span>
+                                          {label}
+                                        </span>
+                                      ))}
+                                      </div>
                                     </td>
-                                    <td className="px-4 py-4">
+                                    <td data-label="Year" className="px-4 py-4">
                                       <span className="text-xs text-gray-600 font-raleway">
                                         {item.termYear}
                                       </span>
                                     </td>
-                                    <td className="px-6 sm:px-8 py-4 text-right">
-                                      <div className="inline-flex items-center gap-1 opacity-0 group-hover:opacity-100 sm:opacity-100 transition-opacity">
+                                    <td data-label="Actions" className="px-6 sm:px-8 py-4 text-right">
+                                      <div className="inline-flex items-center gap-1 opacity-100 transition-opacity">
                                         <button
                                           onClick={() =>
                                             handleArchiveEditClick(item)
                                           }
-                                          className="p-2 text-gray-400 hover:text-primary1 hover:bg-primary1/10 rounded-lg transition-all duration-150 cursor-pointer"
+                                          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-raleway font-semibold whitespace-nowrap text-gray-400 hover:text-primary1 hover:bg-primary1/10 rounded-lg transition-all duration-150 cursor-pointer"
                                           title="Edit"
                                         >
                                           <Pencil size={15} />
+                                        Edit
                                         </button>
                                         <button
                                           onClick={() =>
                                             confirmArchiveDelete(item._id)
                                           }
-                                          className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all duration-150 cursor-pointer"
+                                          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-raleway font-semibold whitespace-nowrap text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all duration-150 cursor-pointer"
                                           title="Delete"
                                         >
                                           <Trash2 size={15} />
+                                        Delete
                                         </button>
                                       </div>
                                     </td>
@@ -2410,14 +2449,14 @@ export default function OfficersPage() {
               <Button
                 variant="heroOutline"
                 onClick={() => setShowDeleteModal(false)}
-                className="flex-1 py-3"
+                className="flex-1 py-2 sm:py-3"
               >
                 Cancel
               </Button>
               <Button
                 variant="heroDanger"
                 onClick={handleDelete}
-                className="flex-1 py-3"
+                className="flex-1 py-2 sm:py-3"
               >
                 Remove
               </Button>
@@ -2465,7 +2504,7 @@ export default function OfficersPage() {
             <Button
               variant="hero"
               onClick={() => setShowSuccessModal(false)}
-              className="w-full py-3 text-sm"
+              className="w-full py-2 text-sm sm:py-3"
             >
               Continue
             </Button>
@@ -2495,14 +2534,14 @@ export default function OfficersPage() {
               <Button
                 variant="heroOutline"
                 onClick={() => setArchiveShowDeleteModal(false)}
-                className="flex-1 py-3"
+                className="flex-1 py-2 sm:py-3"
               >
                 Cancel
               </Button>
               <Button
                 variant="heroDanger"
                 onClick={handleArchiveDelete}
-                className="flex-1 py-3"
+                className="flex-1 py-2 sm:py-3"
               >
                 Delete
               </Button>
@@ -2550,7 +2589,7 @@ export default function OfficersPage() {
             <Button
               variant="hero"
               onClick={() => setArchiveShowSuccessModal(false)}
-              className="w-full py-3 text-sm"
+              className="w-full py-2 text-sm sm:py-3"
             >
               Continue
             </Button>

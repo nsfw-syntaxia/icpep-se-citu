@@ -1110,7 +1110,7 @@ export default function EventsPage() {
               </p>
             </div>
 
-            <div className="flex flex-col lg:flex-row gap-8 items-start">
+            <div className="flex flex-col lg:flex-row gap-8 items-stretch lg:items-start">
               <aside className="w-full lg:w-64 shrink-0">
                 <Sidebar />
               </aside>
@@ -2009,7 +2009,7 @@ export default function EventsPage() {
                               type="button"
                               variant="heroOutline"
                               onClick={handleCancelEdit}
-                              className="px-6 py-3"
+                              className="px-4 py-2 sm:px-6 sm:py-3"
                             >
                               Cancel
                             </Button>
@@ -2020,7 +2020,7 @@ export default function EventsPage() {
                               variant="heroOutline"
                               onClick={handleSaveDraft}
                               disabled={isSubmitting}
-                              className="px-6 py-3"
+                              className="px-4 py-2 sm:px-6 sm:py-3"
                             >
                               {editingId ? "Update Draft" : "Save Draft"}
                             </Button>
@@ -2030,7 +2030,7 @@ export default function EventsPage() {
                             variant="hero"
                             onClick={handlePublish}
                             disabled={isSubmitting}
-                            className="group flex items-center gap-3 px-8 py-3"
+                            className="group flex items-center gap-3 px-5 py-2 sm:px-8 sm:py-3"
                           >
                             <span>
                               {editingId && !isEditingDraft
@@ -2090,7 +2090,7 @@ export default function EventsPage() {
                       </div>
                     ) : (
                       <div className="overflow-x-auto themed-scrollbar">
-                        <table className="w-full text-left min-w-160">
+                        <table className="responsive-table w-full text-left min-w-160">
                           <thead>
                             <tr className="bg-gray-50/80">
                               <th className="px-6 sm:px-8 py-3.5 text-[10px] font-semibold uppercase tracking-widest text-gray-400 font-raleway">
@@ -2119,7 +2119,7 @@ export default function EventsPage() {
                                   key={item._id}
                                   className={`group border-t border-gray-50 transition-all duration-200 ${isEditing ? "bg-primary1/5" : "hover:bg-gray-50/70"}`}
                                 >
-                                  <td className="px-6 sm:px-8 py-4">
+                                  <td data-label="Cover" data-primary="media" className="px-6 sm:px-8 py-4">
                                     <div className="w-14 h-10 rounded-lg bg-gray-100 border border-gray-200 overflow-hidden flex items-center justify-center">
                                       {item.coverImage ? (
                                         <img
@@ -2135,7 +2135,7 @@ export default function EventsPage() {
                                       )}
                                     </div>
                                   </td>
-                                  <td className="px-4 py-4">
+                                  <td data-label="Title" data-primary="" className="px-4 py-4">
                                     <div className="flex items-center gap-2">
                                       {isEditing && (
                                         <span className="w-1.5 h-1.5 rounded-full bg-primary1 animate-pulse shrink-0" />
@@ -2150,7 +2150,7 @@ export default function EventsPage() {
                                       </p>
                                     )}
                                   </td>
-                                  <td className="px-4 py-4">
+                                  <td data-label="Date" className="px-4 py-4">
                                     <span className="text-xs text-gray-600 font-raleway">
                                       {item.eventDate
                                         ? new Date(
@@ -2159,7 +2159,7 @@ export default function EventsPage() {
                                         : "N/A"}
                                     </span>
                                   </td>
-                                  <td className="px-4 py-4">
+                                  <td data-label="Mode" className="px-4 py-4">
                                     <span
                                       className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-raleway font-semibold border ${online ? "bg-emerald-50 text-emerald-700 border-emerald-200" : "bg-orange-50 text-orange-700 border-orange-200"}`}
                                     >
@@ -2169,21 +2169,23 @@ export default function EventsPage() {
                                       {item.mode}
                                     </span>
                                   </td>
-                                  <td className="px-8 py-4 text-right">
-                                    <div className="inline-flex items-center gap-1 opacity-0 group-hover:opacity-100 sm:opacity-100 transition-opacity">
+                                  <td data-label="Actions" className="px-8 py-4 text-right">
+                                    <div className="inline-flex items-center gap-1 opacity-100 transition-opacity">
                                       <button
                                         onClick={() => handleEditClick(item)}
-                                        className="p-2 text-gray-400 hover:text-primary1 hover:bg-primary1/10 rounded-lg transition-all duration-150 cursor-pointer"
+                                        className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-raleway font-semibold whitespace-nowrap text-gray-400 hover:text-primary1 hover:bg-primary1/10 rounded-lg transition-all duration-150 cursor-pointer"
                                         title="Edit"
                                       >
                                         <Pencil size={15} />
+                                        Edit
                                       </button>
                                       <button
                                         onClick={() => confirmDelete(item._id)}
-                                        className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all duration-150 cursor-pointer"
+                                        className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-raleway font-semibold whitespace-nowrap text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all duration-150 cursor-pointer"
                                         title="Delete"
                                       >
                                         <Trash2 size={15} />
+                                        Delete
                                       </button>
                                     </div>
                                   </td>
@@ -2227,14 +2229,14 @@ export default function EventsPage() {
               <Button
                 variant="heroOutline"
                 onClick={() => setShowDeleteModal(false)}
-                className="flex-1 py-3"
+                className="flex-1 py-2 sm:py-3"
               >
                 Cancel
               </Button>
               <Button
                 variant="heroDanger"
                 onClick={handleDelete}
-                className="flex-1 py-3"
+                className="flex-1 py-2 sm:py-3"
               >
                 Delete
               </Button>
@@ -2290,7 +2292,7 @@ export default function EventsPage() {
                   setSubmitSuccess(false);
                   router.push("/events");
                 }}
-                className="w-full py-3 text-sm"
+                className="w-full py-2 text-sm sm:py-3"
               >
                 View Events
               </Button>
@@ -2300,7 +2302,7 @@ export default function EventsPage() {
                   setShowSuccessModal(false);
                   setSubmitSuccess(false);
                 }}
-                className="w-full py-3 text-sm"
+                className="w-full py-2 text-sm sm:py-3"
               >
                 Close
               </Button>

@@ -555,7 +555,7 @@ export default function DraftsPage() {
               </div>
             </div>
 
-            <div className="flex flex-col lg:flex-row gap-8 items-start">
+            <div className="flex flex-col lg:flex-row gap-8 items-stretch lg:items-start">
               <aside className="w-full lg:w-64 shrink-0">
                 <Sidebar />
               </aside>
@@ -674,14 +674,14 @@ export default function DraftsPage() {
               <Button
                 variant="heroOutline"
                 onClick={() => setShowDeleteModal(false)}
-                className="flex-1 py-3"
+                className="flex-1 py-2 sm:py-3"
               >
                 Cancel
               </Button>
               <Button
                 variant="heroDanger"
                 onClick={handleDelete}
-                className="flex-1 py-3"
+                className="flex-1 py-2 sm:py-3"
               >
                 Delete
               </Button>
@@ -729,7 +729,7 @@ export default function DraftsPage() {
             <Button
               variant="hero"
               onClick={() => setShowSuccessModal(false)}
-              className="w-full py-3 text-sm"
+              className="w-full py-2 text-sm sm:py-3"
             >
               Continue
             </Button>

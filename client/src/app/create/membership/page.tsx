@@ -348,7 +348,7 @@ export default function MembershipPage() {
               </p>
             </div>
 
-            <div className="flex flex-col lg:flex-row gap-8 items-start">
+            <div className="flex flex-col lg:flex-row gap-8 items-stretch lg:items-start">
               <aside className="w-full lg:w-64 shrink-0">
                 <Sidebar />
               </aside>
@@ -425,7 +425,7 @@ export default function MembershipPage() {
                       variant="hero"
                       onClick={handleSaveSettings}
                       disabled={settingsSaving || settingsLoading}
-                      className="px-8 py-3"
+                      className="px-5 py-2 sm:px-8 sm:py-3"
                     >
                       Save Settings
                     </Button>
@@ -666,7 +666,7 @@ export default function MembershipPage() {
                           type="button"
                           variant="heroOutline"
                           onClick={handleCancelEdit}
-                          className="px-6 py-3"
+                          className="px-4 py-2 sm:px-6 sm:py-3"
                         >
                           Cancel
                         </Button>
@@ -677,7 +677,7 @@ export default function MembershipPage() {
                           variant="heroOutline"
                           onClick={handleSaveDraft}
                           disabled={isSubmitting}
-                          className="px-6 py-3"
+                          className="px-4 py-2 sm:px-6 sm:py-3"
                         >
                           {editingId ? "Update Draft" : "Save Draft"}
                         </Button>
@@ -687,7 +687,7 @@ export default function MembershipPage() {
                         variant="hero"
                         onClick={handlePublish}
                         disabled={isSubmitting}
-                        className="px-8 py-3"
+                        className="px-5 py-2 sm:px-8 sm:py-3"
                       >
                         {editingId && !isEditingDraft
                           ? "Update Tier"
@@ -742,7 +742,7 @@ export default function MembershipPage() {
                     </div>
                   ) : (
                     <div className="overflow-x-auto themed-scrollbar">
-                      <table className="w-full text-left min-w-170">
+                      <table className="responsive-table w-full text-left min-w-170">
                         <thead>
                           <tr className="bg-gray-50/80">
                             <th className="px-6 sm:px-8 py-3.5 text-[10px] font-semibold uppercase tracking-widest text-gray-400 font-raleway">
@@ -773,7 +773,7 @@ export default function MembershipPage() {
                                 key={tier._id}
                                 className={`group border-t border-gray-50 transition-all duration-200 ${isEditing ? "bg-primary1/5" : "hover:bg-gray-50/70"}`}
                               >
-                                <td className="px-6 sm:px-8 py-4">
+                                <td data-label="Plan" data-primary="media" className="px-6 sm:px-8 py-4">
                                   <div className="flex items-center gap-2">
                                     {isEditing && (
                                       <span className="w-1.5 h-1.5 rounded-full bg-primary1 animate-pulse shrink-0" />
@@ -789,17 +789,17 @@ export default function MembershipPage() {
                                     )}
                                   </div>
                                 </td>
-                                <td className="px-4 py-4">
+                                <td data-label="Title" data-primary="" className="px-4 py-4">
                                   <span className="text-xs text-gray-600 font-raleway">
                                     {tier.title}
                                   </span>
                                 </td>
-                                <td className="px-4 py-4">
+                                <td data-label="Price" className="px-4 py-4">
                                   <span className="text-xs text-gray-600 font-raleway">
                                     {tier.price}
                                   </span>
                                 </td>
-                                <td className="px-4 py-4">
+                                <td data-label="Accent" className="px-4 py-4">
                                   <span
                                     className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-raleway font-semibold border ${
                                       tier.accentColor === "primary"
@@ -812,7 +812,7 @@ export default function MembershipPage() {
                                     {tier.accentColor}
                                   </span>
                                 </td>
-                                <td className="px-4 py-4">
+                                <td data-label="Status" className="px-4 py-4">
                                   {tier.isActive ? (
                                     <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-raleway font-semibold border bg-green-50 text-green-700 border-green-200">
                                       Published
@@ -823,21 +823,23 @@ export default function MembershipPage() {
                                     </span>
                                   )}
                                 </td>
-                                <td className="px-6 sm:px-8 py-4 text-right">
-                                  <div className="inline-flex items-center gap-1 opacity-0 group-hover:opacity-100 sm:opacity-100 transition-opacity">
+                                <td data-label="Actions" className="px-6 sm:px-8 py-4 text-right">
+                                  <div className="inline-flex items-center gap-1 opacity-100 transition-opacity">
                                     <button
                                       onClick={() => handleEditClick(tier)}
-                                      className="p-2 text-gray-400 hover:text-primary1 hover:bg-primary1/10 rounded-lg transition-all duration-150 cursor-pointer"
+                                      className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-raleway font-semibold whitespace-nowrap text-gray-400 hover:text-primary1 hover:bg-primary1/10 rounded-lg transition-all duration-150 cursor-pointer"
                                       title="Edit"
                                     >
                                       <Pencil size={15} />
+                                        Edit
                                     </button>
                                     <button
                                       onClick={() => confirmDelete(tier._id)}
-                                      className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all duration-150 cursor-pointer"
+                                      className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-raleway font-semibold whitespace-nowrap text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all duration-150 cursor-pointer"
                                       title="Delete"
                                     >
                                       <Trash2 size={15} />
+                                        Delete
                                     </button>
                                   </div>
                                 </td>
@@ -881,14 +883,14 @@ export default function MembershipPage() {
               <Button
                 variant="heroOutline"
                 onClick={() => setShowDeleteModal(false)}
-                className="flex-1 py-3"
+                className="flex-1 py-2 sm:py-3"
               >
                 Cancel
               </Button>
               <Button
                 variant="heroDanger"
                 onClick={handleDelete}
-                className="flex-1 py-3"
+                className="flex-1 py-2 sm:py-3"
               >
                 Delete
               </Button>
@@ -936,7 +938,7 @@ export default function MembershipPage() {
             <Button
               variant="hero"
               onClick={() => setShowSuccessModal(false)}
-              className="w-full py-3 text-sm"
+              className="w-full py-2 text-sm sm:py-3"
             >
               Continue
             </Button>
