@@ -4,6 +4,7 @@ import Meeting from "../models/meeting";
 import { sendBulkNotifications } from "../utils/notification";
 import Availability from "../models/availability";
 import User from "../models/user";
+import { escapeRegExp } from "../utils/regex";
 
 interface CreateMeetingBody {
   title: string;
@@ -244,8 +245,8 @@ export const getMeetings = async (req: Request, res: Response) => {
 
     if (q) {
       query.$or = [
-        { title: { $regex: q, $options: "i" } },
-        { agenda: { $regex: q, $options: "i" } },
+        { title: { $regex: escapeRegExp(q.slice(0, 100)), $options: "i" } },
+        { agenda: { $regex: escapeRegExp(q.slice(0, 100)), $options: "i" } },
       ];
     }
 

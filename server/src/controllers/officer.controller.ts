@@ -4,6 +4,7 @@ import OfficerTerm from "../models/officerTerm";
 import { uploadToCloudinary } from "../utils/cloudinary";
 import { getCurrentAcademicYear } from "../utils/academic-year";
 import { formatOfficerName } from "../utils/format-name";
+import { escapeRegExp } from "../utils/regex";
 
 // Mirrors the client's splitCouncilPosition (client/src/app/officers/[slug]/page.tsx)
 // so a live assignment archives under the same {position, role} shape the
@@ -237,6 +238,8 @@ export const searchNonOfficers = async (req: Request, res: Response) => {
         .json({ success: false, message: "Query parameter is required" });
     }
 
+    const searchText = escapeRegExp(String(query).slice(0, 100));
+
     // Only exclude students who already hold *this* specific assignment type,
     // so a council officer can still be found and assigned a committee role
     // (and vice versa).
@@ -262,9 +265,9 @@ export const searchNonOfficers = async (req: Request, res: Response) => {
         notAlreadyAssigned,
         {
           $or: [
-            { firstName: { $regex: query, $options: "i" } },
-            { lastName: { $regex: query, $options: "i" } },
-            { studentNumber: { $regex: query, $options: "i" } },
+            { firstName: { $regex: searchText, $options: "i" } },
+            { lastName: { $regex: searchText, $options: "i" } },
+            { studentNumber: { $regex: searchText, $options: "i" } },
           ],
         },
       ],

@@ -136,10 +136,6 @@ export default function ProfilePage() {
     try {
       setEditLoading(true);
       const payload: Partial<CurrentUser> = {
-        // Names are disabled for editing
-        firstName: form.firstName,
-        lastName: form.lastName,
-        studentNumber: form.studentNumber || undefined,
         email: form.email || undefined,
         yearLevel: form.yearLevel
           ? isNaN(Number(form.yearLevel))

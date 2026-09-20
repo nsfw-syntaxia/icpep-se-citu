@@ -25,13 +25,15 @@ import facultyRoutes from "./routes/faculty.routes";
 import officerTermRoutes from "./routes/officerTerm.routes";
 import membershipRoutes from "./routes/membership.routes";
 import startAnnouncementScheduler from "./utils/scheduler";
-
-// Turns a wildcard origin entry like *.example.com into a safe regex source.
-const escapeRegExp = (value: string) =>
-  value.replace(/[.*+?^${}()|[\]\\/-]/g, "\\$&");
+import { escapeRegExp } from "./utils/regex";
 
 // Initialize express app
 const app: Application = express();
+
+// Behind a reverse proxy (Render, etc.) set TRUST_PROXY=1 so req.ip is the real
+// client rather than the proxy; leave it unset when the server is exposed directly.
+const trustedProxyHops = parseInt(process.env.TRUST_PROXY ?? "", 10);
+if (trustedProxyHops > 0) app.set("trust proxy", trustedProxyHops);
 
 // Middleware must come before routes.
 // 1. Body Parser - FIRST

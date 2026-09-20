@@ -3,6 +3,7 @@ import User, { IUser } from "../models/user";
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import { sendNotification } from "../utils/notification";
+import { escapeRegExp } from "../utils/regex";
 
 // Interface for request with authenticated user
 export interface AuthRequest extends Request {
@@ -692,17 +693,24 @@ export const syncUpsertBatch = async (
   }
 };
 
-const SELF_EDIT_PROTECTED_FIELDS = [
+// What each kind of caller may change. Anything else in the request body
+// (password, studentNumber, firstLogin, reset codes, ...) is ignored.
+const SELF_EDITABLE_FIELDS = ["email", "yearLevel"];
+const MANAGED_EDITABLE_FIELDS = [
+  "firstName",
+  "lastName",
+  "middleName",
+  "email",
   "role",
-  "isActive",
+  "yearLevel",
   "membershipStatus",
-  "position",
-  "department",
-  "councilPosition",
-  "councilYearLevel",
-  "committeeDepartment",
-  "committeeTitle",
+  "isActive",
 ];
+
+const pickFields = (source: Record<string, unknown>, fields: string[]) =>
+  Object.fromEntries(
+    fields.filter((field) => field in source).map((field) => [field, source[field]]),
+  );
 
 // Update user
 export const updateUser = async (
@@ -711,7 +719,6 @@ export const updateUser = async (
 ): Promise<void> => {
   try {
     const { id } = req.params;
-    const updates = req.body;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
       res.status(400).json({
@@ -731,29 +738,22 @@ export const updateUser = async (
       return;
     }
 
-    // Don't allow updating certain fields directly
-    delete updates.createdAt;
-    delete updates.registeredBy;
-
-    if (req.user?.role !== "admin") {
-      if (originalUser.role === "admin" || updates.role === "admin") {
-        res.status(403).json({
-          success: false,
-          message: "Only admins can edit or assign admin accounts",
-        });
-        return;
-      }
-
-      // Self-service edits can only touch profile fields — role, membership,
-      // active status and officer assignments are managed by others.
-      if (req.user?.id === id) {
-        for (const field of SELF_EDIT_PROTECTED_FIELDS) {
-          delete updates[field];
-        }
-      }
+    const isAdmin = req.user?.role === "admin";
+    if (!isAdmin && (originalUser.role === "admin" || req.body.role === "admin")) {
+      res.status(403).json({
+        success: false,
+        message: "Only admins can edit or assign admin accounts",
+      });
+      return;
     }
 
-    // If updating password, it will be hashed by pre-save middleware
+    // People editing their own record can only change profile details;
+    // role, membership and status are managed by officers and admins.
+    const isSelfService = req.user?.id === id && !isAdmin;
+    const updates = pickFields(
+      req.body,
+      isSelfService ? SELF_EDITABLE_FIELDS : MANAGED_EDITABLE_FIELDS,
+    );
 
     const updatedUser = await User.findByIdAndUpdate(
       id,
@@ -790,43 +790,28 @@ export const updateUser = async (
     }
 
     // 2. Profile Update
-    if (updates.password) {
+    const profileFields = [
+      "firstName",
+      "lastName",
+      "middleName",
+      "yearLevel",
+      "email",
+    ];
+    const changedFields = profileFields.filter(
+      (field) =>
+        updates[field] !== undefined &&
+        updates[field] !== (originalUser as any)[field],
+    );
+
+    if (changedFields.length > 0) {
       await sendNotification(
         updatedUser._id,
-        "[PROFILE] Password Updated",
-        "Your password has been successfully updated.",
+        "[PROFILE] Profile Updated",
+        `Your profile information (${changedFields.join(", ")}) has been updated.`,
         "system",
         updatedUser._id,
         null,
       );
-    } else {
-      const profileFields = [
-        "firstName",
-        "lastName",
-        "middleName",
-        "studentNumber",
-        "yearLevel",
-        "email",
-        "profilePicture",
-      ];
-      const changedFields = profileFields.filter(
-        (field) =>
-          updates[field] !== undefined &&
-          updates[field] !== (originalUser as any)[field],
-      );
-
-      if (changedFields.length > 0) {
-        await sendNotification(
-          updatedUser._id,
-          "[PROFILE] Profile Updated",
-          `Your profile information (${changedFields.join(
-            ", ",
-          )}) has been updated.`,
-          "system",
-          updatedUser._id,
-          null,
-        );
-      }
     }
 
     res.status(200).json({
@@ -1035,7 +1020,7 @@ export const searchUsers = async (
       return;
     }
 
-    const searchRegex = new RegExp(query as string, "i");
+    const searchRegex = new RegExp(escapeRegExp(String(query).slice(0, 100)), "i");
 
     const users = await User.find({
       $or: [
