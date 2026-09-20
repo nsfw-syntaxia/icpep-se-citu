@@ -149,8 +149,7 @@ export function TestimonialsSection() {
           }));
           setTestimonials(mapped);
         }
-      } catch (error) {
-        console.error("Failed to fetch testimonials", error);
+      } catch {
       } finally {
         setLoading(false);
       }
@@ -188,7 +187,7 @@ export function TestimonialsSection() {
 
       <div className="absolute inset-0 z-0 opacity-60 lg:hidden">
         <div className="blob bg-sky-400 top-[5%] right-[-20%] animate-blob-1"></div>
-        <div className="blob bg-indigo-400 bottom-[5%] left-[-20 Domani animate-blob-3"></div>
+        <div className="blob bg-indigo-400 bottom-[5%] left-[-20%] animate-blob-3"></div>
       </div>
 
       <div className="relative flex min-h-screen flex-col items-center justify-center lg:overflow-hidden px-4 py-16 sm:px-6 sm:py-20">

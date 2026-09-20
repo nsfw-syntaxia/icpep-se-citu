@@ -23,7 +23,8 @@ export default function FeaturedAnnouncementCard({
         <Image
           src={announcement.imageUrl}
           alt={announcement.title}
-          layout="fill"
+          fill
+          sizes="(min-width: 1024px) 50vw, 100vw"
           className="object-cover transition-transform duration-300 group-hover:scale-105"
         />
       </div>

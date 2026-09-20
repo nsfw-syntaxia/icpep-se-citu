@@ -23,7 +23,8 @@ type UserRole =
   | "student"
   | "council-officer"
   | "committee-officer"
-  | "faculty";
+  | "faculty"
+  | "admin";
 
 const Header = () => {
   const [open, setOpen] = useState(false);
@@ -221,8 +222,7 @@ const Header = () => {
       await notificationService.markAllAsRead();
       setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
       setUnreadCount(0);
-    } catch (error) {
-      console.error(error);
+    } catch {
     }
   };
 
@@ -234,8 +234,7 @@ const Header = () => {
         prev.map((n) => (n.id === id ? { ...n, read: true } : n)),
       );
       setUnreadCount((prev) => Math.max(0, prev - 1));
-    } catch (error) {
-      console.error(error);
+    } catch {
     }
   };
 
@@ -245,8 +244,7 @@ const Header = () => {
       await notificationService.delete(n.id);
       setNotifications((prev) => prev.filter((item) => item.id !== n.id));
       if (!n.read) setUnreadCount((prev) => Math.max(0, prev - 1));
-    } catch (error) {
-      console.error(error);
+    } catch {
     }
   };
 
@@ -255,8 +253,7 @@ const Header = () => {
       try {
         await notificationService.markAsRead(n.id);
         setUnreadCount((prev) => Math.max(0, prev - 1));
-      } catch (error) {
-        console.error(error);
+      } catch {
       }
     }
     router.push(n.link);
