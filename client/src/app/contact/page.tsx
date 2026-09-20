@@ -17,6 +17,7 @@ import Grid from "../components/grid";
 import BackButton from "../components/back-button";
 import PageHeader from "../components/page-header";
 import Button from "../components/button";
+import { useDropdownDismiss } from "@/app/utils/use-dropdown-dismiss";
 
 const CONTACT_EMAIL = "icpepse@cit.edu";
 const FACEBOOK_URL = "https://www.facebook.com/cituicpep";
@@ -124,6 +125,7 @@ export default function ContactPage() {
   const phoneId = useId();
   const [subject, setSubject] = useState("");
   const [isSubjectOpen, setIsSubjectOpen] = useState(false);
+  useDropdownDismiss(isSubjectOpen, () => setIsSubjectOpen(false));
   const [phone, setPhone] = useState("");
 
   const [errors, setErrors] = useState<FormErrors>({
@@ -296,7 +298,7 @@ export default function ContactPage() {
                     <label htmlFor={subjectId} className={labelStyle}>
                       Subject <span className="text-red-500">*</span>
                     </label>
-                    <div className="relative mt-2">
+                    <div data-dropdown className="relative mt-2">
                       <div
                         id={subjectId}
                         onClick={() => setIsSubjectOpen((prev) => !prev)}
@@ -321,10 +323,6 @@ export default function ContactPage() {
                       </div>
                       {isSubjectOpen && (
                         <>
-                          <div
-                            className="fixed inset-0 z-20"
-                            onClick={() => setIsSubjectOpen(false)}
-                          />
                           <div className={dropdownOuterStyle}>
                             <div className={dropdownInnerStyle}>
                               {SUBJECT_OPTIONS.map((opt) => (

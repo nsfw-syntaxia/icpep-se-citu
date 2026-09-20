@@ -14,6 +14,7 @@ import {
 import { FunctionComponent, useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ChevronRight, Check, X, ChevronDown } from "lucide-react";
+import { useDropdownDismiss } from "@/app/utils/use-dropdown-dismiss";
 
 const departmentsList = [
   "All Officers",
@@ -59,6 +60,7 @@ const MeetInfoPage: FunctionComponent = () => {
   const [limitUnit, setLimitUnit] = useState("Minutes");
 
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  useDropdownDismiss(activeDropdown !== null, () => setActiveDropdown(null));
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [authHint, setAuthHint] = useState<string>("");
 
@@ -493,7 +495,7 @@ const MeetInfoPage: FunctionComponent = () => {
                   </div>
 
                   {/* Department Selection (Multi-Select) */}
-                  <div className="w-full relative">
+                  <div data-dropdown className="w-full relative">
                     <label className={labelStyle}>
                       Departments Involved <span className="text-red-500">*</span>
                     </label>
@@ -545,10 +547,6 @@ const MeetInfoPage: FunctionComponent = () => {
                     {/* Dropdown Menu */}
                     {activeDropdown === "dept" && (
                       <>
-                        <div
-                          className="fixed inset-0 z-20"
-                          onClick={() => setActiveDropdown(null)}
-                        ></div>
                         <div className={dropdownContainerStyle}>
                           <div className={dropdownScrollStyle}>
                           {departmentsList.map((dept) => (
@@ -599,7 +597,7 @@ const MeetInfoPage: FunctionComponent = () => {
                         />
                       </div>
                       {/* Unit Dropdown (Custom) */}
-                      <div className="w-1/3 relative">
+                      <div data-dropdown className="w-1/3 relative">
                         <div
                           className={`w-full h-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 cursor-pointer flex items-center justify-between text-gray-700 transition-all hover:bg-gray-100 ${
                             activeDropdown === "limitUnit"
@@ -625,10 +623,6 @@ const MeetInfoPage: FunctionComponent = () => {
                         {/* Options */}
                         {activeDropdown === "limitUnit" && (
                           <>
-                            <div
-                              className="fixed inset-0 z-20"
-                              onClick={() => setActiveDropdown(null)}
-                            ></div>
                             <div className={dropdownContainerStyle}>
                               <div className={dropdownScrollStyle}>
                               {["Minutes", "Hours"].map((unit) => (
