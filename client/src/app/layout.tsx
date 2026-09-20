@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import type { Metadata } from "next";
 import { Rubik, Raleway } from "next/font/google";
 import { LoadingScreen } from "./components/loading";
+import ApiErrorNotice from "./components/api-error-notice";
 import "./globals.css";
 
 const raleway = Raleway({
@@ -48,6 +49,7 @@ export default function RootLayout({
         
         {/* Regular content - app/loading.jsx handles route changes automatically */}
         {children}
+        <ApiErrorNotice />
       </body>
     </html>
   );

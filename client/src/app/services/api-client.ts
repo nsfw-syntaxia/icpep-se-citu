@@ -1,4 +1,5 @@
 import axios, { AxiosError } from "axios";
+import { reportApiError } from "../utils/api-error";
 
 const rawApiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
@@ -33,6 +34,14 @@ api.interceptors.response.use(
   (response) => response,
   (error: AxiosError<{ message?: string }>) => {
     const status = error.response?.status;
+
+    // 4xx answers are the caller's to handle; an unreachable or failing server isn't.
+    if (!error.response && error.code !== "ERR_CANCELED") {
+      reportApiError("Can't reach the server. Please check your connection and try again.");
+    } else if (status && status >= 500) {
+      reportApiError("Something went wrong on our end. Please try again.");
+    }
+
     const isTokenError = error.response?.data?.message
       ?.toLowerCase()
       .includes("token");
@@ -50,3 +59,8 @@ api.interceptors.response.use(
     return Promise.reject(error);
   },
 );
+
+// The server's own message for a failed request, or the fallback.
+export const errorMessage = (error: unknown, fallback: string): string =>
+  (axios.isAxiosError<{ message?: string }>(error) && error.response?.data?.message) ||
+  fallback;
