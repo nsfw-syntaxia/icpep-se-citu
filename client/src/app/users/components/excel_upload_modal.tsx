@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import * as XLSX from "xlsx";
 import Button from "../../components/button";
+import { useBodyScrollLock } from "@/app/utils/use-body-scroll-lock";
 
 // Define an interface for the raw data read from the Excel sheet
 interface RawExcelRow {
@@ -61,6 +62,8 @@ export default function ExcelUploadModal({
   const [isProcessing, setIsProcessing] = useState(false);
   const [dragActive, setDragActive] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useBodyScrollLock(isOpen);
 
   if (!isOpen) return null;
 
@@ -491,7 +494,7 @@ export default function ExcelUploadModal({
             type="button"
             variant="heroOutline"
             onClick={handleClose}
-            className="px-6 py-3"
+            className="px-4 py-2 sm:px-6 sm:py-3"
           >
             Cancel
           </Button>
@@ -500,7 +503,7 @@ export default function ExcelUploadModal({
             variant="hero"
             onClick={handleUpload}
             disabled={validCount === 0 || isProcessing}
-            className="px-8 py-3"
+            className="px-5 py-2 sm:px-8 sm:py-3"
           >
             {isProcessing
               ? "Processing..."

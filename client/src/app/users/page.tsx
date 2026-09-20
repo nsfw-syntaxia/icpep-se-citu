@@ -884,14 +884,14 @@ export default function UsersListPage() {
 
             {/* Search Bar */}
             <div className="mb-6 max-w-3xl mx-auto">
-              <div className="flex items-center w-full bg-white border-2 border-primary1/20 rounded-2xl px-5 py-3 transition-all duration-300 hover:border-primary1 focus-within:border-primary1">
+              <div className="flex items-center w-full bg-white border-2 border-primary1/20 rounded-2xl px-4 py-2 sm:px-5 sm:py-3 transition-all duration-300 hover:border-primary1 focus-within:border-primary1">
                 <Search className="h-5 w-5 text-primary1 shrink-0" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => handleSearchChange(e.target.value)}
                   placeholder="Search users by name, student number, role, or year level..."
-                  className="w-full bg-transparent ml-3 outline-none font-rubik font-medium text-primary3 placeholder:text-gray-400 placeholder:font-normal"
+                  className="w-full bg-transparent ml-3 outline-none font-rubik text-sm sm:text-base font-medium text-primary3 placeholder:text-gray-400 placeholder:font-normal"
                 />
                 {searchQuery && (
                   <button
@@ -905,14 +905,14 @@ export default function UsersListPage() {
               </div>
             </div>
 
-            <div className="mb-6 flex flex-wrap items-center justify-end gap-3">
+            <div className="mb-6 grid grid-cols-3 gap-2 sm:flex sm:flex-wrap sm:items-center sm:justify-end sm:gap-3">
               <Button
                 variant="heroOutline"
                 rounded="lg"
                 onClick={handleExport}
-                className="flex items-center gap-2 px-4 py-2.5"
+                className="flex items-center justify-center gap-1.5 px-2 py-2 text-xs sm:gap-2 sm:px-4 sm:py-2.5 sm:text-sm"
               >
-                <Download className="w-4 h-4" />
+                <Download className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                 Export All
               </Button>
               <Button
@@ -920,18 +920,18 @@ export default function UsersListPage() {
                 rounded="lg"
                 onClick={() => setIsUploadModalOpen(true)}
                 disabled={isUploading}
-                className="flex items-center gap-2 px-4 py-2.5"
+                className="flex items-center justify-center gap-1.5 px-2 py-2 text-xs sm:gap-2 sm:px-4 sm:py-2.5 sm:text-sm"
               >
-                <Upload className="w-4 h-4" />
+                <Upload className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                 Upload Excel
               </Button>
               <Button
                 variant="hero"
                 rounded="lg"
                 onClick={handleAddUser}
-                className="flex items-center gap-2 px-4 py-2.5"
+                className="flex items-center justify-center gap-1.5 px-2 py-2 text-xs sm:gap-2 sm:px-4 sm:py-2.5 sm:text-sm"
               >
-                <UserPlus className="w-4 h-4" />
+                <UserPlus className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                 Add User
               </Button>
             </div>
@@ -960,10 +960,10 @@ export default function UsersListPage() {
                   <button
                     onClick={handlePreviousPage}
                     disabled={currentPage === 1}
-                    className="flex h-14 w-14 items-center justify-center rounded-full border border-primary1/40 bg-white/80 backdrop-blur-sm text-primary1 transition-all duration-300 hover:bg-primary1/10 active:scale-90 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+                    className="flex h-10 w-10 sm:h-14 sm:w-14 items-center justify-center rounded-full border border-primary1/40 bg-white/80 backdrop-blur-sm text-primary1 transition-all duration-300 hover:bg-primary1/10 active:scale-90 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
                     title="Previous page"
                   >
-                    <ChevronLeft size={24} />
+                    <ChevronLeft className="h-5 w-5 sm:h-6 sm:w-6" />
                   </button>
 
                   <div className="flex items-center gap-2">
@@ -993,10 +993,10 @@ export default function UsersListPage() {
                   <button
                     onClick={handleNextPage}
                     disabled={currentPage === totalPages}
-                    className="flex h-14 w-14 items-center justify-center rounded-full border border-primary1/40 bg-white/80 backdrop-blur-sm text-primary1 transition-all duration-300 hover:bg-primary1/10 active:scale-90 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+                    className="flex h-10 w-10 sm:h-14 sm:w-14 items-center justify-center rounded-full border border-primary1/40 bg-white/80 backdrop-blur-sm text-primary1 transition-all duration-300 hover:bg-primary1/10 active:scale-90 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
                     title="Next page"
                   >
-                    <ChevronRight size={24} />
+                    <ChevronRight className="h-5 w-5 sm:h-6 sm:w-6" />
                   </button>
                 </div>
               </div>
@@ -1143,7 +1143,7 @@ export default function UsersListPage() {
                   failedUsers: [],
                 })
               }
-              className="w-full py-3 text-sm"
+              className="w-full py-2 text-sm sm:py-3"
             >
               Continue
             </Button>
@@ -1193,7 +1193,7 @@ export default function UsersListPage() {
               onClick={() =>
                 setSuccessModal({ show: false, title: "", message: "" })
               }
-              className="w-full py-3 text-sm"
+              className="w-full py-2 text-sm sm:py-3"
             >
               Continue
             </Button>
@@ -1224,7 +1224,7 @@ export default function UsersListPage() {
               onClick={() =>
                 setErrorModal({ show: false, title: "", message: "" })
               }
-              className="w-full py-3"
+              className="w-full py-2 sm:py-3"
             >
               Close
             </Button>

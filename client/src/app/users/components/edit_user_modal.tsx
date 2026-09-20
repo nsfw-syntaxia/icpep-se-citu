@@ -2,7 +2,7 @@
 
 import { X, ChevronDown, Check } from "lucide-react";
 import { User } from "../utils/user"; // Ensure this path is correct
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Button from "../../components/button";
 import {
   YEAR_OPTIONS as BASE_YEAR_OPTIONS,
@@ -14,6 +14,8 @@ import {
   dropdownItemSelectedStyle,
   dropdownItemHoverStyle,
 } from "../utils/user_options";
+import { useDropdownDismiss } from "@/app/utils/use-dropdown-dismiss";
+import { useBodyScrollLock } from "@/app/utils/use-body-scroll-lock";
 
 interface EditUserModalProps {
   isOpen: boolean;
@@ -45,6 +47,7 @@ export default function EditUserModal({
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  useDropdownDismiss(activeDropdown !== null, () => setActiveDropdown(null));
 
   const YEAR_OPTIONS = [
     { value: "", label: "Select Year Level" },
@@ -54,6 +57,36 @@ export default function EditUserModal({
   const selectedRoleLabel = ROLE_OPTIONS.find((o) => o.value === formData.role)?.label ?? "Select Role";
   const selectedYearLabel = YEAR_OPTIONS.find((o) => o.value === formData.yearLevel)?.label ?? "Select Year Level";
   const selectedMembershipLabel = MEMBERSHIP_OPTIONS.find((o) => o.value === formData.membershipStatus)?.label ?? "Non-Member";
+
+  useBodyScrollLock(isOpen);
+
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [dropUp, setDropUp] = useState(false);
+
+  // An open list that would run past the bottom of the modal opens upward
+  // instead (when there is room above); otherwise it scrolls into view.
+  useEffect(() => {
+    if (!activeDropdown) {
+      setDropUp(false);
+      return;
+    }
+    const frame = requestAnimationFrame(() => {
+      const box = scrollRef.current?.getBoundingClientRect();
+      const panel = scrollRef.current?.querySelector("[data-dropdown-panel]");
+      if (!box || !panel || !panel.parentElement) return;
+
+      const rect = panel.getBoundingClientRect();
+      const spaceAbove = panel.parentElement.getBoundingClientRect().top - box.top;
+      const overflowsBelow = rect.bottom > box.bottom - 8;
+
+      if (overflowsBelow && spaceAbove > rect.height + 8) {
+        setDropUp(true);
+      } else {
+        panel.scrollIntoView({ block: "nearest", behavior: "smooth" });
+      }
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [activeDropdown]);
 
   if (!isOpen) return null;
 
@@ -151,7 +184,7 @@ export default function EditUserModal({
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="flex flex-col flex-1 min-h-0">
-          <div className="overflow-y-auto themed-scrollbar px-6 sm:px-7 py-5 flex-1">
+          <div ref={scrollRef} className={`overflow-y-auto themed-scrollbar px-6 sm:px-7 py-5 flex-1`}>
           {/* Student Number */}
           <div className="mb-4">
             <label className="block font-raleway text-sm font-semibold text-gray-700 mb-2">
@@ -240,7 +273,7 @@ export default function EditUserModal({
               <label className="block font-raleway text-sm font-semibold text-gray-700 mb-2">
                 Role <span className="text-red-500">*</span>
               </label>
-              <div className="relative">
+              <div data-dropdown className="relative">
                 <div
                   className={`w-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 cursor-pointer flex items-center justify-between text-gray-700 transition-all hover:bg-gray-100 ${
                     activeDropdown === "role"
@@ -260,8 +293,10 @@ export default function EditUserModal({
                 </div>
                 {activeDropdown === "role" && (
                   <>
-                    <div className="fixed inset-0 z-20" onClick={() => setActiveDropdown(null)} />
-                    <div className={dropdownOuterStyle}>
+                    <div
+                      data-dropdown-panel
+                      className={`${dropdownOuterStyle} scroll-mb-4 ${dropUp ? "bottom-full mb-2 mt-0!" : ""}`}
+                    >
                       <div className={dropdownInnerStyle}>
                         {ROLE_OPTIONS.map((opt) => {
                           // Only show admin option if user already has admin role
@@ -301,7 +336,7 @@ export default function EditUserModal({
               <label className="block font-raleway text-sm font-semibold text-gray-700 mb-2">
                 Year Level
               </label>
-              <div className="relative">
+              <div data-dropdown className="relative">
                 <div
                   className={`w-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 cursor-pointer flex items-center justify-between text-gray-700 transition-all hover:bg-gray-100 ${
                     activeDropdown === "yearLevel" ? "bg-white border-primary1 ring-4 ring-primary1/10" : ""
@@ -319,8 +354,10 @@ export default function EditUserModal({
                 </div>
                 {activeDropdown === "yearLevel" && (
                   <>
-                    <div className="fixed inset-0 z-20" onClick={() => setActiveDropdown(null)} />
-                    <div className={dropdownOuterStyle}>
+                    <div
+                      data-dropdown-panel
+                      className={`${dropdownOuterStyle} scroll-mb-4 ${dropUp ? "bottom-full mb-2 mt-0!" : ""}`}
+                    >
                       <div className={dropdownInnerStyle}>
                         {YEAR_OPTIONS.filter((o) => o.value !== "").map((opt) => (
                           <div
@@ -354,7 +391,7 @@ export default function EditUserModal({
             <label className="block font-raleway text-sm font-semibold text-gray-700 mb-2">
               Membership Status
             </label>
-            <div className="relative">
+            <div data-dropdown className="relative">
               <div
                 className={`w-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 cursor-pointer flex items-center justify-between text-gray-700 transition-all hover:bg-gray-100 ${
                   activeDropdown === "membership" ? "bg-white border-primary1 ring-4 ring-primary1/10" : ""
@@ -372,8 +409,10 @@ export default function EditUserModal({
               </div>
               {activeDropdown === "membership" && (
                 <>
-                  <div className="fixed inset-0 z-20" onClick={() => setActiveDropdown(null)} />
-                  <div className={dropdownOuterStyle}>
+                  <div
+                      data-dropdown-panel
+                      className={`${dropdownOuterStyle} scroll-mb-4 ${dropUp ? "bottom-full mb-2 mt-0!" : ""}`}
+                    >
                     <div className={dropdownInnerStyle}>
                       {MEMBERSHIP_OPTIONS.map((opt) => (
                         <div
@@ -444,11 +483,11 @@ export default function EditUserModal({
               variant="heroOutline"
               type="button"
               onClick={onClose}
-              className="px-6 py-3"
+              className="px-4 py-2 sm:px-6 sm:py-3"
             >
               Cancel
             </Button>
-            <Button variant="hero" type="submit" className="px-8 py-3">
+            <Button variant="hero" type="submit" className="px-5 py-2 sm:px-8 sm:py-3">
               Save Changes
             </Button>
           </div>

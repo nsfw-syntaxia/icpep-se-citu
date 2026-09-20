@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { User } from "../utils/user";
 import { format } from "date-fns";
+import { useBodyScrollLock } from "@/app/utils/use-body-scroll-lock";
 
 interface ViewUserModalProps {
   isOpen: boolean;
@@ -23,6 +24,8 @@ export default function ViewUserModal({
   onClose,
   user,
 }: ViewUserModalProps) {
+  useBodyScrollLock(isOpen);
+
   if (!isOpen) return null;
 
   const formatDate = (dateString: string) => {

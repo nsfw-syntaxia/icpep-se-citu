@@ -2,6 +2,7 @@
 
 import { AlertTriangle, Info, AlertCircle } from "lucide-react";
 import Button from "../../components/button";
+import { useBodyScrollLock } from "@/app/utils/use-body-scroll-lock";
 
 interface ConfirmDialogProps {
   isOpen: boolean;
@@ -24,6 +25,8 @@ export default function ConfirmDialog({
   cancelText = "Cancel",
   type = "danger",
 }: ConfirmDialogProps) {
+  useBodyScrollLock(isOpen);
+
   if (!isOpen) return null;
 
   const getTypeStyles = () => {
@@ -77,7 +80,7 @@ export default function ConfirmDialog({
           <Button
             variant="heroOutline"
             onClick={onClose}
-            className="flex-1 py-3"
+            className="flex-1 py-2 sm:py-3"
           >
             {cancelText}
           </Button>
@@ -87,7 +90,7 @@ export default function ConfirmDialog({
               onConfirm();
               onClose();
             }}
-            className="flex-1 py-3"
+            className="flex-1 py-2 sm:py-3"
           >
             {confirmText}
           </Button>
