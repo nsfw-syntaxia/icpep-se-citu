@@ -45,7 +45,7 @@ export default function AddUserModal({
     firstName: "",
     middleName: "",
     yearLevel: undefined,
-    password: "123456",
+    password: "",
     role: "student",
     membershipStatus: "non-member",
   });
@@ -140,7 +140,7 @@ export default function AddUserModal({
       firstName: "",
       middleName: "",
       yearLevel: undefined,
-      password: "123456",
+      password: "",
       role: "student",
       membershipStatus: "non-member",
     });
@@ -351,6 +351,7 @@ export default function AddUserModal({
                   type="text"
                   name="password"
                   value={formData.password}
+                  placeholder="Chapter default password"
                   readOnly
                   disabled
                   className="w-full font-rubik text-base bg-gray-100 border border-gray-100 rounded-2xl px-4 py-3 text-gray-500 cursor-not-allowed select-none"
