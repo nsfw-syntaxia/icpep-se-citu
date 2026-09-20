@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import Event from "../models/event";
+import { canManagePost } from "../utils/ownership";
+import { escapeHtml } from "../utils/html";
 import {
   uploadToCloudinary,
   deleteFromCloudinary,
@@ -406,6 +408,14 @@ export const updateEvent = async (
       return;
     }
 
+    if (!canManagePost(req.user, event.author)) {
+      res.status(403).json({
+        success: false,
+        message: "You can only manage your own events",
+      });
+      return;
+    }
+
     // Handle new cover image upload
     // Handle uploaded files (multiple) during update
     const reqFiles = (req as any).files as MulterFile[] | undefined;
@@ -560,6 +570,14 @@ export const deleteEvent = async (
       return;
     }
 
+    if (!canManagePost(req.user, event.author)) {
+      res.status(403).json({
+        success: false,
+        message: "You can only manage your own events",
+      });
+      return;
+    }
+
     // Delete cover image from cloudinary if exists
     if (event.coverImage) {
       await deleteFromCloudinary(event.coverImage);
@@ -594,6 +612,14 @@ export const togglePublishStatus = async (
 
     if (!event) {
       res.status(404).json({ message: "Event not found" });
+      return;
+    }
+
+    if (!canManagePost(req.user, event.author)) {
+      res.status(403).json({
+        success: false,
+        message: "You can only manage your own events",
+      });
       return;
     }
 
@@ -739,6 +765,14 @@ export const reportEvent = async (
       return;
     }
 
+    if (String(reason).length > 200 || String(details).length > 2000) {
+      res.status(400).json({
+        success: false,
+        message: "Report is too long",
+      });
+      return;
+    }
+
     const event = await Event.findById(id);
     if (!event) {
       res.status(404).json({ success: false, message: "Event not found" });
@@ -761,10 +795,10 @@ export const reportEvent = async (
     const message = `Event reported: ${event.title}\n\nReason: ${reason}\n\nDetails:\n${details}`;
     const html = `
       <h2>Event Reported</h2>
-      <p><strong>Event:</strong> ${event.title}</p>
-      <p><strong>Reason:</strong> ${reason}</p>
+      <p><strong>Event:</strong> ${escapeHtml(event.title)}</p>
+      <p><strong>Reason:</strong> ${escapeHtml(reason)}</p>
       <p><strong>Details:</strong></p>
-      <p>${String(details).replace(/\n/g, "<br/>")}</p>
+      <p>${escapeHtml(details).replace(/\n/g, "<br/>")}</p>
     `;
 
     await sendEmail({

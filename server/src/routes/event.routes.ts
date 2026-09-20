@@ -11,6 +11,7 @@ import {
     reportEvent,
 } from '../controllers/event.controller';
 import { authenticate, authorizeRoles } from '../middleware/auth.middleware';
+import { rateLimit } from '../utils/rate-limit';
 import { upload } from '../middleware/upload.middleware';
 
 const router = express.Router();
@@ -18,7 +19,13 @@ const router = express.Router();
 // Public routes
 router.get('/', getEvents);
 router.get('/tag/:tag', getEventsByTag);
-router.post('/:id/report', reportEvent);
+// Open to anyone, so cap how many reports one caller can send.
+const reportRateLimit = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 5,
+  message: 'Too many reports. Please try again later.',
+});
+router.post('/:id/report', reportRateLimit, reportEvent);
 router.get('/:id', getEventById);
 
 // Protected routes (require authentication)

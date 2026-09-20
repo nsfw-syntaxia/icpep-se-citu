@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import Announcement from "../models/announcement";
+import { canManagePost } from "../utils/ownership";
 import {
   uploadToCloudinary,
   uploadMultipleToCloudinary,
@@ -367,7 +368,6 @@ export const updateAnnouncement = async (
 ): Promise<void> => {
   try {
     const { id } = req.params;
-    const userId = req.user?.id;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
       res.status(400).json({ message: "Invalid announcement ID" });
@@ -381,11 +381,14 @@ export const updateAnnouncement = async (
       return;
     }
 
-    // Optional: Check if user is the author
-    // if (announcement.author.toString() !== userId) {
-    //     res.status(403).json({ message: 'Not authorized to update this announcement' });
-    //     return;
-    // }
+    if (!canManagePost(req.user, announcement.author)) {
+      res.status(403).json({
+        success: false,
+        message: "You can only manage your own announcements",
+      });
+      return;
+    }
+
 
     // Handle new image upload(s)
     // Normalize multer files (array or object)
@@ -539,7 +542,6 @@ export const deleteAnnouncement = async (
 ): Promise<void> => {
   try {
     const { id } = req.params;
-    const userId = req.user?.id;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
       res.status(400).json({ message: "Invalid announcement ID" });
@@ -553,11 +555,14 @@ export const deleteAnnouncement = async (
       return;
     }
 
-    // Optional: Check if user is the author
-    // if (announcement.author.toString() !== userId) {
-    //     res.status(403).json({ message: 'Not authorized to delete this announcement' });
-    //     return;
-    // }
+    if (!canManagePost(req.user, announcement.author)) {
+      res.status(403).json({
+        success: false,
+        message: "You can only manage your own announcements",
+      });
+      return;
+    }
+
 
     // Delete image(s) from cloudinary if exist
     if (announcement.galleryImages && announcement.galleryImages.length > 0) {
@@ -590,7 +595,6 @@ export const togglePublishStatus = async (
 ): Promise<void> => {
   try {
     const { id } = req.params;
-    const userId = req.user?.id;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
       res.status(400).json({ message: "Invalid announcement ID" });
@@ -604,11 +608,14 @@ export const togglePublishStatus = async (
       return;
     }
 
-    // Optional: Check if user is the author
-    // if (announcement.author.toString() !== userId) {
-    //     res.status(403).json({ message: 'Not authorized to modify this announcement' });
-    //     return;
-    // }
+    if (!canManagePost(req.user, announcement.author)) {
+      res.status(403).json({
+        success: false,
+        message: "You can only manage your own announcements",
+      });
+      return;
+    }
+
 
     announcement.isPublished = !announcement.isPublished;
 
