@@ -26,11 +26,9 @@ import officerTermRoutes from "./routes/officerTerm.routes";
 import membershipRoutes from "./routes/membership.routes";
 import startAnnouncementScheduler from "./utils/scheduler";
 
-// Global unhandled rejection handler to avoid process crash during development
-process.on("unhandledRejection", (reason, promise) => {
-  console.error("Unhandled Rejection at:", promise, "reason:", reason);
-  // Do not exit the process in development; log and continue.
-});
+// Turns a wildcard origin entry like *.example.com into a safe regex source.
+const escapeRegExp = (value: string) =>
+  value.replace(/[.*+?^${}()|[\]\\/-]/g, "\\$&");
 
 // Initialize express app
 const app: Application = express();
@@ -105,10 +103,8 @@ app.use(
         // Support wildcard-like entries in allowedOrigins using '*' (e.g. *.example.com)
         for (const allowed of allowedOrigins) {
           if (allowed.includes("*")) {
-            // Convert wildcard entry to regex: escape dots, replace '*' with '.*'
-            const regexStr = allowed
-              .replace(/[-/\\^$+?.()|[\]{}]/g, "\\$&")
-              .replace(/\\\*/g, ".*");
+            // Escape everything literally, then turn each '*' into '.*'
+            const regexStr = allowed.split("*").map(escapeRegExp).join(".*");
             const re = new RegExp(`^${regexStr}$`);
             if (re.test(origin)) {
               return callback(null, true);
@@ -116,10 +112,9 @@ app.use(
           }
         }
       } catch {
-        // If URL parsing fails, fall through to blocked log
+        // If URL parsing fails, fall through to blocked
       }
 
-      console.log("CORS blocked for:", origin);
       callback(new Error("Not allowed by CORS"));
     },
     credentials: true,
@@ -217,7 +212,7 @@ app.get("/api", (req: Request, res: Response) => {
       "/api/notifications",
       "/api/officers",
       "/api/faculty",
-      "/api/partners",
+      "/api/sponsors",
       "/api/testimonials",
       "/api/faqs",
       "/api/availability",
@@ -270,8 +265,6 @@ app.use((req: Request, res: Response) => {
 
 // Global error handler - must be last
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  console.error("Error:", err.stack);
-
   res.status(500).json({
     success: false,
     message: "Internal server error",
@@ -299,11 +292,7 @@ const server = app.listen(PORT, () => {
 
 // Start scheduler after successful DB connection
 mongoose.connection.once("open", () => {
-  try {
-    startAnnouncementScheduler();
-  } catch (err) {
-    console.error("Failed to start announcement scheduler:", err);
-  }
+  startAnnouncementScheduler();
 });
 
 // Graceful shutdown
@@ -329,12 +318,13 @@ process.on("SIGINT", () => {
   });
 });
 
-// Handle unhandled promise rejections
-process.on("unhandledRejection", (err: Error) => {
-  console.error(`Unhandled Rejection: ${err.message}`);
-  console.error(err.stack);
-  // Close server & exit process
-  server.close(() => process.exit(1));
+// An unhandled rejection leaves the app in an unknown state: shut down in
+// production, but keep running in development so one bug doesn't end the session.
+process.on("unhandledRejection", (err: unknown) => {
+  console.error("Unhandled Rejection:", err);
+  if (process.env.NODE_ENV === "production") {
+    server.close(() => process.exit(1));
+  }
 });
 
 // Handle uncaught exceptions
