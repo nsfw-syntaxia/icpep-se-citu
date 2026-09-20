@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import mongoose from "mongoose";
-import Meeting, { IMeeting } from "../models/meeting";
+import Meeting from "../models/meeting";
 import { sendBulkNotifications } from "../utils/notification";
 import Availability from "../models/availability";
 import User from "../models/user";
@@ -15,6 +15,17 @@ interface CreateMeetingBody {
   timeLimit?: string; // optional
   meetingLink?: string; // optional online meeting URL
 }
+
+const EDITABLE_MEETING_FIELDS = [
+  "title",
+  "agenda",
+  "departments",
+  "selectedDates",
+  "startTime",
+  "endTime",
+  "timeLimit",
+  "isPublished",
+] as const;
 
 const INVALID_LINK_MESSAGE = "Meeting link must be a valid http(s) URL";
 
@@ -241,9 +252,6 @@ export const getMeetings = async (req: Request, res: Response) => {
     // Fetch all meetings first
     let meetings = await Meeting.find(query).sort({ createdAt: -1 }).lean();
 
-    console.log(
-      `[GET /meetings] Found ${meetings.length} total meetings in DB.`
-    );
 
     const viewer = await loadLinkViewer(req);
 
@@ -253,7 +261,6 @@ export const getMeetings = async (req: Request, res: Response) => {
       // 'en-CA' gives YYYY-MM-DD format
       const todayStr = today.toLocaleDateString("en-CA");
 
-      console.log(`[Filtering] Checking for meetings on or after: ${todayStr}`);
 
       meetings = meetings.filter((m) => {
         // --- FIX IS HERE ---
@@ -264,9 +271,6 @@ export const getMeetings = async (req: Request, res: Response) => {
         return dates.some((d) => d >= todayStr);
       });
 
-      console.log(
-        `[Filtering] ${meetings.length} meetings remain after filter.`
-      );
     }
 
     const visibleMeetings = meetings.map((m) =>
@@ -275,7 +279,6 @@ export const getMeetings = async (req: Request, res: Response) => {
 
     res.json({ success: true, data: visibleMeetings });
   } catch (error) {
-    console.error("Error in getMeetings:", error);
     res.status(500).json({
       success: false,
       message: "Failed to fetch meetings",
@@ -324,17 +327,6 @@ export const updateMeeting = async (req: Request, res: Response) => {
       return;
     }
 
-    const allowed: (keyof IMeeting)[] = [
-      "title",
-      "agenda",
-      "departments",
-      "selectedDates",
-      "startTime",
-      "endTime",
-      "timeLimit",
-      "isPublished",
-    ] as any;
-
     if ("meetingLink" in req.body) {
       const cleanedLink = cleanMeetingLink(req.body.meetingLink);
       if (cleanedLink === null) {
@@ -344,10 +336,9 @@ export const updateMeeting = async (req: Request, res: Response) => {
       meeting.meetingLink = cleanedLink;
     }
 
-    for (const key of allowed) {
-      if (key in req.body) {
-        // @ts-ignore
-        meeting[key] = req.body[key];
+    for (const field of EDITABLE_MEETING_FIELDS) {
+      if (field in req.body) {
+        meeting.set(field, req.body[field]);
       }
     }
 
