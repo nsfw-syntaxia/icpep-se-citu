@@ -1,6 +1,4 @@
-import axios from 'axios';
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+import { api } from './api-client';
 
 export interface Partner {
   _id: string;
@@ -33,14 +31,9 @@ export interface UpdatePartnerData {
   displayOrder?: number;
 }
 
-const getAuthHeader = () => {
-  const token = localStorage.getItem('authToken');
-  return token ? { Authorization: `Bearer ${token}` } : {};
-};
-
 const partnerService = {
   getAll: async (type?: string) => {
-    const response = await axios.get<Partner[]>(`${API_URL}/partners`, {
+    const response = await api.get<Partner[]>('/partners', {
       params: { type },
     });
     return response.data;
@@ -54,12 +47,7 @@ const partnerService = {
     if (data.website) formData.append('website', data.website);
     formData.append('logo', data.logo);
 
-    const response = await axios.post<Partner>(`${API_URL}/partners`, formData, {
-      headers: {
-        ...getAuthHeader(),
-        'Content-Type': 'multipart/form-data',
-      },
-    });
+    const response = await api.post<Partner>('/partners', formData);
     return response.data;
   },
 
@@ -73,19 +61,12 @@ const partnerService = {
     if (data.isActive !== undefined) formData.append('isActive', String(data.isActive));
     if (data.displayOrder !== undefined) formData.append('displayOrder', String(data.displayOrder));
 
-    const response = await axios.put<Partner>(`${API_URL}/partners/${id}`, formData, {
-      headers: {
-        ...getAuthHeader(),
-        'Content-Type': 'multipart/form-data',
-      },
-    });
+    const response = await api.put<Partner>(`/partners/${id}`, formData);
     return response.data;
   },
 
   delete: async (id: string) => {
-    const response = await axios.delete(`${API_URL}/partners/${id}`, {
-      headers: getAuthHeader(),
-    });
+    const response = await api.delete(`/partners/${id}`);
     return response.data;
   },
 };
