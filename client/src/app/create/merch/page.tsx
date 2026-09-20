@@ -21,6 +21,7 @@ import {
   ArrowUpRight,
 } from "lucide-react";
 import merchService, { MerchItem } from "@/app/services/merch";
+import { LoadingIndicator } from "@/app/components/loading";
 
 type FormErrors = {
   name: boolean;
@@ -322,10 +323,7 @@ export default function MerchPage() {
       {isSubmitting && (
         <div className="fixed inset-0 z-100 flex items-center justify-center bg-white/90 backdrop-blur-md">
           <div className="flex flex-col items-center gap-5">
-            <div className="relative w-16 h-16">
-              <div className="absolute inset-0 rounded-full border-4 border-primary2/20" />
-              <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-primary2 animate-spin" />
-            </div>
+            <LoadingIndicator />
             <div className="text-center">
               <p className="text-primary3 font-bold font-rubik text-lg">
                 {loadingAction === "saving"
@@ -734,12 +732,7 @@ export default function MerchPage() {
 
                     {/* Table */}
                     {isLoadingList ? (
-                      <div className="py-20 flex flex-col items-center gap-3 text-gray-300">
-                        <div className="w-8 h-8 border-2 border-gray-200 border-t-primary2 rounded-full animate-spin" />
-                        <p className="text-sm font-raleway">
-                          Loading merchandise...
-                        </p>
-                      </div>
+                      <LoadingIndicator label="Loading merchandise..." className="py-16" />
                     ) : publishedItems.length === 0 ? (
                       <div className="py-20 flex flex-col items-center gap-4 text-gray-300">
                         <div className="w-16 h-16 rounded-2xl bg-gray-50 flex items-center justify-center">

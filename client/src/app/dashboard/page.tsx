@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { LoadingScreen } from "@/app/components/loading";
 import { OFFICER_DASHBOARD_ROLES } from "./roles";
 
 /**
@@ -33,11 +34,6 @@ export default function DashboardIndexPage() {
 
   // Brief loading state while redirecting
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white">
-      <div className="flex flex-col items-center gap-4">
-        <div className="h-10 w-10 rounded-full border-4 border-primary1 border-t-transparent animate-spin" />
-        <p className="font-raleway text-sm text-slate-500">Loading your dashboard…</p>
-      </div>
-    </div>
+    <LoadingScreen showEntrance={false} />
   );
 }

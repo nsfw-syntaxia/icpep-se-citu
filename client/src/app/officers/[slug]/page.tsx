@@ -13,6 +13,7 @@ import { departments } from "../utils/officers";
 import { formatOfficerName, toTitleCase } from "../utils/format-name";
 import officerService from "../../services/officer";
 import officerTermService from "../../services/officerTerm";
+import { LoadingIndicator } from "@/app/components/loading";
 
 interface DisplayOfficer {
   position: string;
@@ -178,10 +179,7 @@ const OfficersPage = () => {
             {/* officers */}
             <div className="w-full mb-24">
               {loading ? (
-                <div className="py-20 flex flex-col items-center gap-3 text-gray-300">
-                  <div className="w-8 h-8 border-2 border-gray-200 border-t-primary1 rounded-full animate-spin" />
-                  <p className="text-sm font-raleway">Loading officers...</p>
-                </div>
+                <LoadingIndicator label="Loading officers..." className="py-16" />
               ) : officers.length === 0 ? (
                 <div className="py-20 text-center">
                   <p className="text-gray-400 font-raleway text-lg">

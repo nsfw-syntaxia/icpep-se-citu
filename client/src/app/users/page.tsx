@@ -30,6 +30,7 @@ import {
 } from "lucide-react";
 import { LoadingScreen } from "../components/loading";
 import { toTitleCase } from "../officers/utils/format-name";
+import { LoadingIndicator } from "@/app/components/loading";
 
 // Type definitions for API responses
 interface ApiUser {
@@ -1013,7 +1014,7 @@ export default function UsersListPage() {
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl p-8 shadow-2xl max-w-md w-full">
             <div className="text-center">
-              <div className="inline-block animate-spin rounded-full h-16 w-16 border-4 border-primary1 border-t-transparent mb-6"></div>
+              <LoadingIndicator className="mb-6" />
 
               <h3 className="font-rubik text-2xl font-bold text-primary3 mb-2">
                 Uploading Users

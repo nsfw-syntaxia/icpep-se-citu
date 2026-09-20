@@ -25,6 +25,7 @@ import announcementService from "../services/announcement";
 import clsx from "clsx";
 import BackButton from "../components/back-button";
 import PageHeader from "../components/page-header";
+import { LoadingIndicator } from "@/app/components/loading";
 
 interface Announcement {
   _id: string;
@@ -515,9 +516,7 @@ export default function AnnouncementsPage() {
 
             {/* announcement list */}
             {loading ? (
-              <div className="text-center py-16 font-raleway text-gray-500">
-                Loading...
-              </div>
+              <LoadingIndicator label="Loading announcements..." className="py-16" />
             ) : (
               <div ref={listTopRef} className="pb-14 max-w-4xl mx-auto">
                 {filteredAnnouncements.length > 0 ? (

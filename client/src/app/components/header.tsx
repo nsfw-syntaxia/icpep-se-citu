@@ -7,7 +7,6 @@ import Menu from "./menu";
 import { useRouter } from "next/navigation";
 import { notificationService } from "@/app/services/notification";
 import {
-  Loader2,
   CheckCheck,
   Megaphone,
   Calendar,
@@ -17,6 +16,7 @@ import {
   Trash2,
   MoreVertical,
 } from "lucide-react";
+import { LoadingIndicator } from "@/app/components/loading";
 
 type UserRole =
   | "guest"
@@ -571,7 +571,7 @@ const Header = () => {
                             })}
                             {isNotifLoading && (
                               <div className="py-6 flex justify-center">
-                                <Loader2 className="w-5 h-5 text-primary1 animate-spin" />
+                                <LoadingIndicator size="sm" />
                               </div>
                             )}
                           </div>
@@ -584,7 +584,7 @@ const Header = () => {
                           </div>
                         ) : (
                           <div className="py-24 flex justify-center">
-                            <Loader2 className="w-6 h-6 text-primary1 animate-spin" />
+                            <LoadingIndicator />
                           </div>
                         )}
                       </div>

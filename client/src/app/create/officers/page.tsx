@@ -37,6 +37,7 @@ import officerTermService, {
 import { getCurrentAcademicYear } from "@/app/utils/academic-year";
 import { shortDepartmentName } from "@/app/utils/department";
 import { useDropdownDismiss } from "@/app/utils/use-dropdown-dismiss";
+import { LoadingIndicator } from "@/app/components/loading";
 
 // --- DATA CONFIGURATION ---
 const departments: Record<string, any> = {
@@ -812,10 +813,7 @@ export default function OfficersPage() {
       {(isSubmitting || archiveIsSubmitting) && (
         <div className="fixed inset-0 z-100 flex items-center justify-center bg-white/90 backdrop-blur-md">
           <div className="flex flex-col items-center gap-5">
-            <div className="relative w-16 h-16">
-              <div className="absolute inset-0 rounded-full border-4 border-primary2/20" />
-              <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-primary2 animate-spin" />
-            </div>
+            <LoadingIndicator />
             <div className="text-center">
               <p className="text-primary3 font-bold font-rubik text-lg">
                 {isSubmitting
@@ -1193,7 +1191,7 @@ export default function OfficersPage() {
                                 )}
                                 {isSearching && (
                                   <div className="absolute right-4 top-1/2 -translate-y-1/2">
-                                    <div className="w-4 h-4 border-2 border-primary2 border-t-transparent rounded-full animate-spin" />
+                                    <LoadingIndicator size="sm" />
                                   </div>
                                 )}
                               </div>
@@ -1605,12 +1603,7 @@ export default function OfficersPage() {
 
                       {/* Table */}
                       {isLoadingList ? (
-                        <div className="py-20 flex flex-col items-center gap-3 text-gray-300">
-                          <div className="w-8 h-8 border-2 border-gray-200 border-t-primary2 rounded-full animate-spin" />
-                          <p className="text-sm font-raleway">
-                            Loading officers...
-                          </p>
-                        </div>
+                        <LoadingIndicator label="Loading officers..." className="py-16" />
                       ) : displayedOfficers.length === 0 ? (
                         <div className="py-20 flex flex-col items-center gap-4 text-gray-300">
                           <div className="w-16 h-16 rounded-2xl bg-gray-50 flex items-center justify-center">
@@ -2268,12 +2261,7 @@ export default function OfficersPage() {
                       </div>
 
                       {archiveIsLoadingList ? (
-                        <div className="py-20 flex flex-col items-center gap-3 text-gray-300">
-                          <div className="w-8 h-8 border-2 border-gray-200 border-t-primary2 rounded-full animate-spin" />
-                          <p className="text-sm font-raleway">
-                            Loading archive...
-                          </p>
-                        </div>
+                        <LoadingIndicator label="Loading archive..." className="py-16" />
                       ) : archiveFilteredItems.length === 0 ? (
                         <div className="py-20 flex flex-col items-center gap-4 text-gray-300">
                           <div className="w-16 h-16 rounded-2xl bg-gray-50 flex items-center justify-center">
