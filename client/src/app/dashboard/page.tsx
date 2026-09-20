@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { OFFICER_DASHBOARD_ROLES } from "./roles";
 
 /**
  * Dashboard index — auto-routes to the appropriate dashboard
@@ -23,8 +24,7 @@ export default function DashboardIndexPage() {
       return;
     }
 
-    const officerRoles = ["council-officer", "committee-officer", "faculty", "admin"];
-    if (officerRoles.includes(userRole)) {
+    if (OFFICER_DASHBOARD_ROLES.includes(userRole)) {
       router.replace("/dashboard/officer");
     } else {
       router.replace("/dashboard/student");
