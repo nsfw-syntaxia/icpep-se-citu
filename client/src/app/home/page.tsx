@@ -51,7 +51,7 @@ export default function LandingPage() {
           <AboutSection />
         </section>
 
-        <section id="about">
+        <section id="why-join">
           <WhyJoinSection />
         </section>
 

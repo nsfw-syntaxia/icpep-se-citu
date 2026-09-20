@@ -9,57 +9,11 @@ import Grid from "../components/grid";
 import SelectionCard from "./components/selection-card";
 import BackButton from "../components/back-button";
 import PageHeader from "../components/page-header";
+import { departments } from "./utils/officers";
 
-const committeeData = [
-  {
-    title: "Committee on Internal Affairs",
-    slug: "internal-affairs",
-    gradient: "bg-linear-to-br from-[#00A7EE] to-blue-600",
-    shadow: "hover:shadow-sky-500/40",
-  },
-  {
-    title: "Committee on External Affairs",
-    slug: "external-affairs",
-    gradient: "bg-linear-to-br from-[#9333ea] to-purple-900",
-    shadow: "hover:shadow-purple-600/40",
-  },
-  {
-    title: "Committee on Finance",
-    slug: "finance",
-    gradient: "bg-linear-to-br from-[#ca8a04] to-yellow-700",
-    shadow: "hover:shadow-yellow-600/40",
-  },
-  {
-    title: "Committee on Public Relations",
-    slug: "public-relations",
-    gradient: "bg-linear-to-br from-[#ea580c] to-red-600",
-    shadow: "hover:shadow-orange-600/40",
-  },
-  {
-    title: "Research and Development Committee",
-    slug: "research-and-development",
-    gradient: "bg-linear-to-br from-[#2563eb] to-indigo-800",
-    shadow: "hover:shadow-blue-600/40",
-  },
-  {
-    title: "Training and Seminar Committee",
-    slug: "training-and-seminar",
-    gradient: "bg-linear-to-br from-[#16a34a] to-green-800",
-    shadow: "hover:shadow-green-600/40",
-  },
-  {
-    title: "Sports and Cultural Committee",
-    slug: "sports-and-cultural",
-    gradient: "bg-linear-to-br from-[#dc2626] to-red-900",
-    shadow: "hover:shadow-red-600/40",
-  },
-  {
-    title: "Media and Documentation Committee",
-    slug: "media-and-documentation",
-    gradient: "bg-linear-to-br from-[#4f46e5] to-indigo-900",
-    shadow: "hover:shadow-indigo-600/40",
-  },
-];
+const committeeData = Object.entries(departments)
+  .filter(([slug]) => slug !== "council")
+  .map(([slug, meta]) => ({ slug, ...meta }));
 
 const OfficerSelectionPage: FC = () => {
   const router = useRouter();

@@ -50,7 +50,6 @@ const ScrollingText = ({ text }: { text: string }) => {
 export function AboutSection() {
   return (
     <section
-      id="about"
       className="dark-light-background relative flex min-h-[80vh] items-center justify-center overflow-hidden p-6 -mt-10"
     >
       <div className="relative z-10 flex flex-col items-center text-center -translate-y-16">

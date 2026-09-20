@@ -29,6 +29,7 @@ import {
   X,
 } from "lucide-react";
 import { LoadingScreen } from "../components/loading";
+import { toTitleCase } from "../officers/utils/format-name";
 
 // Type definitions for API responses
 interface ApiUser {
@@ -166,15 +167,6 @@ const parseMembershipStatus = (
   }
 
   return { isMember: false, membershipType: null };
-};
-
-const capitalizeWords = (str: string): string => {
-  if (!str) return "";
-  return str
-    .toLowerCase()
-    .split(" ")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
 };
 
 const getAuthToken = (): string | null => {
@@ -413,10 +405,10 @@ export default function UsersListPage() {
         const transformedUsers: User[] = response.data.map((user: ApiUser) => ({
           id: user._id,
           studentNumber: user.studentNumber,
-          lastName: capitalizeWords(user.lastName),
-          firstName: capitalizeWords(user.firstName),
-          middleName: user.middleName ? capitalizeWords(user.middleName) : "",
-          fullName: capitalizeWords(
+          lastName: toTitleCase(user.lastName),
+          firstName: toTitleCase(user.firstName),
+          middleName: user.middleName ? toTitleCase(user.middleName) : "",
+          fullName: toTitleCase(
             user.fullName ||
               `${user.firstName} ${user.middleName || ""} ${
                 user.lastName
@@ -435,7 +427,7 @@ export default function UsersListPage() {
           registeredBy: user.registeredBy
             ? {
                 id: user.registeredBy._id,
-                fullName: capitalizeWords(
+                fullName: toTitleCase(
                   `${user.registeredBy.firstName} ${user.registeredBy.lastName}`,
                 ),
               }
@@ -522,7 +514,7 @@ export default function UsersListPage() {
         setSuccessModal({
           show: true,
           title: "User Added Successfully",
-          message: `${capitalizeWords(
+          message: `${toTitleCase(
             response.data.fullName,
           )} has been added to the system.`,
         });

@@ -5,9 +5,21 @@ import React from "react";
 interface GlassCardProps {
   children: React.ReactNode;
   className?: string;
+  variant?: "compact" | "roomy";
 }
 
-export function GlassCard({ children, className = "" }: GlassCardProps) {
+const VARIANTS = {
+  compact: { padding: "sm:p-2", background: "#fbfeffff" },
+  roomy: { padding: "p-6 sm:p-8", background: "#e6f7ff" },
+};
+
+export function GlassCard({
+  children,
+  className = "",
+  variant = "compact",
+}: GlassCardProps) {
+  const { padding, background } = VARIANTS[variant];
+
   return (
     <div
       className={`relative overflow-hidden rounded-3xl shadow-[0_0_25px_rgba(0,119,170,0.25)] h-full ${className}`}
@@ -30,8 +42,8 @@ export function GlassCard({ children, className = "" }: GlassCardProps) {
       </div>
 
       <div
-        className="relative z-10 rounded-[22px] sm:p-2 h-full flex flex-col"
-        style={{ backgroundColor: "#fbfeffff" }}
+        className={`relative z-10 rounded-[22px] ${padding} h-full flex flex-col`}
+        style={{ backgroundColor: background }}
       >
         {children}
       </div>

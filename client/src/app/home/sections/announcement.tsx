@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import { GlassCard } from "../components/glass-card";
+import { GlassCard } from "../../components/glass-card";
 import FeaturedAnnouncementCard from "../components/featured-announcement";
 import MiniAnnouncementCard from "../components/mini-announcement";
 import announcementService from "@/app/services/announcement";
@@ -73,12 +73,12 @@ export function AnnouncementsSection() {
 
         {loading ? (
           <>
-            <GlassCard>
+            <GlassCard variant="roomy">
               <div className="h-100 w-full animate-pulse bg-white/5 rounded-xl" />
             </GlassCard>
             <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-flow-col lg:auto-cols-fr">
               {[1, 2, 3].map((i) => (
-                <GlassCard key={i}>
+                <GlassCard variant="roomy" key={i}>
                   <div className="h-64 w-full animate-pulse bg-white/5 rounded-xl" />
                 </GlassCard>
               ))}
@@ -93,7 +93,7 @@ export function AnnouncementsSection() {
         ) : (
           <>
             {latestAnnouncement && (
-              <GlassCard>
+              <GlassCard variant="roomy">
                 <FeaturedAnnouncementCard announcement={latestAnnouncement} />
               </GlassCard>
             )}
@@ -101,7 +101,7 @@ export function AnnouncementsSection() {
             {otherAnnouncements.length > 0 && (
               <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-flow-col lg:auto-cols-fr items-stretch content-stretch">
                 {otherAnnouncements.map((announcement) => (
-                  <GlassCard key={announcement.id}>
+                  <GlassCard variant="roomy" key={announcement.id}>
                     <MiniAnnouncementCard announcement={announcement} />
                   </GlassCard>
                 ))}
