@@ -94,8 +94,7 @@ export default function MembershipPage() {
         setSettingsIsOpen(res.data.isOpen ?? true);
         setSettingsUrl(res.data.registrationUrl || "");
       }
-    } catch (err) {
-      console.error("Failed to fetch membership settings:", err);
+    } catch {
     } finally {
       setSettingsLoading(false);
     }
@@ -106,8 +105,7 @@ export default function MembershipPage() {
     try {
       const res = await membershipService.getAllTiers();
       setTiers(Array.isArray(res.data) ? res.data : []);
-    } catch (err) {
-      console.error("Failed to fetch membership tiers:", err);
+    } catch {
     } finally {
       setIsLoadingList(false);
     }
@@ -127,8 +125,7 @@ export default function MembershipPage() {
       });
       setSettingsSaved(true);
       setTimeout(() => setSettingsSaved(false), 2000);
-    } catch (err) {
-      console.error("Failed to save membership settings:", err);
+    } catch {
       alert("Failed to save settings");
     } finally {
       setSettingsSaving(false);
@@ -183,8 +180,7 @@ export default function MembershipPage() {
         description: "The membership tier has been permanently removed.",
       });
       setShowSuccessModal(true);
-    } catch (err) {
-      console.error("Failed to delete membership tier:", err);
+    } catch {
       alert("Failed to delete membership tier");
     }
   };
@@ -242,8 +238,7 @@ export default function MembershipPage() {
       setShowSuccessModal(true);
       handleCancelEdit();
       fetchTiers();
-    } catch (err) {
-      console.error("Failed to save membership tier:", err);
+    } catch {
       alert("Failed to save membership tier");
     } finally {
       setIsSubmitting(false);
@@ -283,8 +278,7 @@ export default function MembershipPage() {
       setShowSuccessModal(true);
       handleCancelEdit();
       fetchTiers();
-    } catch (err) {
-      console.error("Failed to save draft:", err);
+    } catch {
       alert("Failed to save draft");
     } finally {
       setIsSubmitting(false);

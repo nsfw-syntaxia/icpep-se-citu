@@ -45,8 +45,7 @@ const MerchPage: FC = () => {
         setMerchandise(
           items.filter((item) => item.isActive).map(mapMerchItem),
         );
-      } catch (error) {
-        console.error("Failed to fetch merch", error);
+      } catch {
       } finally {
         setLoading(false);
       }

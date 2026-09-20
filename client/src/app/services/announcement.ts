@@ -19,7 +19,7 @@ export interface AnnouncementResponse {
 }
 
 // Normalize backend announcement objects to a stable client-facing shape
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 export interface ClientAnnouncement {
     id: string;
     title: string;
@@ -32,7 +32,7 @@ export interface ClientAnnouncement {
     author?: any;
     [key: string]: any;
 }
-/* eslint-enable @typescript-eslint/no-explicit-any */
+ 
 
 function normalizeType(rawType: string | undefined): "News" | "Meeting" | "Achievement" | string {
     if (!rawType) return "News";
@@ -44,7 +44,7 @@ function normalizeType(rawType: string | undefined): "News" | "Meeting" | "Achie
     return rawType;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
 function normalizeAnnouncement(raw: any): ClientAnnouncement {
     const id = raw._id ?? raw.id ?? String((raw.id ?? raw._id) ?? "");
     const title = raw.title ?? raw.name ?? "Untitled";

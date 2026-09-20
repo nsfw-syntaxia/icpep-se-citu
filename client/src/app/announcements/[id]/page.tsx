@@ -108,8 +108,7 @@ export default function AnnouncementDetailPage() {
         } else {
           setError("Announcement not found");
         }
-      } catch (err) {
-        console.error("Failed to fetch announcement:", err);
+      } catch {
         setError("Failed to load announcement. Please try again later.");
       } finally {
         setLoading(false);

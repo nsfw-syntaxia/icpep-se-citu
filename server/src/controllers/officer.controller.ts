@@ -122,8 +122,7 @@ export const updateOfficer = async (req: Request, res: Response) => {
           const uploadResult = await uploadToCloudinary(buffer, "officers");
           profilePicture = uploadResult.secure_url;
         }
-      } catch (uploadError) {
-        console.error("Image upload failed:", uploadError);
+      } catch {
       }
     }
 
@@ -218,8 +217,7 @@ export const updateOfficer = async (req: Request, res: Response) => {
           },
           { upsert: true, new: true, setDefaultsOnInsert: true }
         );
-      } catch (archiveError) {
-        console.error("Failed to auto-archive officer term:", archiveError);
+      } catch {
       }
     }
 

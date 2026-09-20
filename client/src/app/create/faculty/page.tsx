@@ -79,8 +79,7 @@ export default function FacultyPage() {
         const itemToEdit = data.find((f: FacultyMember) => f._id === editIdParam);
         if (itemToEdit) handleEditClick(itemToEdit);
       }
-    } catch (error) {
-      console.error("Failed to fetch faculty:", error);
+    } catch {
     } finally {
       setIsLoadingList(false);
     }
@@ -126,8 +125,7 @@ export default function FacultyPage() {
         description: "The faculty member has been permanently removed.",
       });
       setShowSuccessModal(true);
-    } catch (error) {
-      console.error("Failed to delete faculty member:", error);
+    } catch {
       alert("Failed to delete faculty member");
     }
   };
@@ -174,8 +172,7 @@ export default function FacultyPage() {
       setShowSuccessModal(true);
       handleCancelEdit();
       fetchFaculty();
-    } catch (error) {
-      console.error("Failed to save faculty member:", error);
+    } catch {
       alert("Failed to save faculty member");
     } finally {
       setIsSubmitting(false);
@@ -215,8 +212,7 @@ export default function FacultyPage() {
       setShowSuccessModal(true);
       handleCancelEdit();
       fetchFaculty();
-    } catch (error) {
-      console.error("Failed to save draft:", error);
+    } catch {
       alert("Failed to save draft");
     } finally {
       setIsSubmitting(false);
@@ -276,8 +272,7 @@ export default function FacultyPage() {
       setCover(resized);
       setPreview(URL.createObjectURL(resized));
       if (fileInputRef.current) fileInputRef.current.value = "";
-    } catch (err) {
-      console.error("Error resizing image", err);
+    } catch {
     }
   };
 
@@ -294,8 +289,7 @@ export default function FacultyPage() {
       const resized = await resizeImage(file);
       setCover(resized);
       setPreview(URL.createObjectURL(resized));
-    } catch (err) {
-      console.error("Error resizing image", err);
+    } catch {
     }
   };
 

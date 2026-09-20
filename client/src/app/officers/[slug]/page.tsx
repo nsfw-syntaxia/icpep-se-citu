@@ -109,7 +109,6 @@ const OfficersPage = () => {
     (year ? fetchArchived() : fetchLive())
       .then(setOfficers)
       .catch((error) => {
-        console.error("Failed to fetch officers:", error);
         setOfficers([]);
       })
       .finally(() => setLoading(false));

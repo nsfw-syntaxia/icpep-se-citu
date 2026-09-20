@@ -206,8 +206,7 @@ export default function ContactPage() {
 
       const body = `Name: ${name}\nEmail: ${email}${phone ? `\nPhone: ${phone}` : ""}\n\n${message}`;
       window.location.href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(finalSubject)}&body=${encodeURIComponent(body)}`;
-    } catch (err) {
-      console.error("Failed to open mail client:", err);
+    } catch {
       setMailError(
         `Something went wrong opening your mail app. You can reach us directly at ${CONTACT_EMAIL}.`,
       );

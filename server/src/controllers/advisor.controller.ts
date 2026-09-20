@@ -31,7 +31,6 @@ export const createAdvisor = async (req: Request, res: Response): Promise<void> 
       data: savedAdvisor,
     });
   } catch (error) {
-    console.error('Error creating advisor:', error);
     res.status(500).json({
       success: false,
       message: 'Failed to create advisor',
@@ -52,7 +51,6 @@ export const getAdvisors = async (req: Request, res: Response): Promise<void> =>
       data: advisors,
     });
   } catch (error) {
-    console.error('Error fetching advisors:', error);
     res.status(500).json({
       success: false,
       message: 'Failed to fetch advisors',
@@ -69,7 +67,6 @@ export const getAllAdvisors = async (req: Request, res: Response): Promise<void>
       data: advisors,
     });
   } catch (error) {
-    console.error('Error fetching all advisors:', error);
     res.status(500).json({
       success: false,
       message: 'Failed to fetch advisors',
@@ -109,7 +106,6 @@ export const updateAdvisor = async (req: Request, res: Response): Promise<void> 
       data: updatedAdvisor,
     });
   } catch (error) {
-    console.error('Error updating advisor:', error);
     res.status(500).json({
       success: false,
       message: 'Failed to update advisor',
@@ -133,7 +129,6 @@ export const deleteAdvisor = async (req: Request, res: Response): Promise<void> 
       message: 'Advisor deleted successfully',
     });
   } catch (error) {
-    console.error('Error deleting advisor:', error);
     res.status(500).json({
       success: false,
       message: 'Failed to delete advisor',

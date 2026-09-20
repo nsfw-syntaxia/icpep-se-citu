@@ -176,8 +176,7 @@ export default function DraftsPage() {
         setMerch(merchRes);
         setTestimonials(testData as TestimonialItem[]);
         setSponsors(sponsorData as SponsorItem[]);
-      } catch (err) {
-        console.error("Failed to load drafts", err);
+      } catch {
       } finally {
         setLoading(false);
       }
@@ -216,8 +215,7 @@ export default function DraftsPage() {
         description: "The draft has been permanently removed.",
       });
       setShowSuccessModal(true);
-    } catch (error) {
-      console.error("Failed to delete draft:", error);
+    } catch {
       alert("Failed to delete draft.");
     }
   };

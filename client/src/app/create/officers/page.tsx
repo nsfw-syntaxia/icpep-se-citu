@@ -291,8 +291,7 @@ export default function OfficersPage() {
       });
 
       setOfficers(mapped);
-    } catch (err) {
-      console.error("Failed to fetch officers:", err);
+    } catch {
     } finally {
       setIsLoadingList(false);
     }
@@ -313,8 +312,7 @@ export default function OfficersPage() {
           activeTab === "executive" ? "council" : "committee",
         );
         setSearchResults(results);
-      } catch (err) {
-        console.error(err);
+      } catch {
       } finally {
         setIsSearching(false);
       }
@@ -395,8 +393,7 @@ export default function OfficersPage() {
       });
       setShowSuccessModal(true);
       if (wasEditing) handleCancelEdit();
-    } catch (err) {
-      console.error("Failed to remove officer:", err);
+    } catch {
       setError("Failed to remove officer.");
     }
   };
@@ -502,8 +499,7 @@ export default function OfficersPage() {
       });
       setShowSuccessModal(true);
       handleCancelEdit();
-    } catch (err) {
-      console.error("Failed to save officer:", err);
+    } catch {
       setError("Failed to save officer.");
     } finally {
       setIsSubmitting(false);
@@ -517,8 +513,7 @@ export default function OfficersPage() {
       const response = await officerTermService.getAllOfficerTerms();
       const data = Array.isArray(response.data) ? response.data : [];
       setArchiveTerms(data);
-    } catch (err) {
-      console.error("Failed to fetch officer terms:", err);
+    } catch {
     } finally {
       setArchiveIsLoadingList(false);
     }
@@ -579,8 +574,7 @@ export default function OfficersPage() {
         description: "The archive entry has been permanently removed.",
       });
       setArchiveShowSuccessModal(true);
-    } catch (err) {
-      console.error("Failed to delete officer term:", err);
+    } catch {
       alert("Failed to delete archive entry");
     }
   };
@@ -639,8 +633,7 @@ export default function OfficersPage() {
       setArchiveShowSuccessModal(true);
       handleArchiveCancelEdit();
       fetchTerms();
-    } catch (err) {
-      console.error("Failed to save officer term:", err);
+    } catch {
       alert("Failed to save archive entry");
     } finally {
       setArchiveIsSubmitting(false);
@@ -679,8 +672,7 @@ export default function OfficersPage() {
       setArchiveShowSuccessModal(true);
       handleArchiveCancelEdit();
       fetchTerms();
-    } catch (err) {
-      console.error("Failed to save draft:", err);
+    } catch {
       alert("Failed to save draft");
     } finally {
       setArchiveIsSubmitting(false);
@@ -742,8 +734,7 @@ export default function OfficersPage() {
       setArchiveCover(resized);
       setArchivePreview(URL.createObjectURL(resized));
       if (archiveFileInputRef.current) archiveFileInputRef.current.value = "";
-    } catch (err) {
-      console.error("Error resizing image", err);
+    } catch {
     }
   };
 
@@ -760,8 +751,7 @@ export default function OfficersPage() {
       const resized = await resizeImage(file);
       setArchiveCover(resized);
       setArchivePreview(URL.createObjectURL(resized));
-    } catch (err) {
-      console.error("Error resizing image", err);
+    } catch {
     }
   };
 

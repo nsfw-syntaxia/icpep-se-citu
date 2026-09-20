@@ -54,7 +54,6 @@ export default function ReportEventModal({
       await eventService.reportEvent(eventId, reason, details);
       setSubmitted(true);
     } catch (err) {
-      console.error("Failed to send report:", err);
       setError(
         err instanceof Error
           ? err.message

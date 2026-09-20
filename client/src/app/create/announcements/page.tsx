@@ -288,8 +288,7 @@ export default function AnnouncementsPage() {
             }
             if (data.imageUrl) setPreviews([data.imageUrl]);
           }
-        } catch (error) {
-          console.error("Failed to fetch announcement for edit:", error);
+        } catch {
         }
       };
       fetchAnnouncement();
@@ -304,8 +303,7 @@ export default function AnnouncementsPage() {
       });
       const data = response.data || (Array.isArray(response) ? response : []);
       setAnnouncementList(data as AnnouncementItem[]);
-    } catch (err) {
-      console.error("Failed to fetch announcements:", err);
+    } catch {
     } finally {
       setIsLoadingList(false);
     }
@@ -425,8 +423,7 @@ export default function AnnouncementsPage() {
         description: "The announcement has been permanently removed.",
       });
       setShowSuccessModal(true);
-    } catch (error) {
-      console.error("Failed to delete announcement:", error);
+    } catch {
       alert("Failed to delete announcement.");
     }
   };
@@ -539,8 +536,7 @@ export default function AnnouncementsPage() {
       setShowSuccessModal(true);
       handleCancelEdit();
       fetchAnnouncements();
-    } catch (error) {
-      console.error("Error:", error);
+    } catch {
       alert("Failed to process announcement.");
     } finally {
       setIsSubmitting(false);
@@ -574,8 +570,7 @@ export default function AnnouncementsPage() {
       setShowSuccessModal(true);
       handleCancelEdit();
       fetchAnnouncements();
-    } catch (error) {
-      console.error("Error saving draft:", error);
+    } catch {
       alert("Failed to save draft.");
     } finally {
       setIsSubmitting(false);
@@ -667,8 +662,7 @@ export default function AnnouncementsPage() {
         ...resized.map((f) => URL.createObjectURL(f)),
       ]);
       if (fileInputRef.current) fileInputRef.current.value = "";
-    } catch (err) {
-      console.error(err);
+    } catch {
     }
   };
 
@@ -685,8 +679,7 @@ export default function AnnouncementsPage() {
       const resized = await resizeImage(file);
       setImages((p) => [...p, resized]);
       setPreviews((p) => [...p, URL.createObjectURL(resized)]);
-    } catch (err) {
-      console.error(err);
+    } catch {
     }
   };
 

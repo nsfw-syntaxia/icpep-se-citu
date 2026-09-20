@@ -83,8 +83,7 @@ export default function MerchPage() {
         const itemToEdit = data.find((m: MerchItem) => m._id === editIdParam);
         if (itemToEdit) handleEditClick(itemToEdit);
       }
-    } catch (error) {
-      console.error("Failed to fetch merch:", error);
+    } catch {
     } finally {
       setIsLoadingList(false);
     }
@@ -140,8 +139,7 @@ export default function MerchPage() {
         description: "The item has been permanently removed.",
       });
       setShowSuccessModal(true);
-    } catch (error) {
-      console.error("Failed to delete merch:", error);
+    } catch {
       alert("Failed to delete item.");
     }
   };
@@ -219,8 +217,7 @@ export default function MerchPage() {
       }
       handleCancelEdit();
       setShowSuccessModal(true);
-    } catch (error) {
-      console.error("Error saving merch:", error);
+    } catch {
       alert("Failed to save item.");
     } finally {
       setIsSubmitting(false);
@@ -296,8 +293,7 @@ export default function MerchPage() {
       setCover(resized);
       setPreview(URL.createObjectURL(resized));
       if (fileInputRef.current) fileInputRef.current.value = "";
-    } catch (err) {
-      console.error(err);
+    } catch {
     }
   };
 
@@ -314,8 +310,7 @@ export default function MerchPage() {
       const resized = await resizeImage(file);
       setCover(resized);
       setPreview(URL.createObjectURL(resized));
-    } catch (err) {
-      console.error(err);
+    } catch {
     }
   };
 

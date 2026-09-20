@@ -1,10 +1,9 @@
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import User, { IUser } from "../models/user";
+import User from "../models/user";
 import { validatePassword } from "../utils/password_validator";
 import { sendNotification } from "../utils/notification";
 import sendEmail from "../utils/email";
-import crypto from "crypto";
 import { DEVELOPER_STUDENT_NUMBERS } from "../config/developers";
 
 export interface AuthRequest extends Request {
@@ -118,8 +117,7 @@ export const login = async (req: Request, res: Response) => {
       token,
       user: userData,
     });
-  } catch (error) {
-    console.error("Login error:", error);
+  } catch {
     res.status(500).json({
       success: false,
       message: "Server error during login",
@@ -282,7 +280,6 @@ export const changePassword = async (
       message: "Password changed successfully",
     });
   } catch (error: any) {
-    console.error("Change password error:", error);
     res.status(500).json({
       success: false,
       message: "Server error during password change",
@@ -311,8 +308,7 @@ export const getCurrentUser = async (req: AuthRequest, res: Response) => {
       success: true,
       data: user,
     });
-  } catch (error) {
-    console.error("Get current user error:", error);
+  } catch {
     res.status(500).json({
       success: false,
       message: "Server error",
@@ -396,20 +392,18 @@ export const forgotPassword = async (req: Request, res: Response) => {
         message: "Email sent",
         email: user.email // sending back partially masked email could be good for UX if needed
       });
-    } catch (error) {
+    } catch {
       user.resetPasswordCode = undefined;
       user.resetPasswordExpire = undefined;
       await user.save({ validateBeforeSave: false });
 
-      console.error(error);
       return res.status(500).json({
         success: false,
         message: "Email could not be sent",
       });
     }
 
-  } catch (error) {
-    console.error("Forgot password error:", error);
+  } catch {
     res.status(500).json({
       success: false,
       message: "Internal server error",
@@ -449,8 +443,7 @@ export const verifyResetCode = async (req: Request, res: Response) => {
       message: "Code verified",
     });
 
-  } catch (error) {
-    console.error("Verify code error:", error);
+  } catch {
     res.status(500).json({
       success: false,
       message: "Internal server error",
@@ -500,8 +493,7 @@ export const resetPassword = async (req: Request, res: Response) => {
       message: "Password updated successfully",
     });
 
-  } catch (error) {
-    console.error("Reset password error:", error);
+  } catch {
     res.status(500).json({
       success: false,
       message: "Internal server error",

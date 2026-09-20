@@ -53,8 +53,7 @@ export function FAQSection() {
         } else {
           setFaqs(staticFaqs);
         }
-      } catch (error) {
-        console.error("Failed to fetch FAQs, using static data:", error);
+      } catch {
         setFaqs(staticFaqs);
       } finally {
         setLoading(false);

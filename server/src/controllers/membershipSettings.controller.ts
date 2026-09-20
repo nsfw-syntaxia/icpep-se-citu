@@ -20,7 +20,6 @@ export const getMembershipSettings = async (req: Request, res: Response): Promis
     const settings = await getOrCreateSettings();
     res.status(200).json({ success: true, data: settings });
   } catch (error) {
-    console.error('Error fetching membership settings:', error);
     res.status(500).json({
       success: false,
       message: 'Failed to fetch membership settings',
@@ -45,7 +44,6 @@ export const updateMembershipSettings = async (req: Request, res: Response): Pro
       data: updated,
     });
   } catch (error) {
-    console.error('Error updating membership settings:', error);
     res.status(500).json({
       success: false,
       message: 'Failed to update membership settings',

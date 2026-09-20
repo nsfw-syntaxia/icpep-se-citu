@@ -46,8 +46,7 @@ const AboutPage: FC = () => {
             imageUrl: f.image || "/gle.png",
           })),
         );
-      } catch (error) {
-        console.error("Failed to fetch faculty", error);
+      } catch {
       }
     };
     fetchFaculty();
@@ -72,8 +71,7 @@ const AboutPage: FC = () => {
             });
           });
         setOfficerHistory(cards);
-      } catch (error) {
-        console.error("Failed to fetch officer term years", error);
+      } catch {
         setOfficerHistory([
           { term: `A.Y. ${getCurrentAcademicYear()}`, href: "/officers" },
         ]);

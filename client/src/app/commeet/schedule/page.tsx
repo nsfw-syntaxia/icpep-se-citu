@@ -153,11 +153,11 @@ const CommeetPage: FunctionComponent = () => {
       try {
         const mine = await getMyAvailability(id);
         setConfirmedSlots(mine.slots || []);
-      } catch (e) {
+      } catch {
         // If unauthenticated or no prior availability, leave as empty
         setConfirmedSlots([]);
       }
-    })().catch(console.error);
+    })().catch(() => undefined);
   }, []);
 
   // Helper to modify the Draft State
@@ -227,8 +227,7 @@ const CommeetPage: FunctionComponent = () => {
         setConfirmedSlots(mine.slots || []);
         setIsEditing(false);
         setIsDragging(false);
-      } catch (err) {
-        console.error("Failed to save availability from schedule", err);
+      } catch {
       }
     })();
   };

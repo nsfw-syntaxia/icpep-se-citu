@@ -438,8 +438,7 @@ export default function UsersListPage() {
 
         setAllUsers(transformedUsers);
       }
-    } catch (error) {
-      console.error("Error fetching users:", error);
+    } catch {
       setErrorModal({
         show: true,
         title: "Failed to Load Users",
@@ -524,7 +523,6 @@ export default function UsersListPage() {
         error instanceof Error
           ? error.message
           : "An error occurred while adding the user.";
-      console.error("Error adding user:", error);
       setErrorModal({
         show: true,
         title: "Failed to Add User",
@@ -627,7 +625,6 @@ export default function UsersListPage() {
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : "An unknown error occurred.";
-      console.error("Sync upload error:", error);
       setIsUploading(false);
       setUploadProgress("");
 
@@ -736,7 +733,6 @@ export default function UsersListPage() {
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : "Failed to update user.";
-      console.error("Error updating user:", error);
       setErrorModal({
         show: true,
         title: "Update Failed",
@@ -771,7 +767,6 @@ export default function UsersListPage() {
       } catch (error) {
         const errorMessage =
           error instanceof Error ? error.message : "Failed to delete user.";
-        console.error("Error deleting user:", error);
         setErrorModal({
           show: true,
           title: "Delete Failed",
@@ -811,7 +806,6 @@ export default function UsersListPage() {
           error instanceof Error
             ? error.message
             : "Failed to update user status.";
-        console.error("Error toggling user status:", error);
         setErrorModal({
           show: true,
           title: "Status Update Failed",

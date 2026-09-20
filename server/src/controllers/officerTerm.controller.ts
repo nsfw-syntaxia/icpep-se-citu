@@ -39,7 +39,6 @@ export const createOfficerTerm = async (req: Request, res: Response): Promise<vo
       data: created,
     });
   } catch (error) {
-    console.error('Error creating officer term:', error);
     res.status(500).json({
       success: false,
       message: 'Failed to create officer term',
@@ -60,7 +59,6 @@ export const getOfficerTerms = async (req: Request, res: Response): Promise<void
     const terms = await OfficerTerm.find(query).sort({ displayOrder: 1, createdAt: -1 });
     res.status(200).json({ success: true, data: terms });
   } catch (error) {
-    console.error('Error fetching officer terms:', error);
     res.status(500).json({
       success: false,
       message: 'Failed to fetch officer terms',
@@ -76,7 +74,6 @@ export const getOfficerTermYears = async (req: Request, res: Response): Promise<
     years.sort((a: string, b: string) => b.localeCompare(a));
     res.status(200).json({ success: true, data: years });
   } catch (error) {
-    console.error('Error fetching officer term years:', error);
     res.status(500).json({
       success: false,
       message: 'Failed to fetch officer term years',
@@ -90,7 +87,6 @@ export const getAllOfficerTerms = async (req: Request, res: Response): Promise<v
     const terms = await OfficerTerm.find({}).sort({ termYear: -1, displayOrder: 1, createdAt: -1 });
     res.status(200).json({ success: true, data: terms });
   } catch (error) {
-    console.error('Error fetching all officer terms:', error);
     res.status(500).json({
       success: false,
       message: 'Failed to fetch officer terms',
@@ -144,7 +140,6 @@ export const updateOfficerTerm = async (req: Request, res: Response): Promise<vo
       data: updated,
     });
   } catch (error) {
-    console.error('Error updating officer term:', error);
     res.status(500).json({
       success: false,
       message: 'Failed to update officer term',
@@ -163,7 +158,6 @@ export const deleteOfficerTerm = async (req: Request, res: Response): Promise<vo
     }
     res.status(200).json({ success: true, message: 'Officer term deleted successfully' });
   } catch (error) {
-    console.error('Error deleting officer term:', error);
     res.status(500).json({
       success: false,
       message: 'Failed to delete officer term',

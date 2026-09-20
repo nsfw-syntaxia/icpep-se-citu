@@ -201,8 +201,7 @@ export default function ExcelUploadModal({
       });
 
       setUploadedUsers(processedUsers);
-    } catch (error) {
-      console.error("Error processing file:", error);
+    } catch {
       alert("Error processing file. Please check the file format.");
     } finally {
       setIsProcessing(false);

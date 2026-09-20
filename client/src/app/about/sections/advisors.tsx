@@ -130,8 +130,7 @@ const AdvisorsSection: FC = () => {
             imageUrl: a.image || "/gle.png",
           })),
         );
-      } catch (error) {
-        console.error("Failed to fetch advisors", error);
+      } catch {
       } finally {
         setLoading(false);
       }

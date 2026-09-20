@@ -91,7 +91,7 @@ export default function AnnouncementsPage() {
         });
         if (response.success && response.data)
           setAnnouncements(response.data as Announcement[]);
-      } catch (err) {
+      } catch {
         setError("Failed to load.");
       } finally {
         setLoading(false);

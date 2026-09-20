@@ -356,8 +356,7 @@ export default function EventsPage() {
               setRegEndPeriod(parsed.period);
             }
           }
-        } catch (error) {
-          console.error("Failed to fetch event for edit:", error);
+        } catch {
         }
       };
       fetchEvent();
@@ -370,8 +369,7 @@ export default function EventsPage() {
       const response = await eventService.getEvents({ limit: 100 });
       const data = response.data || (Array.isArray(response) ? response : []);
       setEventList(data as EventItem[]);
-    } catch (err) {
-      console.error("Failed to fetch events:", err);
+    } catch {
     } finally {
       setIsLoadingList(false);
     }
@@ -502,8 +500,7 @@ export default function EventsPage() {
         description: "The event has been permanently removed.",
       });
       setShowSuccessModal(true);
-    } catch (error) {
-      console.error("Failed to delete event:", error);
+    } catch {
       alert("Failed to delete event");
     }
   };
@@ -606,8 +603,7 @@ export default function EventsPage() {
       setShowSuccessModal(true);
       handleCancelEdit();
       fetchEvents();
-    } catch (error) {
-      console.error("Error saving event:", error);
+    } catch {
       alert("Failed to save event.");
     } finally {
       setIsSubmitting(false);
@@ -641,8 +637,7 @@ export default function EventsPage() {
       setShowSuccessModal(true);
       handleCancelEdit();
       fetchEvents();
-    } catch (error) {
-      console.error("Error saving draft:", error);
+    } catch {
       alert("Failed to save draft.");
     } finally {
       setIsSubmitting(false);
@@ -703,8 +698,7 @@ export default function EventsPage() {
       setImages([resized]);
       setPreviews([URL.createObjectURL(resized)]);
       if (fileInputRef.current) fileInputRef.current.value = "";
-    } catch (err) {
-      console.error(err);
+    } catch {
     }
   };
 
@@ -721,8 +715,7 @@ export default function EventsPage() {
       const resized = await resizeImage(file);
       setImages([resized]);
       setPreviews([URL.createObjectURL(resized)]);
-    } catch (err) {
-      console.error(err);
+    } catch {
     }
   };
 
@@ -752,8 +745,7 @@ export default function EventsPage() {
       const updated = response.data as { galleryImages?: string[] };
       setGalleryImages(updated?.galleryImages || []);
       fetchEvents();
-    } catch (err) {
-      console.error("Failed to upload gallery photos:", err);
+    } catch {
       alert("Failed to upload gallery photos. Please try again.");
     } finally {
       setIsGalleryUploading(false);
@@ -770,8 +762,7 @@ export default function EventsPage() {
         galleryImages: remaining,
       });
       fetchEvents();
-    } catch (err) {
-      console.error("Failed to remove gallery photo:", err);
+    } catch {
       setGalleryImages(galleryImages);
     }
   };

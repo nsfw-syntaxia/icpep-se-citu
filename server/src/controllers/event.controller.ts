@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import Event, { IEvent } from "../models/event";
+import Event from "../models/event";
 import {
   uploadToCloudinary,
   deleteFromCloudinary,
@@ -99,15 +99,11 @@ export const createEvent = async (
           coverImage = galleryImages[0];
         }
       } catch (uploadError) {
-        console.error("Cloudinary multiple upload failed:", uploadError);
         // Try uploading individually to get partial results
         try {
           for (const f of multerFiles) {
             try {
               if (!f.buffer) {
-                console.warn(
-                  "Skipping file with empty buffer during fallback upload"
-                );
                 continue;
               }
               const singleResult = await uploadToCloudinary(
@@ -117,11 +113,7 @@ export const createEvent = async (
               const url = (singleResult as any).secure_url;
               if (url) galleryImages.push(url);
               if (!coverImage && url) coverImage = url;
-            } catch (singleErr) {
-              console.error(
-                "Failed uploading one file in fallback:",
-                singleErr
-              );
+            } catch {
               // continue with others
             }
           }
@@ -139,7 +131,6 @@ export const createEvent = async (
             return;
           }
         } catch (fallbackErr) {
-          console.error("Fallback upload also failed:", fallbackErr);
           res.status(500).json({
             success: false,
             message: "Failed to upload images",
@@ -166,7 +157,6 @@ export const createEvent = async (
         galleryImages = url ? [url] : [];
         coverImage = url || coverImage;
       } catch (uploadError) {
-        console.error("Cloudinary upload failed:", uploadError);
         res.status(500).json({
           success: false,
           message: "Failed to upload cover image",
@@ -193,7 +183,6 @@ export const createEvent = async (
           ? JSON.parse(req.body.details)
           : req.body.details;
     } catch (parseError) {
-      console.error("JSON parsing failed:", parseError);
       res.status(400).json({
         success: false,
         message: "Invalid JSON data in request",
@@ -280,7 +269,6 @@ export const createEvent = async (
       data: event,
     });
   } catch (error) {
-    console.error("Failed to create event:", error);
 
     res.status(500).json({
       success: false,
@@ -442,7 +430,6 @@ export const updateEvent = async (
         if (!event.coverImage && newUrls.length > 0)
           req.body.coverImage = newUrls[0];
       } catch (err) {
-        console.error("Failed uploading images on update:", err);
         res
           .status(500)
           .json({
@@ -484,8 +471,7 @@ export const updateEvent = async (
     if (req.body.details && typeof req.body.details === "string") {
       try {
         req.body.details = JSON.parse(req.body.details);
-      } catch (e) {
-        console.error("Failed to parse details on update:", e);
+      } catch {
       }
     }
 
@@ -533,7 +519,7 @@ export const updateEvent = async (
     ) {
       try {
         updateData.galleryImages = JSON.parse(updateData.galleryImages);
-      } catch (e) {
+      } catch {
         // ignore
       }
     }

@@ -73,8 +73,7 @@ export default function ProfilePage() {
         } else {
           setError(res.message || "Failed to load user");
         }
-      } catch (err) {
-        console.error("Failed to fetch user", err);
+      } catch {
         setError("Failed to load user");
       } finally {
         setLoading(false);

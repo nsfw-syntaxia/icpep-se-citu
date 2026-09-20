@@ -92,8 +92,7 @@ export default function TestimonialsPage() {
         const itemToEdit = data.find((t: Testimonial) => t._id === editIdParam);
         if (itemToEdit) handleEditClick(itemToEdit);
       }
-    } catch (error) {
-      console.error("Error fetching testimonials:", error);
+    } catch {
     } finally {
       setIsLoadingList(false);
     }
@@ -137,8 +136,7 @@ export default function TestimonialsPage() {
         description: "The testimonial has been permanently removed.",
       });
       setShowSuccessModal(true);
-    } catch (error) {
-      console.error("Failed to delete testimonial:", error);
+    } catch {
       alert("Failed to delete testimonial");
     }
   };
@@ -178,8 +176,7 @@ export default function TestimonialsPage() {
       });
       setShowSuccessModal(true);
       fetchTestimonials();
-    } catch (error) {
-      console.error("Error saving draft:", error);
+    } catch {
       alert("Failed to save draft.");
     } finally {
       setIsSubmitting(false);
@@ -226,8 +223,7 @@ export default function TestimonialsPage() {
       });
       setShowSuccessModal(true);
       fetchTestimonials();
-    } catch (error) {
-      console.error("Error publishing testimonial:", error);
+    } catch {
       alert("Failed to publish testimonial.");
     } finally {
       setIsSubmitting(false);
@@ -286,8 +282,7 @@ export default function TestimonialsPage() {
       setCover(resized);
       setPreview(URL.createObjectURL(resized));
       if (fileInputRef.current) fileInputRef.current.value = "";
-    } catch (err) {
-      console.error("Error resizing image", err);
+    } catch {
     }
   };
 
@@ -304,8 +299,7 @@ export default function TestimonialsPage() {
       const resized = await resizeImage(file);
       setCover(resized);
       setPreview(URL.createObjectURL(resized));
-    } catch (err) {
-      console.error(err);
+    } catch {
     }
   };
 

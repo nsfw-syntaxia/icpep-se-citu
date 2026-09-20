@@ -18,8 +18,7 @@ export const createMerch = async (req: Request, res: Response): Promise<void> =>
     if (typeof prices === 'string') {
       try {
         parsedPrices = JSON.parse(prices);
-      } catch (e) {
-        console.error('Error parsing prices:', e);
+      } catch {
         parsedPrices = [];
       }
     }
@@ -52,7 +51,6 @@ export const createMerch = async (req: Request, res: Response): Promise<void> =>
       data: savedMerch,
     });
   } catch (error) {
-    console.error('Error creating merch:', error);
     res.status(500).json({
       success: false,
       message: 'Failed to create merch',
@@ -69,7 +67,6 @@ export const getMerch = async (req: Request, res: Response): Promise<void> => {
       data: merch,
     });
   } catch (error) {
-    console.error('Error fetching merch:', error);
     res.status(500).json({
       success: false,
       message: 'Failed to fetch merch',
@@ -120,8 +117,7 @@ export const updateMerch = async (req: Request, res: Response): Promise<void> =>
       if (typeof prices === 'string') {
         try {
           parsedPrices = JSON.parse(prices);
-        } catch (e) {
-          console.error('Error parsing prices:', e);
+        } catch {
         }
       }
       merch.prices = parsedPrices;
@@ -135,7 +131,6 @@ export const updateMerch = async (req: Request, res: Response): Promise<void> =>
       data: updatedMerch,
     });
   } catch (error) {
-    console.error('Error updating merch:', error);
     res.status(500).json({
       success: false,
       message: 'Failed to update merch',
@@ -168,7 +163,6 @@ export const deleteMerch = async (req: Request, res: Response): Promise<void> =>
       message: 'Merch deleted successfully',
     });
   } catch (error) {
-    console.error('Error deleting merch:', error);
     res.status(500).json({
       success: false,
       message: 'Failed to delete merch',

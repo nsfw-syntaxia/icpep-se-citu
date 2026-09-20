@@ -173,8 +173,7 @@ export default function EventsListPage() {
 
           setEvents(transformedEvents as Event[]);
         }
-      } catch (err) {
-        console.error("Failed to fetch events:", err);
+      } catch {
         setError("Failed to load events. Please try again later.");
       } finally {
         setIsLoading(false);

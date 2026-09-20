@@ -150,8 +150,7 @@ export default function EventDetailPage() {
         } else {
           setFetchError(res?.message || "Event not found");
         }
-      } catch (err) {
-        console.error(err);
+      } catch {
         setFetchError("Failed to load event");
       } finally {
         setLoading(false);

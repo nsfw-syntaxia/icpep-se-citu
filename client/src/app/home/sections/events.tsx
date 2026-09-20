@@ -137,8 +137,7 @@ export function EventsSection() {
           }));
           setEvents(mapped);
         }
-      } catch (error) {
-        console.error("Failed to fetch events", error);
+      } catch {
       } finally {
         setLoading(false);
       }

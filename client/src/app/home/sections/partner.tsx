@@ -33,8 +33,7 @@ export function PartnersSection() {
         });
 
         setPartners(mappedPartners);
-      } catch (error) {
-        console.error("Failed to fetch sponsors:", error);
+      } catch {
       } finally {
         setLoading(false);
       }

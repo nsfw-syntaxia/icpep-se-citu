@@ -35,8 +35,7 @@ export function AnnouncementsSection() {
           }));
           setAnnouncements(mapped);
         }
-      } catch (error) {
-        console.error("Failed to fetch announcements", error);
+      } catch {
       } finally {
         setLoading(false);
       }

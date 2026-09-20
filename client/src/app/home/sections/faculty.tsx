@@ -127,8 +127,7 @@ export function FacultyOfficersSection() {
         );
 
         setFacultyAndOfficers([...advisorEntries, ...officerEntries]);
-      } catch (error) {
-        console.error("Failed to fetch faculty/officers roster", error);
+      } catch {
       } finally {
         setLoading(false);
       }

@@ -88,8 +88,7 @@ export default function AdvisorsPage() {
         const itemToEdit = data.find((a: Advisor) => a._id === editIdParam);
         if (itemToEdit) handleEditClick(itemToEdit);
       }
-    } catch (error) {
-      console.error("Failed to fetch advisors:", error);
+    } catch {
     } finally {
       setIsLoadingList(false);
     }
@@ -141,8 +140,7 @@ export default function AdvisorsPage() {
         description: "The advisor has been permanently removed.",
       });
       setShowSuccessModal(true);
-    } catch (error) {
-      console.error("Failed to delete advisor:", error);
+    } catch {
       alert("Failed to delete advisor");
     }
   };
@@ -192,8 +190,7 @@ export default function AdvisorsPage() {
       setShowSuccessModal(true);
       handleCancelEdit();
       fetchAdvisors();
-    } catch (error) {
-      console.error("Failed to save advisor:", error);
+    } catch {
       alert("Failed to save advisor");
     } finally {
       setIsSubmitting(false);
@@ -235,8 +232,7 @@ export default function AdvisorsPage() {
       setShowSuccessModal(true);
       handleCancelEdit();
       fetchAdvisors();
-    } catch (error) {
-      console.error("Failed to save draft:", error);
+    } catch {
       alert("Failed to save draft");
     } finally {
       setIsSubmitting(false);
@@ -296,8 +292,7 @@ export default function AdvisorsPage() {
       setCover(resized);
       setPreview(URL.createObjectURL(resized));
       if (fileInputRef.current) fileInputRef.current.value = "";
-    } catch (err) {
-      console.error("Error resizing image", err);
+    } catch {
     }
   };
 
@@ -314,8 +309,7 @@ export default function AdvisorsPage() {
       const resized = await resizeImage(file);
       setCover(resized);
       setPreview(URL.createObjectURL(resized));
-    } catch (err) {
-      console.error("Error resizing image", err);
+    } catch {
     }
   };
 

@@ -122,8 +122,7 @@ const MeetInfoPage: FunctionComponent = () => {
       const { createMeeting } = await import("../../services/meeting");
       const created = await createMeeting(payload);
       router.push(`/commeet/schedule?meetingId=${created._id}`);
-    } catch (err: any) {
-      console.error(err);
+    } catch {
       // Show login hint if unauthorized
       setAuthHint("Login required to create a meeting.");
       setErrors({ ...newErrors, submit: "Failed to create meeting" });

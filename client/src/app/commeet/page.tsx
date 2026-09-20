@@ -44,7 +44,6 @@ const CommeetPage: FunctionComponent = () => {
   useEffect(() => {
     (async () => {
       try {
-        console.log("Attempting to fetch meetings...");
         const { listMeetings } = await import("../services/meeting");
 
         // Fetch upcoming meetings
@@ -73,10 +72,8 @@ const CommeetPage: FunctionComponent = () => {
         });
         // --- END SORTING LOGIC ---
 
-        console.log("Sorted Upcoming Meetings:", upcomingItems);
         setUpcoming(upcomingItems);
-      } catch (err) {
-        console.error("CRITICAL FAILURE LOADING MEETINGS:", err);
+      } catch {
       }
     })();
   }, []);

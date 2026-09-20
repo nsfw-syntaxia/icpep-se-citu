@@ -29,7 +29,6 @@ export const createFaculty = async (req: Request, res: Response): Promise<void> 
       data: savedFaculty,
     });
   } catch (error) {
-    console.error('Error creating faculty member:', error);
     res.status(500).json({
       success: false,
       message: 'Failed to create faculty member',
@@ -46,7 +45,6 @@ export const getFaculty = async (req: Request, res: Response): Promise<void> => 
       data: faculty,
     });
   } catch (error) {
-    console.error('Error fetching faculty:', error);
     res.status(500).json({
       success: false,
       message: 'Failed to fetch faculty',
@@ -63,7 +61,6 @@ export const getAllFaculty = async (req: Request, res: Response): Promise<void> 
       data: faculty,
     });
   } catch (error) {
-    console.error('Error fetching all faculty:', error);
     res.status(500).json({
       success: false,
       message: 'Failed to fetch faculty',
@@ -101,7 +98,6 @@ export const updateFaculty = async (req: Request, res: Response): Promise<void> 
       data: updatedFaculty,
     });
   } catch (error) {
-    console.error('Error updating faculty member:', error);
     res.status(500).json({
       success: false,
       message: 'Failed to update faculty member',
@@ -125,7 +121,6 @@ export const deleteFaculty = async (req: Request, res: Response): Promise<void> 
       message: 'Faculty member deleted successfully',
     });
   } catch (error) {
-    console.error('Error deleting faculty member:', error);
     res.status(500).json({
       success: false,
       message: 'Failed to delete faculty member',

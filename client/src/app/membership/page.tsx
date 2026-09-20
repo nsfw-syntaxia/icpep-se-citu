@@ -29,8 +29,7 @@ const MembershipPage: FC = () => {
           setIsOpen(settingsRes.data.isOpen ?? true);
           setRegistrationUrl(settingsRes.data.registrationUrl || "");
         }
-      } catch (error) {
-        console.error("Failed to load membership content", error);
+      } catch {
       } finally {
         setLoading(false);
       }
