@@ -4,6 +4,16 @@ import { X, ChevronDown, Check } from "lucide-react";
 import { User } from "../utils/user"; // Ensure this path is correct
 import { useState } from "react";
 import Button from "../../components/button";
+import {
+  YEAR_OPTIONS as BASE_YEAR_OPTIONS,
+  ROLE_OPTIONS,
+  MEMBERSHIP_OPTIONS,
+  dropdownOuterStyle,
+  dropdownInnerStyle,
+  dropdownItemStyle,
+  dropdownItemSelectedStyle,
+  dropdownItemHoverStyle,
+} from "../utils/user_options";
 
 interface EditUserModalProps {
   isOpen: boolean;
@@ -36,37 +46,9 @@ export default function EditUserModal({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
-  // Split into a non-scrolling outer wrapper (owns the rounding/border/
-  // shadow) and a scrolling inner container, so the scrollbar never pokes
-  // past the rounded corners.
-  const dropdownOuterStyle =
-    "absolute z-30 w-full mt-2 bg-white border border-gray-100 rounded-2xl shadow-xl overflow-hidden";
-  const dropdownInnerStyle =
-    "flex flex-col gap-1 p-2 max-h-56 overflow-y-auto themed-scrollbar";
-  const dropdownItemStyle =
-    "flex items-center justify-between px-4 py-2.5 rounded-xl cursor-pointer transition-colors font-rubik text-sm font-medium";
-  const dropdownItemSelectedStyle = "bg-primary1/5 text-primary1";
-  const dropdownItemHoverStyle = "hover:bg-gray-50 text-gray-700";
-
-  const ROLE_OPTIONS = [
-    { value: "student", label: "Student" },
-    { value: "council-officer", label: "Council Officer" },
-    { value: "committee-officer", label: "Committee Officer" },
-    { value: "faculty", label: "Faculty" },
-    { value: "admin", label: "Admin" },
-  ];
   const YEAR_OPTIONS = [
     { value: "", label: "Select Year Level" },
-    { value: "1", label: "1st Year" },
-    { value: "2", label: "2nd Year" },
-    { value: "3", label: "3rd Year" },
-    { value: "4", label: "4th Year" },
-  ];
-  const MEMBERSHIP_OPTIONS = [
-    { value: "non-member", label: "Non-Member" },
-    { value: "local", label: "Local Member" },
-    { value: "regional", label: "Regional Member" },
-    { value: "both", label: "Both (Local & Regional)" },
+    ...BASE_YEAR_OPTIONS,
   ];
 
   const selectedRoleLabel = ROLE_OPTIONS.find((o) => o.value === formData.role)?.label ?? "Select Role";

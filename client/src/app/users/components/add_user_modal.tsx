@@ -4,6 +4,16 @@ import { useState } from "react";
 import { X, UserPlus, AlertCircle, ChevronDown, Check } from "lucide-react";
 import { PiPlaceholder } from "react-icons/pi";
 import Button from "../../components/button";
+import {
+  YEAR_OPTIONS,
+  ROLE_OPTIONS as ALL_ROLE_OPTIONS,
+  MEMBERSHIP_OPTIONS as BASE_MEMBERSHIP_OPTIONS,
+  dropdownOuterStyle,
+  dropdownInnerStyle,
+  dropdownItemStyle,
+  dropdownItemSelectedStyle,
+  dropdownItemHoverStyle,
+} from "../utils/user_options";
 
 interface AddUserModalProps {
   isOpen: boolean;
@@ -41,38 +51,15 @@ export default function AddUserModal({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
-  // Split into a non-scrolling outer wrapper (owns the rounding/border/
-  // shadow) and a scrolling inner container, so the scrollbar never pokes
-  // past the rounded corners.
-  const dropdownOuterStyle =
-    "absolute z-30 w-full mt-2 bg-white border border-gray-100 rounded-2xl shadow-xl overflow-hidden";
-  const dropdownInnerStyle =
-    "flex flex-col gap-1 p-2 max-h-56 overflow-y-auto themed-scrollbar";
-  const dropdownItemStyle =
-    "flex items-center justify-between px-4 py-2.5 rounded-xl cursor-pointer transition-colors font-rubik text-sm font-medium";
-  const dropdownItemSelectedStyle = "bg-primary1/5 text-primary1";
-  const dropdownItemHoverStyle = "hover:bg-gray-50 text-gray-700";
-
-  const YEAR_OPTIONS = [
-    { value: "1", label: "1st Year" },
-    { value: "2", label: "2nd Year" },
-    { value: "3", label: "3rd Year" },
-    { value: "4", label: "4th Year" },
-    { value: "5", label: "5th Year" },
-  ];
-  const ROLE_OPTIONS = [
-    { value: "student", label: "Student" },
-    { value: "council-officer", label: "Council Officer" },
-    { value: "committee-officer", label: "Committee Officer" },
-    { value: "faculty", label: "Faculty" },
-    { value: "admin", label: "Admin" },
-  ];
+  const isAdmin =
+    typeof window !== "undefined" && localStorage.getItem("userRole") === "admin";
+  const ROLE_OPTIONS = ALL_ROLE_OPTIONS.filter(
+    (o) => o.value !== "admin" || isAdmin,
+  );
   const MEMBERSHIP_OPTIONS = [
-    { value: "non-member", label: "Non-Member" },
+    BASE_MEMBERSHIP_OPTIONS[0],
     { value: "member", label: "Member" },
-    { value: "local", label: "Local" },
-    { value: "regional", label: "Regional" },
-    { value: "both", label: "Both (Local & Regional)" },
+    ...BASE_MEMBERSHIP_OPTIONS.slice(1),
   ];
 
   const selectedYearLabel = YEAR_OPTIONS.find((o) => o.value === String(formData.yearLevel || ""))?.label ?? "Select Year Level";
@@ -121,7 +108,7 @@ export default function AddUserModal({
       middleName: "",
       yearLevel: undefined,
       password: "123456",
-      role: "member",
+      role: "student",
       membershipStatus: "non-member",
     });
     setErrors({});
