@@ -28,14 +28,13 @@ router.post('/sync-delete', protect as RequestHandler, authorizeRoles('council-o
 router.post('/sync-upsert-batch', protect as RequestHandler, authorizeRoles('council-officer') as RequestHandler, syncUpsertBatch as RequestHandler);
 
 // Standard CRUD routes
-// GET '/' is also used by any logged-in user to look up council/committee
-// officers (e.g. ComMeet availability), so it stays open to anyone
-// authenticated rather than officer-only.
+// GET '/' is open to any logged-in user, but non-officers only ever get a
+// trimmed, officers-only view (ComMeet availability) — see getAllUsers.
 router.get('/', protect as RequestHandler, getAllUsers);
 router.post('/', protect as RequestHandler, authorizeRoles('council-officer') as RequestHandler, createUser as RequestHandler);
 
 // Dynamic routes with :id parameter MUST come last
-router.get('/:id', protect as RequestHandler, getUserById);
+router.get('/:id', protect as RequestHandler, authorizeSelfOrRoles('council-officer') as RequestHandler, getUserById);
 // A user can always update their own record (e.g. Profile page); updating
 // someone else's requires council-officer/admin.
 router.put('/:id', protect as RequestHandler, authorizeSelfOrRoles('council-officer') as RequestHandler, updateUser);

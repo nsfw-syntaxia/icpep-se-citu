@@ -12,6 +12,14 @@ export interface AuthRequest extends Request {
   };
 }
 
+// Only admins may hand out the admin role (e.g. via an Excel upload).
+const assignableRole = (role: string | undefined, requesterRole?: string) =>
+  role === "admin" && requesterRole !== "admin" ? "student" : role;
+
+const PUBLIC_DIRECTORY_ROLES = ["council-officer", "committee-officer"];
+const PUBLIC_DIRECTORY_FIELDS =
+  "firstName lastName middleName role position department councilPosition committeeDepartment committeeTitle";
+
 // Get all users with filtering and sorting
 export const getAllUsers = async (
   req: Request,
@@ -28,14 +36,28 @@ export const getAllUsers = async (
       limit = "50",
     } = req.query;
 
-    // Build filter object
+    // Anyone logged in can look up officers (e.g. ComMeet availability), but
+    // only officers/admins get the full directory with everyone's details.
+    const canSeeEveryone =
+      req.user?.role === "council-officer" || req.user?.role === "admin";
+
     const filter: any = {};
 
-    if (role && role !== "all") {
-      filter.role = role;
+    if (canSeeEveryone) {
+      if (role && role !== "all") {
+        filter.role = role;
+      }
+    } else {
+      const requested = role && role !== "all" ? String(role) : null;
+      filter.role =
+        requested === null
+          ? { $in: PUBLIC_DIRECTORY_ROLES }
+          : PUBLIC_DIRECTORY_ROLES.includes(requested)
+            ? requested
+            : { $in: [] };
     }
 
-    if (membershipType && membershipType !== "all") {
+    if (canSeeEveryone && membershipType && membershipType !== "all") {
       if (membershipType === "non-member") {
         filter["membershipStatus.isMember"] = false;
       } else {
@@ -43,7 +65,9 @@ export const getAllUsers = async (
       }
     }
 
-    if (isActive !== undefined) {
+    if (!canSeeEveryone) {
+      filter.isActive = true;
+    } else if (isActive !== undefined) {
       filter.isActive = isActive === "true";
     }
 
@@ -57,12 +81,11 @@ export const getAllUsers = async (
     const skip = (pageNum - 1) * limitNum;
 
     // Execute query
-    const users = await User.find(filter)
-      .populate("registeredBy", "firstName lastName middleName")
-      .sort(sort)
-      .skip(skip)
-      .limit(limitNum)
-      .lean();
+    let query = User.find(filter);
+    query = canSeeEveryone
+      ? query.populate("registeredBy", "firstName lastName middleName")
+      : query.select(PUBLIC_DIRECTORY_FIELDS);
+    const users = await query.sort(sort).skip(skip).limit(limitNum).lean();
 
     // Get total count for pagination
     const total = await User.countDocuments(filter);
@@ -150,6 +173,14 @@ export const createUser = async (
       res.status(400).json({
         success: false,
         message: "Student number, first name, and last name are required",
+      });
+      return;
+    }
+
+    if (role === "admin" && req.user?.role !== "admin") {
+      res.status(403).json({
+        success: false,
+        message: "Only admins can create admin accounts",
       });
       return;
     }
@@ -357,7 +388,7 @@ export const bulkUploadUsers = async (
             existingUser.middleName = userData.middleName || null;
           
           if (userData.role && existingUser.role !== "admin") {
-            existingUser.role = userData.role;
+            existingUser.role = assignableRole(userData.role, req.user?.role) as IUser["role"];
           }
 
           if (userData.yearLevel) existingUser.yearLevel = userData.yearLevel;
@@ -383,7 +414,7 @@ export const bulkUploadUsers = async (
           firstName: userData.firstName,
           middleName: userData.middleName || null,
           password: userData.password || "123456",
-          role: userData.role || "student",
+          role: assignableRole(userData.role, req.user?.role) || "student",
           yearLevel: userData.yearLevel || null,
           membershipStatus: membershipStatusObj,
           registeredBy: req.user?.id || null,
@@ -607,7 +638,8 @@ export const syncUpsertBatch = async (
           results.successful++;
         } else {
           // Create new user
-          const role = userData.role?.toLowerCase() || "student";
+          const role =
+            assignableRole(userData.role?.toLowerCase(), req.user?.role) || "student";
           // Only officers get positions
           const position = (role === "council-officer" || role === "committee-officer")
             ? (userData.position || null)
@@ -653,6 +685,18 @@ export const syncUpsertBatch = async (
   }
 };
 
+const SELF_EDIT_PROTECTED_FIELDS = [
+  "role",
+  "isActive",
+  "membershipStatus",
+  "position",
+  "department",
+  "councilPosition",
+  "councilYearLevel",
+  "committeeDepartment",
+  "committeeTitle",
+];
+
 // Update user
 export const updateUser = async (
   req: Request,
@@ -684,17 +728,22 @@ export const updateUser = async (
     delete updates.createdAt;
     delete updates.registeredBy;
 
-    // Self-service edits (the route allows a user to update their own
-    // record) can only touch their own profile fields — role, membership,
-    // position and active status stay off-limits unless an officer/admin
-    // is editing someone else's record.
-    const isSelfEdit = req.user?.id === id;
-    const isPrivileged = req.user?.role === "council-officer" || req.user?.role === "admin";
-    if (isSelfEdit && !isPrivileged) {
-      delete updates.role;
-      delete updates.isActive;
-      delete updates.membershipStatus;
-      delete updates.position;
+    if (req.user?.role !== "admin") {
+      if (originalUser.role === "admin" || updates.role === "admin") {
+        res.status(403).json({
+          success: false,
+          message: "Only admins can edit or assign admin accounts",
+        });
+        return;
+      }
+
+      // Self-service edits can only touch profile fields — role, membership,
+      // active status and officer assignments are managed by others.
+      if (req.user?.id === id) {
+        for (const field of SELF_EDIT_PROTECTED_FIELDS) {
+          delete updates[field];
+        }
+      }
     }
 
     // If updating password, it will be hashed by pre-save middleware
@@ -813,6 +862,14 @@ export const toggleUserStatus = async (
       return;
     }
 
+    if (user.role === "admin" && req.user?.role !== "admin") {
+      res.status(403).json({
+        success: false,
+        message: "Only admins can change an admin account's status",
+      });
+      return;
+    }
+
     user.isActive = !user.isActive;
     await user.save();
 
@@ -850,15 +907,25 @@ export const deleteUser = async (
       return;
     }
 
-    const deletedUser = await User.findByIdAndDelete(id);
+    const userToDelete = await User.findById(id);
 
-    if (!deletedUser) {
+    if (!userToDelete) {
       res.status(404).json({
         success: false,
         message: "User not found",
       });
       return;
     }
+
+    if (userToDelete.role === "admin" && req.user?.role !== "admin") {
+      res.status(403).json({
+        success: false,
+        message: "Only admins can delete admin accounts",
+      });
+      return;
+    }
+
+    await userToDelete.deleteOne();
 
     res.status(200).json({
       success: true,
