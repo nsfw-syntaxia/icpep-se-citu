@@ -995,18 +995,22 @@ html {
   .responsive-table tr::after {
     content: "";
     position: absolute;
-    top: 1.5rem;
+    top: 50%;
     right: 1.1rem;
-    width: 0.5rem;
-    height: 0.5rem;
-    border-right: 2px solid #9ca3af;
-    border-bottom: 2px solid #9ca3af;
+    width: 0.375rem;
+    height: 0.375rem;
+    margin-top: -0.1875rem;
+    border-right: 1.5px solid #9ca3af;
+    border-bottom: 1.5px solid #9ca3af;
     transform: rotate(45deg);
     transition: transform 0.2s;
   }
 
+  /* Open rows grow tall with revealed detail, so the chevron stays put near
+     the top instead of tracking the now much lower vertical center. */
   .responsive-table tr[data-open="true"]::after {
-    top: 1.75rem;
+    top: 1.25rem;
+    margin-top: 0;
     transform: rotate(225deg);
   }
 
