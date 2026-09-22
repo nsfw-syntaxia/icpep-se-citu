@@ -5,6 +5,7 @@ import FacultyOfficerCard from "@/app/home/components/faculty-officer-card";
 import { useState, useEffect } from "react";
 import officerService from "@/app/services/officer";
 import advisorService from "@/app/services/advisor";
+import { toTitleCase } from "@/app/officers/utils/format-name";
 
 const shimmerStyle = `
   @keyframes shimmer {
@@ -110,7 +111,7 @@ export function FacultyOfficersSection() {
 
         const advisorEntries: RosterEntry[] = (advisors.data || []).map(
           (a: any) => ({
-            name: a.name,
+            name: toTitleCase(a.name),
             title: a.position,
             image: a.image || "/faculty.png",
           }),
@@ -118,9 +119,9 @@ export function FacultyOfficersSection() {
 
         const officerEntries: RosterEntry[] = (officers || []).map(
           (o: any) => ({
-            name: [o.firstName, o.middleName, o.lastName]
-              .filter(Boolean)
-              .join(" "),
+            name: toTitleCase(
+              [o.firstName, o.middleName, o.lastName].filter(Boolean).join(" "),
+            ),
             title: o.position || "Officer",
             image: o.profilePicture || "/faculty.png",
           }),
@@ -171,13 +172,13 @@ export function FacultyOfficersSection() {
     <section className="light-dark-background relative pt-28 pb-16 sm:pt-36 sm:pb-20">
       <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6">
         <div className="mb-12 md:mb-16 text-center">
-          <h1 className="relative block sm:hidden font-rubik text-4xl font-bold text-primary3 leading-tight">
+          <h2 className="relative block sm:hidden font-rubik text-4xl font-bold text-primary3 leading-tight">
             Council Officers
             <br />& Faculty
-          </h1>
-          <h1 className="relative hidden sm:block font-rubik text-4xl sm:text-5xl font-bold text-primary3 leading-tight">
+          </h2>
+          <h2 className="relative hidden sm:block font-rubik text-4xl sm:text-5xl font-bold text-primary3 leading-tight">
             Council Officers & Faculty
-          </h1>
+          </h2>
           <p className="relative font-raleway text-base sm:text-lg text-bodytext mt-2 max-w-lg mx-auto">
             Meet the framework of our community.
           </p>

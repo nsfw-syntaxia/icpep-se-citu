@@ -16,6 +16,7 @@ import PageHeader from "../components/page-header";
 import facultyService from "../services/faculty";
 import officerTermService from "../services/officerTerm";
 import { getCurrentAcademicYear } from "../utils/academic-year";
+import { toTitleCase } from "../officers/utils/format-name";
 
 interface OfficerTerm {
   term: string;
@@ -41,7 +42,7 @@ const AboutPage: FC = () => {
         const data = Array.isArray(response.data) ? response.data : [];
         setDepartmentFaculty(
           data.map((f: any) => ({
-            name: f.name,
+            name: toTitleCase(f.name),
             position: f.position,
             imageUrl: f.image || "/gle.png",
           })),

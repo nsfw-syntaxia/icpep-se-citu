@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { TestimonialCard } from "@/app/home/components/testimonial-card";
 import testimonialService from "@/app/services/testimonial";
+import { toTitleCase } from "@/app/officers/utils/format-name";
 
 const shimmerStyle = `
   @keyframes shimmer {
@@ -142,7 +143,7 @@ export function TestimonialsSection() {
         const response = await testimonialService.getTestimonials();
         if (response.success && Array.isArray(response.data)) {
           const mapped = response.data.map((item: any) => ({
-            name: item.name,
+            name: toTitleCase(item.name),
             title: item.role,
             imageSrc: item.image,
             testimonial: item.quote,

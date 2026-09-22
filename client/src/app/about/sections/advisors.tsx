@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import AdvisorCard from "../components/advisor-card";
 import advisorService from "@/app/services/advisor";
+import { toTitleCase } from "@/app/officers/utils/format-name";
 
 // Types
 interface AdvisorItem {
@@ -124,7 +125,7 @@ const AdvisorsSection: FC = () => {
         const data = Array.isArray(response.data) ? response.data : [];
         setAdvisorHistory(
           data.map((a: any) => ({
-            name: a.name,
+            name: toTitleCase(a.name),
             position: a.position,
             year: a.yearRange,
             imageUrl: a.image || "/gle.png",
