@@ -118,9 +118,9 @@ export function WhyJoinSection() {
         <div className="mx-auto max-w-6xl w-full">
           <div className="w-full">
             <div className="mb-16 text-center">
-              <h1 className="font-rubik text-4xl sm:text-5xl font-bold text-secondary2 leading-tight mb-4">
+              <h2 className="font-rubik text-4xl sm:text-5xl font-bold text-secondary2 leading-tight mb-4">
                 Why Join <br className="sm:hidden" /> ICpEP SE?
-              </h1>
+              </h2>
               <p className="font-raleway text-gray-300 text-base sm:text-lg max-w-2xl mx-auto">
                 Unlock your potential in a community dedicated to growth and
                 innovation.

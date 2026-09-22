@@ -149,9 +149,9 @@ export function EventsSection() {
     <section className="light-dark-background relative min-h-screen flex items-center justify-center overflow-hidden px-4 sm:px-6 py-16 sm:py-20">
       <div className="relative z-10 w-full max-w-7xl mx-auto transform -translate-y-8">
         <div className="mb-12 md:mb-16 text-center relative">
-          <h1 className="relative font-rubik text-4xl sm:text-5xl font-bold text-primary3 leading-tight">
+          <h2 className="relative font-rubik text-4xl sm:text-5xl font-bold text-primary3 leading-tight">
             Featured Events
-          </h1>
+          </h2>
           <p className="relative font-raleway text-base sm:text-lg text-bodytext mt-2 max-w-lg mx-auto">
             Stay updated with our past and upcoming activities.
           </p>

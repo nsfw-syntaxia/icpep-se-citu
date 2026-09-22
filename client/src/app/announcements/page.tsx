@@ -294,6 +294,7 @@ export default function AnnouncementsPage() {
                         {filterStep === "month" && (
                           <button
                             onClick={() => setFilterStep("year")}
+                            aria-label="Back to year selection"
                             className="p-1 hover:bg-gray-100 rounded-full transition-colors text-primary1 cursor-pointer"
                           >
                             <ChevronLeft className="h-4 w-4" />

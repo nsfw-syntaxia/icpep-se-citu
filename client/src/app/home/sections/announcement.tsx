@@ -51,9 +51,9 @@ export function AnnouncementsSection() {
       <div className="relative z-10 mx-auto max-w-7xl transform -translate-y-8">
         <div className="flex flex-col items-center justify-between gap-4 text-center mb-12 sm:flex-row sm:text-left">
           <div>
-            <h1 className="font-rubik text-4xl sm:text-5xl font-bold text-primary3 leading-tight">
+            <h2 className="font-rubik text-4xl sm:text-5xl font-bold text-primary3 leading-tight">
               Latest Announcements
-            </h1>
+            </h2>
             <p className="font-raleway text-base sm:text-lg text-bodytext mt-2 max-w-lg">
               Be in the loop with the latest from our chapter.
             </p>

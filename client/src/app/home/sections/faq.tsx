@@ -105,9 +105,9 @@ export function FAQSection() {
       {/* Content Layer */}
       <div className="relative z-20 max-w-7xl mx-auto px-6 md:px-12 py-40 pb-56 flex flex-col md:flex-row justify-between items-start w-full">
         <div className="w-full md:w-1/2 mb-10 md:mb-0 text-center md:text-left">
-          <h1 className="font-rubik text-4xl sm:text-5xl font-bold text-primary3 mb-4 leading-tight">
+          <h2 className="font-rubik text-4xl sm:text-5xl font-bold text-primary3 mb-4 leading-tight">
             Any questions? <br /> We got you.
-          </h1>
+          </h2>
           <p className="font-raleway text-bodytext mb-8 text-base md:text-lg max-w-md mx-auto md:mx-0">
             Explore our FAQs or reach out for personalized support—our team is
             here to help you.

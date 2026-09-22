@@ -193,9 +193,9 @@ export function TestimonialsSection() {
 
       <div className="relative flex min-h-screen flex-col items-center justify-center lg:overflow-hidden px-4 py-16 sm:px-6 sm:py-20">
         <div className="relative z-20 mb-16 sm:mb-24 text-center">
-          <h1 className="font-rubik text-4xl font-bold text-primary3 sm:text-5xl leading-tight">
+          <h2 className="font-rubik text-4xl font-bold text-primary3 sm:text-5xl leading-tight">
             Testimonials
-          </h1>
+          </h2>
           <p className="font-raleway mt-2 text-base text-bodytext sm:text-lg max-w-lg mx-auto">
             Sync with the experiences that define ICpEP SE.
           </p>
@@ -297,12 +297,14 @@ export function TestimonialsSection() {
           <button
             onClick={handlePrev}
             disabled={loading || currentIndex === 0}
+            aria-label="Previous testimonial"
             className="flex h-14 w-14 items-center justify-center rounded-full border border-primary1/40 bg-white/80 backdrop-blur-sm text-primary1 transition-all duration-300 hover:bg-primary1/10 active:scale-90 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
           >
             <ChevronLeft size={24} />
           </button>
           <button
             onClick={handleNext}
+            aria-label="Next testimonial"
             disabled={
               loading ||
               testimonials.length === 0 ||

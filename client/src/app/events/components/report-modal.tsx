@@ -83,6 +83,7 @@ export default function ReportEventModal({
           </div>
           <button
             onClick={handleClose}
+            aria-label="Close"
             className="group cursor-pointer rounded-full p-2 text-gray-500 transition-colors hover:bg-gray-100"
           >
             <X className="h-5 w-5 transition-transform duration-300 ease-in-out group-hover:rotate-90" />

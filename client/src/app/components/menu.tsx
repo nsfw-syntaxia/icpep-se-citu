@@ -213,6 +213,7 @@ const Menu: React.FC<MenuProps> = ({ userRole, onExit }) => {
 
         <button
           onClick={onExit}
+          aria-label="Close menu"
           className="group cursor-pointer flex items-center justify-center w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 transition-all duration-300"
         >
           <svg

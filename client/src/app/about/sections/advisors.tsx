@@ -98,6 +98,7 @@ const AdvisorsCarousel: FC<{ items: AdvisorItem[] }> = ({ items }) => {
         <button
           onClick={handlePrev}
           disabled={currentIndex === 0}
+          aria-label="Previous advisor"
           className="flex h-14 w-14 items-center justify-center rounded-full border border-primary1/40 bg-white/80 backdrop-blur-sm text-primary1 transition-all duration-300 hover:bg-primary1/10 active:scale-90 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
         >
           <ChevronLeft size={24} />
@@ -105,6 +106,7 @@ const AdvisorsCarousel: FC<{ items: AdvisorItem[] }> = ({ items }) => {
         <button
           onClick={handleNext}
           disabled={currentIndex === items.length - 1}
+          aria-label="Next advisor"
           className="flex h-14 w-14 items-center justify-center rounded-full border border-primary1/40 bg-white/80 backdrop-blur-sm text-primary1 transition-all duration-300 hover:bg-primary1/10 active:scale-90 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
         >
           <ChevronRight size={24} />
