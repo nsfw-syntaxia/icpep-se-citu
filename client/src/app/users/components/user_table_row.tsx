@@ -63,7 +63,7 @@ export default function UserTableRow({
 
   return (
       <tr
-        className="hover:bg-gray-50/50 transition-colors cursor-pointer"
+        className="group hover:bg-gray-50/50 transition-colors cursor-pointer"
         onClick={() => {
           // Below lg a tap expands the card (see responsive-table-toggle);
           // View is still one of the action buttons.
@@ -150,7 +150,7 @@ export default function UserTableRow({
           </div>
         </td>
         <td data-label="Actions" className="px-4 py-4 whitespace-nowrap text-center">
-          <div className="flex flex-nowrap items-center justify-end gap-1 lg:grid lg:grid-cols-2 lg:justify-start">
+          <div className="flex flex-nowrap items-center justify-end gap-1 lg:grid lg:grid-cols-2 lg:justify-start lg:opacity-40 lg:group-hover:opacity-100 lg:group-focus-within:opacity-100 transition-opacity">
             <button
               onClick={(e) => {
                 e.stopPropagation();

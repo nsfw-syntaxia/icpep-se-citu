@@ -741,7 +741,7 @@ export default function AdvisorsPage() {
                                   </span>
                                 </td>
                                 <td data-label="Actions" className="px-6 sm:px-8 py-4 text-right">
-                                  <div className="inline-flex items-center gap-1 opacity-100 transition-opacity">
+                                  <div className="inline-flex items-center gap-1 opacity-100 lg:opacity-40 lg:group-hover:opacity-100 lg:group-focus-within:opacity-100 transition-opacity">
                                     <button
                                       onClick={() => handleEditClick(item)}
                                       className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-raleway font-semibold whitespace-nowrap text-gray-400 hover:text-primary1 hover:bg-primary1/10 rounded-lg transition-all duration-150 cursor-pointer"

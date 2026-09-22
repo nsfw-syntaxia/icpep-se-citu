@@ -1727,7 +1727,7 @@ export default function OfficersPage() {
 
                                     {/* Actions */}
                                     <td data-label="Actions" className="px-6 sm:px-8 py-4 text-right">
-                                      <div className="inline-flex items-center gap-1 opacity-100 transition-opacity">
+                                      <div className="inline-flex items-center gap-1 opacity-100 lg:opacity-40 lg:group-hover:opacity-100 lg:group-focus-within:opacity-100 transition-opacity">
                                         <button
                                           onClick={() =>
                                             handleEditClick(officer)
@@ -2372,7 +2372,7 @@ export default function OfficersPage() {
                                       </span>
                                     </td>
                                     <td data-label="Actions" className="px-6 sm:px-8 py-4 text-right">
-                                      <div className="inline-flex items-center gap-1 opacity-100 transition-opacity">
+                                      <div className="inline-flex items-center gap-1 opacity-100 lg:opacity-40 lg:group-hover:opacity-100 lg:group-focus-within:opacity-100 transition-opacity">
                                         <button
                                           onClick={() =>
                                             handleArchiveEditClick(item)
