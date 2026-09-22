@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import GalleryLightbox from "./gallery-lightbox";
 
 interface Props {
@@ -33,14 +34,16 @@ export default function EventGallery({ imageUrls }: Props) {
           <div
             key={index}
             onClick={() => setLightboxIndex(index)}
-            className="aspect-square rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer bg-gray-100"
+            className="relative aspect-square rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer bg-gray-100"
           >
             {!imageErrors[index] ? (
-              <img
+              <Image
                 src={photo}
                 alt={`Event photo ${index + 1}`}
+                fill
+                sizes="33vw"
                 onError={() => handleImageError(index)}
-                className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                className="object-cover hover:scale-105 transition-transform duration-300"
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center text-gray-400">
@@ -66,14 +69,16 @@ export default function EventGallery({ imageUrls }: Props) {
           <div
             key={2}
             onClick={() => setLightboxIndex(2)}
-            className="aspect-square rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer bg-gray-100"
+            className="relative aspect-square rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer bg-gray-100"
           >
             {!imageErrors[2] ? (
-              <img
+              <Image
                 src={imageUrls[2]}
                 alt={`Event photo 3`}
+                fill
+                sizes="33vw"
                 onError={() => handleImageError(2)}
-                className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                className="object-cover hover:scale-105 transition-transform duration-300"
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center text-gray-400">
@@ -102,11 +107,13 @@ export default function EventGallery({ imageUrls }: Props) {
           >
             {!imageErrors[2] ? (
               <>
-                <img
+                <Image
                   src={imageUrls[2]}
                   alt="More photos"
+                  fill
+                  sizes="33vw"
                   onError={() => handleImageError(2)}
-                  className="h-full w-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-105"
+                  className="object-cover transition-transform duration-300 ease-in-out group-hover:scale-105"
                 />
                 <div className="absolute inset-0 flex items-center justify-center bg-black/50 transition-opacity duration-300 group-hover:bg-black/40">
                   <span className="font-rubik text-xl sm:text-2xl font-bold text-white">

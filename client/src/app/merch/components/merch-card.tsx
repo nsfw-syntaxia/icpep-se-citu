@@ -3,6 +3,7 @@
 import { ShoppingBag } from "lucide-react";
 import type { FC } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 type MerchStatus = "Available" | "Coming Soon" | "Sold Out";
 
@@ -49,13 +50,14 @@ const MerchCard: FC<MerchCardProps> = ({
     >
       {/* Image */}
       <div className="relative w-full aspect-square bg-slate-100 overflow-hidden rounded-t-2xl">
-        <img
+        <Image
           src={imageSrc || "/gle.png"}
           alt={name}
-          className={`absolute inset-0 h-full w-full object-cover rounded-t-2xl transition-transform duration-300 ${
+          fill
+          sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
+          className={`object-cover rounded-t-2xl transition-transform duration-300 ${
             isAvailable ? "group-hover:scale-105" : "group-hover:scale-105"
           }`}
-          loading="lazy"
         />
         {showOverlay && (
           <div className="absolute inset-0 bg-black/50 flex items-center justify-center rounded-t-2xl">

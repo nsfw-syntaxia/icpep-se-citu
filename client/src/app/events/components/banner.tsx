@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 
 interface Props {
   imageUrl: string;
@@ -18,15 +19,19 @@ export default function EventBanner({ imageUrl, title }: Props) {
           <div className="animate-pulse bg-gray-200 w-full h-full" />
         </div>
       )}
-      <img
+      <Image
         src={imgSrc}
         alt={`Banner for ${title}`}
+        fill
+        sizes="(min-width: 1024px) 40vw, 100vw"
+        priority
         onError={() => {
           setImgSrc("/placeholder.svg");
           setIsLoading(false);
         }}
         onLoad={() => setIsLoading(false)}
-        className="w-full h-full object-cover"
+        unoptimized={imgSrc.endsWith(".svg")}
+        className="object-cover"
       />
     </div>
   );

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Event } from "@/app/events/utils/event";
 import { CalendarPlus } from "lucide-react";
 
@@ -23,10 +24,12 @@ export default function EventCard({ event, hideRSVP = false }: Props) {
         href={`/events/${event.id}`}
         className="relative h-48 shrink-0 overflow-hidden block"
       >
-        <img
+        <Image
           src={event.bannerImageUrl}
           alt={event.title}
-          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+          fill
+          sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+          className="object-cover transition-transform duration-300 group-hover:scale-105"
         />
 
         {!hideRSVP && (

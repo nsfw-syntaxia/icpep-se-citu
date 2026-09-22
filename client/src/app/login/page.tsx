@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Eye, EyeOff, AlertCircle, X, Check, CheckCircle } from "lucide-react";
+import Image from "next/image";
 import Button from "@/app/components/button";
 import { useRouter } from "next/navigation";
 
@@ -477,9 +478,12 @@ export default function Login() {
 
       <div className="relative z-10 bg-white shadow-[0_8px_30px_rgb(0,0,0,0.04),0_20px_40px_rgba(0,0,0,0.08)] rounded-2xl px-8 py-10 sm:px-10 w-[90%] max-w-md text-gray-800 border border-gray-50/50">
         <div className="flex flex-col items-center mb-6">
-          <img
-            src="./icpep logo.png"
+          <Image
+            src="/icpep logo.png"
             alt="ICpEP Logo"
+            width={64}
+            height={64}
+            priority
             className="w-16 h-16 mb-3"
           />
           <h1 className="text-2xl sm:text-3xl font-semibold text-center">

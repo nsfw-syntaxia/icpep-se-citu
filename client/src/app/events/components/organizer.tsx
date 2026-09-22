@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import ReportEventModal from "./report-modal";
 
 interface Props {
@@ -36,11 +37,14 @@ export default function OrganizerCard({ organizer, eventTitle, eventId }: Props)
       <div className="flex items-center gap-4 mb-5">
         <div className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-full overflow-hidden bg-gray-100 shrink-0">
           {!imgError ? (
-            <img
+            <Image
               src={avatarUrl}
               alt={`${name} logo`}
+              fill
+              sizes="3.5rem"
               onError={() => setImgError(true)}
-              className="w-full h-full object-cover"
+              unoptimized={avatarUrl.endsWith(".svg")}
+              className="object-cover"
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center bg-primary1/10 text-primary1">

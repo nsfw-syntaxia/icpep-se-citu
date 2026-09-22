@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useCallback } from "react";
+import Image from "next/image";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
 
 interface GalleryLightboxProps {
@@ -76,11 +77,13 @@ export default function GalleryLightbox({
         className="relative z-0 flex h-full w-full items-center justify-center px-4 py-16 sm:px-20"
         onClick={onClose}
       >
-        <img
+        <Image
           src={imageUrls[index]}
           alt={`Event photo ${index + 1}`}
+          fill
+          sizes="100vw"
           onClick={(e) => e.stopPropagation()}
-          className="max-h-full max-w-full rounded-lg object-contain shadow-2xl"
+          className="rounded-lg object-contain shadow-2xl"
         />
       </div>
 
@@ -100,16 +103,18 @@ export default function GalleryLightbox({
             <button
               key={i}
               onClick={() => onIndexChange(i)}
-              className={`h-12 w-12 shrink-0 overflow-hidden rounded-lg border-2 transition-all cursor-pointer ${
+              className={`relative h-12 w-12 shrink-0 overflow-hidden rounded-lg border-2 transition-all cursor-pointer ${
                 i === index
                   ? "border-white opacity-100"
                   : "border-transparent opacity-50 hover:opacity-80"
               }`}
             >
-              <img
+              <Image
                 src={url}
                 alt={`Thumbnail ${i + 1}`}
-                className="h-full w-full object-cover"
+                fill
+                sizes="3rem"
+                className="object-cover"
               />
             </button>
           ))}
