@@ -17,10 +17,11 @@ import {
   ChevronDown,
   Check,
   CreditCard,
+  Wrench,
 } from "lucide-react";
 import clsx from "clsx";
 
-const sections = [
+const baseSections = [
   {
     label: "Engagement",
     links: [
@@ -51,12 +52,29 @@ const sections = [
   },
 ];
 
-const allLinks = sections.flatMap((s) => s.links);
+const MAINTENANCE_LINK = { name: "Maintenance", href: "/create/maintenance", icon: Wrench };
 
 const Sidebar = () => {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setIsAdmin(localStorage.getItem("userRole") === "admin");
+  }, []);
+
+  // Only admins get the maintenance toggle — everyone else on this sidebar
+  // (council officers) never sees the link.
+  const sections = isAdmin
+    ? baseSections.map((section) =>
+        section.label === "Admin"
+          ? { ...section, links: [...section.links, MAINTENANCE_LINK] }
+          : section,
+      )
+    : baseSections;
+
+  const allLinks = sections.flatMap((s) => s.links);
 
   useEffect(() => {
     if (!menuOpen) return;

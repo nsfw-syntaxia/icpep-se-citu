@@ -24,9 +24,11 @@ import advisorRoutes from "./routes/advisor.routes";
 import facultyRoutes from "./routes/faculty.routes";
 import officerTermRoutes from "./routes/officerTerm.routes";
 import membershipRoutes from "./routes/membership.routes";
+import siteRoutes from "./routes/site.routes";
 import startAnnouncementScheduler from "./utils/scheduler";
 import { escapeRegExp } from "./utils/regex";
 import { getJwtSecret } from "./config/env";
+import { enforceMaintenanceMode } from "./middleware/maintenance.middleware";
 
 // Refuse to start without a usable JWT secret
 getJwtSecret();
@@ -139,6 +141,10 @@ if (process.env.NODE_ENV === "development") {
   });
 }
 
+// 5. Maintenance mode — an admin-only switch that suspends the rest of the
+// API for everyone else. Sits ahead of every route below.
+app.use(enforceMaintenanceMode);
+
 // MongoDB connection function
 const connectDB = async (): Promise<void> => {
   try {
@@ -232,6 +238,7 @@ app.use("/api/merch", merchRoutes);
 app.use("/api/faqs", faqRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/officers", officerRoutes);
+app.use("/api/site", siteRoutes);
 
 // 404 handler - must be after all routes
 app.use((req: Request, res: Response) => {

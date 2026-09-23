@@ -1,0 +1,100 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
+import Image from "next/image";
+import Link from "next/link";
+import { Wrench } from "lucide-react";
+import siteService from "@/app/services/site";
+
+// Re-checked periodically so an already-open tab lands on the maintenance
+// screen shortly after an admin turns it on, not only on the next visit.
+const RECHECK_MS = 30_000;
+
+// Guests and non-admin users can still reach the login page while the site
+// is suspended — that's how an admin who isn't logged in yet gets in to
+// turn it back off.
+const EXEMPT_PATHS = ["/login"];
+
+function MaintenanceScreen({ message }: { message: string }) {
+  return (
+    <div className="fixed inset-0 z-100 flex items-center justify-center bg-white px-6">
+      <div className="flex max-w-md flex-col items-center gap-6 text-center">
+        <div className="relative h-24 w-24">
+          <Image
+            src="/brand/icpep-logo.png"
+            alt="ICpEP Logo"
+            fill
+            className="object-contain"
+            priority
+          />
+        </div>
+
+        <div className="flex items-center gap-2 rounded-full bg-amber-50 px-4 py-1.5 text-amber-700">
+          <Wrench size={14} />
+          <span className="font-raleway text-xs font-semibold uppercase tracking-wide">
+            Under Maintenance
+          </span>
+        </div>
+
+        <h1 className="font-rubik text-2xl font-bold text-primary3">
+          We&apos;ll be right back
+        </h1>
+        <p className="font-raleway text-gray-500">{message}</p>
+
+        <Link
+          href="/login"
+          className="font-raleway text-sm font-semibold text-primary1 underline underline-offset-2 hover:text-primary2"
+        >
+          Admin? Log in
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+export default function MaintenanceGate({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const pathname = usePathname();
+  const [status, setStatus] = useState<{ suspended: boolean; message: string } | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const check = async () => {
+      try {
+        const settings = await siteService.getSettings();
+        if (cancelled) return;
+
+        const role = localStorage.getItem("userRole");
+        const isAdmin = role === "admin";
+        setStatus({
+          suspended: settings.maintenanceMode && !isAdmin,
+          message: settings.maintenanceMessage,
+        });
+      } catch {
+        // Can't reach the API — don't block the whole site over that; let
+        // the page's own error handling (ApiErrorNotice) surface it instead.
+        if (!cancelled) setStatus({ suspended: false, message: "" });
+      }
+    };
+
+    check();
+    const interval = setInterval(check, RECHECK_MS);
+    return () => {
+      cancelled = true;
+      clearInterval(interval);
+    };
+  }, []);
+
+  const exempt = EXEMPT_PATHS.some((p) => pathname === p || pathname?.startsWith(`${p}/`));
+
+  if (status?.suspended && !exempt) {
+    return <MaintenanceScreen message={status.message} />;
+  }
+
+  return <>{children}</>;
+}

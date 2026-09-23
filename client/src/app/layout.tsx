@@ -3,6 +3,7 @@ import { Rubik, Raleway } from "next/font/google";
 import FirstVisitLoader from "./components/first-visit-loader";
 import ApiErrorNotice from "./components/api-error-notice";
 import ResponsiveTableToggle from "./components/responsive-table-toggle";
+import MaintenanceGate from "./components/maintenance-gate";
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, SOCIAL_LINKS, DEFAULT_OG_IMAGE } from "./utils/site";
 import "./globals.css";
 
@@ -66,7 +67,7 @@ export default function RootLayout({
         <FirstVisitLoader />
 
         {/* Regular content - app/loading.jsx handles route changes automatically */}
-        {children}
+        <MaintenanceGate>{children}</MaintenanceGate>
         <ApiErrorNotice />
         <ResponsiveTableToggle />
       </body>
