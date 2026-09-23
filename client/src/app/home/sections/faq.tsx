@@ -5,11 +5,9 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import faqService from "../../services/faq";
 import Button from "../../components/button";
+import { DEFAULT_FAQS, type DefaultFaq } from "../utils/default-faqs";
 
-interface FAQ {
-  question: string;
-  answer: string;
-}
+type FAQ = DefaultFaq;
 
 export function FAQSection() {
   const router = useRouter();
@@ -17,28 +15,7 @@ export function FAQSection() {
   const [faqs, setFaqs] = useState<FAQ[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const staticFaqs: FAQ[] = [
-    {
-      question: "What is the ICpEP SE CIT-U website for?",
-      answer:
-        "The website serves as the official platform for membership registration, announcements, events, and organization updates—making it easier for students to stay informed and connected.",
-    },
-    {
-      question: "How do I register as a member?",
-      answer:
-        "You can register directly through the Membership page. Fill out the form, upload the required documents, and wait for verification from the Registrar.",
-    },
-    {
-      question: "How do I check my membership status?",
-      answer:
-        "After registering, you can view your membership status on your profile page. Status updates (Pending, Verified, or Expired) are handled by the officers.",
-    },
-    {
-      question: "Can I still join events even if I’m not a member?",
-      answer:
-        "Some events are open to all, while others are exclusive to verified ICpEP SE members. Event details will indicate whether membership is required.",
-    },
-  ];
+  const staticFaqs: FAQ[] = DEFAULT_FAQS;
 
   useEffect(() => {
     const fetchFAQs = async () => {
