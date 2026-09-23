@@ -1,4 +1,5 @@
 import { v2 as cloudinary, UploadApiResponse } from 'cloudinary';
+import { Readable } from 'stream';
 
 // Check Cloudinary credentials
 const CLOUDINARY_CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
@@ -61,7 +62,6 @@ export const uploadToCloudinary = (
             });
 
             // Create a readable stream from buffer
-            const { Readable } = require('stream');
             const stream = Readable.from(buffer);
 
             stream.on('error', (err: Error) => {
@@ -101,12 +101,7 @@ export const uploadMultipleToCloudinary = async (
     folder: string
 ): Promise<UploadApiResponse[]> => {
     const uploadPromises = files.map((file) => uploadToCloudinary(file.buffer, folder));
-    try {
-        const results = await Promise.all(uploadPromises);
-        return results;
-    } catch (error) {
-        throw error;
-    }
+    return Promise.all(uploadPromises);
 };
 
 export default cloudinary;

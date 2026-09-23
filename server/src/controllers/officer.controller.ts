@@ -95,15 +95,15 @@ export const getPublicOfficers = async (req: Request, res: Response) => {
 export const updateOfficer = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    let {
+    const {
       assignmentType, // "council" | "committee"
       position,
       department,
       yearLevel,
-      profilePicture,
       remove,
       termYear,
     } = req.body;
+    let { profilePicture } = req.body;
 
     const user = await User.findById(id);
     if (!user) {
@@ -116,7 +116,7 @@ export const updateOfficer = async (req: Request, res: Response) => {
     if (profilePicture && profilePicture.startsWith("data:image")) {
       try {
         const matches = profilePicture.match(
-          /^data:([A-Za-z-+\/]+);base64,(.+)$/
+          /^data:([A-Za-z-+/]+);base64,(.+)$/
         );
         if (matches && matches.length === 3) {
           const buffer = Buffer.from(matches[2], "base64");
