@@ -21,7 +21,7 @@ const rubik = Rubik({
 // title/description/images by setting its own openGraph/twitter fields.
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: { default: SITE_NAME, template: `%s — ${SITE_NAME}` },
+  title: { default: SITE_NAME, template: `%s | ${SITE_NAME}` },
   description: SITE_DESCRIPTION,
   icons: { icon: "/brand/icpep-logo.png" },
   openGraph: {
