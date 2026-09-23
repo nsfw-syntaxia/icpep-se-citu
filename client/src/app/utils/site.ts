@@ -31,12 +31,14 @@ export const DEFAULT_OG_IMAGE = {
 // metadata objects when a segment leaves a field out entirely), so every
 // page has to repeat the site-wide defaults (image, site name, card type)
 // alongside its own title/description.
-export const pageMetadata = (title: string, description: string) => ({
+export const pageMetadata = (title: string, description: string, path: string) => ({
   title,
   description,
+  alternates: { canonical: path },
   openGraph: {
     title,
     description,
+    url: path,
     siteName: SITE_NAME,
     type: "website" as const,
     locale: "en_PH",

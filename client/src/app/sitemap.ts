@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "./utils/site";
+import { departments } from "./officers/utils/officers";
 
 const API_URL = (() => {
   const base = String(process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/+$/, "");
@@ -49,6 +50,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: `${SITE_URL}${path}`,
       lastModified: now,
       priority,
+    })),
+    ...Object.keys(departments).map((slug) => ({
+      url: `${SITE_URL}/officers/${slug}`,
+      lastModified: now,
+      priority: 0.5,
     })),
     ...eventIds.map((id) => ({
       url: `${SITE_URL}/events/${id}`,
