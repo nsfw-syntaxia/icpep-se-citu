@@ -16,6 +16,30 @@ const RECHECK_MS = 30_000;
 // turn it back off.
 const EXEMPT_PATHS = ["/login"];
 
+// The last state we saw, kept for the session so a reload while the site is
+// suspended shows the maintenance screen straight away instead of flashing
+// the real page until the first check returns.
+const CACHE_KEY = "maintenanceStatus";
+
+type Status = { maintenanceMode: boolean; message: string };
+
+const readCache = (): Status | null => {
+  try {
+    const raw = sessionStorage.getItem(CACHE_KEY);
+    return raw ? (JSON.parse(raw) as Status) : null;
+  } catch {
+    return null;
+  }
+};
+
+const writeCache = (status: Status) => {
+  try {
+    sessionStorage.setItem(CACHE_KEY, JSON.stringify(status));
+  } catch {
+    // storage unavailable: the check below still works, just without the cache
+  }
+};
+
 function MaintenanceScreen({ message }: { message: string }) {
   return (
     <div className="fixed inset-0 z-100 flex items-center justify-center bg-white px-6">
@@ -59,7 +83,11 @@ export default function MaintenanceGate({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const [status, setStatus] = useState<{ maintenanceMode: boolean; message: string } | null>(null);
+  const [status, setStatus] = useState<Status | null>(null);
+
+  useEffect(() => {
+    setStatus((current) => current ?? readCache());
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -69,10 +97,12 @@ export default function MaintenanceGate({
         const settings = await siteService.getSettings();
         if (cancelled) return;
 
-        setStatus({
+        const next = {
           maintenanceMode: settings.maintenanceMode,
           message: settings.maintenanceMessage,
-        });
+        };
+        writeCache(next);
+        setStatus(next);
       } catch {
         // Can't reach the API — don't block the whole site over that; let
         // the page's own error handling (ApiErrorNotice) surface it instead.
