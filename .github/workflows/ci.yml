@@ -19,6 +19,7 @@ jobs:
           cache-dependency-path: server/package-lock.json
       - run: npm ci --ignore-scripts
       - run: npm run typecheck
+      - run: npm run lint
       - run: npm test
 
   client:
@@ -36,6 +37,7 @@ jobs:
       - run: npm ci
       - run: npx tsc --noEmit
       - run: npx eslint src --quiet
+      - run: npm test
 
   mirrors:
     runs-on: ubuntu-latest
