@@ -61,7 +61,7 @@ export default function EventDetailPage() {
           const e = res.data as RawEvent;
 
           const toImageUrl = (url: unknown) => {
-            if (!url || typeof url !== "string") return "/placeholder.svg";
+            if (!url || typeof url !== "string") return "/placeholders/placeholder.svg";
             if (url.startsWith("http")) return url;
             const backendHost = (
               process.env.NEXT_PUBLIC_BACKEND_URL ||
@@ -98,7 +98,7 @@ export default function EventDetailPage() {
 
           const organizer =
             typeof e.organizer === "string"
-              ? { name: e.organizer, avatarImageUrl: "/icpep logo.png" }
+              ? { name: e.organizer, avatarImageUrl: "/brand/icpep-logo.png" }
               : e.organizer && typeof e.organizer === "object"
                 ? {
                     name: (e.organizer as Record<string, unknown>).name
@@ -110,9 +110,9 @@ export default function EventDetailPage() {
                           (e.organizer as Record<string, unknown>)
                             .avatarImageUrl,
                         )
-                      : "/icpep logo.png",
+                      : "/brand/icpep-logo.png",
                   }
-                : { name: "", avatarImageUrl: "/icpep logo.png" };
+                : { name: "", avatarImageUrl: "/brand/icpep-logo.png" };
 
           const mode =
             typeof e.mode === "string" && e.mode.toLowerCase() === "online"
@@ -128,7 +128,7 @@ export default function EventDetailPage() {
             location: e.location || "TBA",
             organizer: {
               name: organizer.name || "",
-              avatarImageUrl: organizer.avatarImageUrl || "/icpep logo.png",
+              avatarImageUrl: organizer.avatarImageUrl || "/brand/icpep-logo.png",
             },
             tags: Array.isArray(e.tags) ? e.tags : [],
             bannerImageUrl: toImageUrl(

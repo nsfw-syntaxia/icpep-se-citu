@@ -16,7 +16,7 @@ export const SOCIAL_LINKS = [
 // The chapter cover photo, letterboxed to the 1200x630 size link previews
 // expect (Messenger, Discord, Slack, X/Twitter, Facebook, ...).
 export const DEFAULT_OG_IMAGE = {
-  url: "/og-default.jpg",
+  url: "/brand/og-default.jpg",
   width: 1200,
   height: 630,
   alt: SITE_NAME,

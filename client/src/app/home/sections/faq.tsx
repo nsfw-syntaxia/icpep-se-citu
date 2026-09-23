@@ -50,28 +50,28 @@ export function FAQSection() {
 
       <div className="absolute inset-0 z-10 pointer-events-none">
         <Image
-          src="/question.svg"
+          src="/icons/ui/question.svg"
           alt="question mark"
           width={300}
           height={300}
           className="hidden sm:block absolute top-[10%] left-[-4%] -rotate-15 blur-[6px] opacity-60"
         />
         <Image
-          src="/question.svg"
+          src="/icons/ui/question.svg"
           alt="question mark"
           width={100}
           height={100}
           className="hidden sm:block absolute top-[15%] right-[10%] sm:top-[3%] sm:right-[50%] rotate-7 blur-[7px] opacity-40"
         />
         <Image
-          src="/question.svg"
+          src="/icons/ui/question.svg"
           alt="question mark"
           width={350}
           height={350}
           className="hidden sm:block absolute bottom-[-10%] right-[-1%] rotate-15 blur-[6px] opacity-70"
         />
         <Image
-          src="/question.svg"
+          src="/icons/ui/question.svg"
           alt="question mark"
           width={150}
           height={150}

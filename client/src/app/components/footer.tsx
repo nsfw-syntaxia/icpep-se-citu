@@ -22,7 +22,7 @@ const Footer = () => {
           <div className="flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-0">
             <div className="flex flex-col sm:flex-row items-center gap-4">
               <Image
-                src="/icpep logo.png"
+                src="/brand/icpep-logo.png"
                 alt="ICPEP Logo"
                 width={100}
                 height={100}
@@ -37,35 +37,35 @@ const Footer = () => {
                     onClick={scrollToTop}
                   >
                     <Image
-                      src="/Vector-ifooter.svg"
+                      src="/icons/decorative/Vector-ifooter.svg"
                       alt="I"
                       width={0}
                       height={50}
                       className="h-full w-auto"
                     />
                     <Image
-                      src="/Vector-cfooter.svg"
+                      src="/icons/decorative/Vector-cfooter.svg"
                       alt="C"
                       width={0}
                       height={50}
                       className="h-full w-auto"
                     />
                     <Image
-                      src="/Vector-p1footer.svg"
+                      src="/icons/decorative/Vector-p1footer.svg"
                       alt="P"
                       width={0}
                       height={50}
                       className="h-full w-auto"
                     />
                     <Image
-                      src="/Vector-e1footer.svg"
+                      src="/icons/decorative/Vector-e1footer.svg"
                       alt="E"
                       width={0}
                       height={50}
                       className="h-full w-auto"
                     />
                     <Image
-                      src="/Vector-p2footer.svg"
+                      src="/icons/decorative/Vector-p2footer.svg"
                       alt="P"
                       width={0}
                       height={50}
@@ -73,7 +73,7 @@ const Footer = () => {
                     />
 
                     <Image
-                      src="/Vector-dotfooter.svg"
+                      src="/icons/decorative/Vector-dotfooter.svg"
                       alt="."
                       width={0}
                       height={16}
@@ -81,14 +81,14 @@ const Footer = () => {
                     />
 
                     <Image
-                      src="/Vector-sfooter.svg"
+                      src="/icons/decorative/Vector-sfooter.svg"
                       alt="S"
                       width={0}
                       height={50}
                       className="h-full w-auto"
                     />
                     <Image
-                      src="/Vector-e2footer.svg"
+                      src="/icons/decorative/Vector-e2footer.svg"
                       alt="E"
                       width={0}
                       height={50}
@@ -145,7 +145,7 @@ const Footer = () => {
                   className="group flex h-10 w-10 items-center justify-center rounded-full border border-white/30 transition-all hover:border-white hover:bg-white active:scale-95"
                 >
                   <Image
-                    src="/fb.svg"
+                    src="/icons/social/fb.svg"
                     alt="Facebook"
                     width={18}
                     height={18}
@@ -159,7 +159,7 @@ const Footer = () => {
                   className="group flex h-10 w-10 items-center justify-center rounded-full border border-white/30 transition-all hover:border-white hover:bg-white active:scale-95"
                 >
                   <Image
-                    src="/tiktok.svg"
+                    src="/icons/social/tiktok.svg"
                     alt="TikTok"
                     width={18}
                     height={18}
@@ -171,7 +171,7 @@ const Footer = () => {
                   className="group flex h-10 w-10 items-center justify-center rounded-full border border-white/30 transition-all hover:border-white hover:bg-white active:scale-95"
                 >
                   <Image
-                    src="/email.svg"
+                    src="/icons/social/email.svg"
                     alt="Email"
                     width={18}
                     height={18}

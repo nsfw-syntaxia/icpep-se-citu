@@ -9,7 +9,7 @@ interface Props {
 }
 
 export default function EventBanner({ imageUrl, title }: Props) {
-  const [imgSrc, setImgSrc] = useState(imageUrl || "/placeholder.svg");
+  const [imgSrc, setImgSrc] = useState(imageUrl || "/placeholders/placeholder.svg");
   const [isLoading, setIsLoading] = useState(true);
 
   return (
@@ -26,7 +26,7 @@ export default function EventBanner({ imageUrl, title }: Props) {
         sizes="(min-width: 1024px) 40vw, 100vw"
         priority
         onError={() => {
-          setImgSrc("/placeholder.svg");
+          setImgSrc("/placeholders/placeholder.svg");
           setIsLoading(false);
         }}
         onLoad={() => setIsLoading(false)}

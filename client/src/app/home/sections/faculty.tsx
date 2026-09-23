@@ -113,7 +113,7 @@ export function FacultyOfficersSection() {
           (a: any) => ({
             name: toTitleCase(a.name),
             title: a.position,
-            image: a.image || "/faculty.png",
+            image: a.image || "/content/faculty.png",
           }),
         );
 
@@ -123,7 +123,7 @@ export function FacultyOfficersSection() {
               [o.firstName, o.middleName, o.lastName].filter(Boolean).join(" "),
             ),
             title: o.position || "Officer",
-            image: o.profilePicture || "/faculty.png",
+            image: o.profilePicture || "/content/faculty.png",
           }),
         );
 

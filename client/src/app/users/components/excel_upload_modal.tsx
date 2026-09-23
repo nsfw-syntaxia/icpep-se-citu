@@ -448,7 +448,7 @@ export default function ExcelUploadModal({
                 rounded="lg"
                 onClick={() => {
                   const link = document.createElement("a");
-                  link.href = "/user-upload-template.xlsx";
+                  link.href = "/documents/user-upload-template.xlsx";
                   link.download = "user-upload-template.xlsx";
                   link.click();
                 }}

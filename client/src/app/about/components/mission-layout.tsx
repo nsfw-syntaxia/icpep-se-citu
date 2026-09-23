@@ -7,25 +7,25 @@ import { SectionType } from "../utils/types";
 const MissionLayout: FC<{ section: SectionType }> = ({ section }) => {
   const missionPoints = [
     {
-      imageUrl: "/trophy.png",
+      imageUrl: "/icons/illustrations/trophy.png",
       title: "Academic Support",
       description:
         "Excel in your studies with targeted resources and mentorship.",
     },
     {
-      imageUrl: "/computer.png",
+      imageUrl: "/icons/illustrations/computer.png",
       title: "Skills Training",
       description:
         "Master in-demand tech with hands-on workshops and projects.",
     },
     {
-      imageUrl: "/shield.png",
+      imageUrl: "/icons/illustrations/shield.png",
       title: "Global Competence",
       description:
         "Prepare for an international career solving complex problems.",
     },
     {
-      imageUrl: "/notify.png",
+      imageUrl: "/icons/illustrations/notify.png",
       title: "Community Engagement",
       description: "Connect and collaborate with a vibrant network of peers.",
     },

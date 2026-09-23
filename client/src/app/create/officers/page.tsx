@@ -279,7 +279,7 @@ export default function OfficersPage() {
           !!o.committeeDepartment ||
           o.role === "committee-officer";
         const name = `${o.firstName} ${o.lastName}`;
-        const image = o.profilePicture || "/faculty.png";
+        const image = o.profilePicture || "/content/faculty.png";
 
         const committeeSummary = [
           o.committeeTitle,
@@ -367,7 +367,7 @@ export default function OfficersPage() {
       ...prev,
       name: `${user.firstName} ${user.lastName}`,
     }));
-    setPreview(user.profilePicture || "/faculty.png");
+    setPreview(user.profilePicture || "/content/faculty.png");
     setSearchResults([]);
     setSearchQuery("");
   };

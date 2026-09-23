@@ -73,7 +73,7 @@ export default function AttendanceModal({
             {/* logo */}
             <div className="shrink-0">
               <Image
-                src="/icpep logo.png"
+                src="/brand/icpep-logo.png"
                 alt="ICpEP Logo"
                 width={70}
                 height={70}

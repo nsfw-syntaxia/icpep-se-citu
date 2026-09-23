@@ -44,7 +44,7 @@ const AboutPage: FC = () => {
           data.map((f: any) => ({
             name: toTitleCase(f.name),
             position: f.position,
-            imageUrl: f.image || "/gle.png",
+            imageUrl: f.image || "/content/gle.png",
           })),
         );
       } catch {

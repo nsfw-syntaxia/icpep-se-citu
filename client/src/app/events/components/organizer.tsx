@@ -30,7 +30,7 @@ export default function OrganizerCard({ organizer, eventTitle, eventId }: Props)
       : organizer;
 
   const name = organizerData.name || "Event Organizer";
-  const avatarUrl = organizerData.avatarImageUrl || "/placeholder-avatar.svg";
+  const avatarUrl = organizerData.avatarImageUrl || "/placeholders/placeholder-avatar.svg";
 
   return (
     <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-lg">

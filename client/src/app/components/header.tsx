@@ -319,7 +319,7 @@ const Header = () => {
               aria-label="Go to Home"
             >
               <Image
-                src="/icpep logo.png"
+                src="/brand/icpep-logo.png"
                 alt="ICPEP Logo"
                 width={55}
                 height={55}
@@ -327,56 +327,56 @@ const Header = () => {
               />
               <div className="flex items-end gap-0.5">
                 <Image
-                  src="/Vector-i.svg"
+                  src="/icons/decorative/Vector-i.svg"
                   alt="I"
                   width={0}
                   height={50}
                   className="h-0 w-auto sm:h-12"
                 />
                 <Image
-                  src="/Vector-c.svg"
+                  src="/icons/decorative/Vector-c.svg"
                   alt="C"
                   width={0}
                   height={50}
                   className="h-0 w-auto sm:h-12"
                 />
                 <Image
-                  src="/Vector-p1.svg"
+                  src="/icons/decorative/Vector-p1.svg"
                   alt="P"
                   width={0}
                   height={50}
                   className="h-0 w-auto sm:h-12"
                 />
                 <Image
-                  src="/Vector-e1.svg"
+                  src="/icons/decorative/Vector-e1.svg"
                   alt="E"
                   width={0}
                   height={50}
                   className="h-0 w-auto sm:h-12"
                 />
                 <Image
-                  src="/Vector-p2.svg"
+                  src="/icons/decorative/Vector-p2.svg"
                   alt="P"
                   width={0}
                   height={50}
                   className="h-0 w-auto sm:h-12"
                 />
                 <Image
-                  src="/Vector-dot.svg"
+                  src="/icons/decorative/Vector-dot.svg"
                   alt="."
                   width={0}
                   height={16}
                   className="h-0 w-auto sm:h-3.5 -ml-2"
                 />
                 <Image
-                  src="/Vector-s.svg"
+                  src="/icons/decorative/Vector-s.svg"
                   alt="S"
                   width={0}
                   height={50}
                   className="h-0 w-auto sm:h-12"
                 />
                 <Image
-                  src="/Vector-e2.svg"
+                  src="/icons/decorative/Vector-e2.svg"
                   alt="E"
                   width={0}
                   height={50}
@@ -604,7 +604,7 @@ const Header = () => {
                     }}
                   >
                     <Image
-                      src="/user.svg"
+                      src="/icons/ui/user.svg"
                       alt="User"
                       width={36}
                       height={36}

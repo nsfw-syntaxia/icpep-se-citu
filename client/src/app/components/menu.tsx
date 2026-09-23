@@ -120,7 +120,7 @@ const Menu: React.FC<MenuProps> = ({ userRole, onExit }) => {
     <div className="w-full min-h-screen bg-[#00609c] text-white font-rubik relative overflow-hidden flex flex-col">
       <div className="absolute inset-0 opacity-10 pointer-events-none">
         <Image
-          src="/gle.png"
+          src="/content/gle.png"
           alt="Background"
           fill
           className="object-cover"
@@ -134,7 +134,7 @@ const Menu: React.FC<MenuProps> = ({ userRole, onExit }) => {
           className="flex items-center gap-3 cursor-pointer group opacity-90 hover:opacity-100 transition-opacity"
         >
           <Image
-            src="/icpep logo.png"
+            src="/brand/icpep-logo.png"
             alt="ICPEP Logo"
             width={56}
             height={56}
@@ -144,56 +144,56 @@ const Menu: React.FC<MenuProps> = ({ userRole, onExit }) => {
           <div className="flex flex-col justify-center gap-0.5">
             <div className="flex items-start gap-px h-6.5 md:h-8.5">
               <Image
-                src="/Vector-ifooter.svg"
+                src="/icons/decorative/Vector-ifooter.svg"
                 alt="I"
                 width={0}
                 height={34}
                 className="h-full w-auto"
               />
               <Image
-                src="/Vector-cfooter.svg"
+                src="/icons/decorative/Vector-cfooter.svg"
                 alt="C"
                 width={0}
                 height={34}
                 className="h-full w-auto"
               />
               <Image
-                src="/Vector-p1footer.svg"
+                src="/icons/decorative/Vector-p1footer.svg"
                 alt="P"
                 width={0}
                 height={34}
                 className="h-full w-auto"
               />
               <Image
-                src="/Vector-e1footer.svg"
+                src="/icons/decorative/Vector-e1footer.svg"
                 alt="E"
                 width={0}
                 height={34}
                 className="h-full w-auto"
               />
               <Image
-                src="/Vector-p2footer.svg"
+                src="/icons/decorative/Vector-p2footer.svg"
                 alt="P"
                 width={0}
                 height={34}
                 className="h-full w-auto"
               />
               <Image
-                src="/Vector-dotfooter.svg"
+                src="/icons/decorative/Vector-dotfooter.svg"
                 alt="."
                 width={0}
                 height={8}
                 className="h-[30%] w-auto -ml-0.5 mr-0.5 self-end"
               />
               <Image
-                src="/Vector-sfooter.svg"
+                src="/icons/decorative/Vector-sfooter.svg"
                 alt="S"
                 width={0}
                 height={34}
                 className="h-full w-auto"
               />
               <Image
-                src="/Vector-e2footer.svg"
+                src="/icons/decorative/Vector-e2footer.svg"
                 alt="E"
                 width={0}
                 height={34}
@@ -369,14 +369,14 @@ const Menu: React.FC<MenuProps> = ({ userRole, onExit }) => {
               <div className="flex gap-4">
                 {[
                   {
-                    src: "/fb.svg",
+                    src: "/icons/social/fb.svg",
                     link: "https://www.facebook.com/cituicpep",
                   },
                   {
-                    src: "/tiktok.svg",
+                    src: "/icons/social/tiktok.svg",
                     link: "https://tiktok.com/@icpep.se.citu",
                   },
-                  { src: "/email.svg", link: "mailto:icpepse@cit.edu" },
+                  { src: "/icons/social/email.svg", link: "mailto:icpepse@cit.edu" },
                 ].map((social, idx) => (
                   <a
                     key={idx}

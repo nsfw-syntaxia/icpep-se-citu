@@ -35,7 +35,7 @@ export const CallToActionCard = () => {
             Sponsor Us
           </a>
           <a
-            href="/primer.pdf"
+            href="/documents/primer.pdf"
             download="Sponsorship_Primer.pdf"
             target="_blank"
             rel="noopener noreferrer"

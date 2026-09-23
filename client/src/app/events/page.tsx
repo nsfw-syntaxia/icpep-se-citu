@@ -89,8 +89,8 @@ export default function EventsListPage() {
             : [];
 
           const toImageUrl = (url: unknown): string => {
-            if (!url) return "/placeholder.svg";
-            if (typeof url !== "string") return "/placeholder.svg";
+            if (!url) return "/placeholders/placeholder.svg";
+            if (typeof url !== "string") return "/placeholders/placeholder.svg";
             if (url.startsWith("http")) return url;
             const backendHost = (
               process.env.NEXT_PUBLIC_BACKEND_URL ||
@@ -111,7 +111,7 @@ export default function EventsListPage() {
             const organizerRaw = evt["organizer"];
             const organizer =
               typeof organizerRaw === "string"
-                ? { name: organizerRaw, avatarImageUrl: "/icpep logo.png" }
+                ? { name: organizerRaw, avatarImageUrl: "/brand/icpep-logo.png" }
                 : (organizerRaw as Record<string, unknown> | undefined)
                   ? {
                       name: String(
@@ -120,10 +120,10 @@ export default function EventsListPage() {
                       avatarImageUrl: String(
                         (organizerRaw as Record<string, unknown>)[
                           "avatarImageUrl"
-                        ] ?? "/icpep logo.png",
+                        ] ?? "/brand/icpep-logo.png",
                       ),
                     }
-                  : { name: "", avatarImageUrl: "/icpep logo.png" };
+                  : { name: "", avatarImageUrl: "/brand/icpep-logo.png" };
 
             const tags = Array.isArray(evt["tags"])
               ? (evt["tags"] as unknown[]).map((t) => String(t))

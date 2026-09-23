@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: { default: SITE_NAME, template: `%s — ${SITE_NAME}` },
   description: SITE_DESCRIPTION,
-  icons: { icon: "/icpep logo.png" },
+  icons: { icon: "/brand/icpep-logo.png" },
   openGraph: {
     siteName: SITE_NAME,
     type: "website",
@@ -43,7 +43,7 @@ const organizationJsonLd = {
   name: SITE_NAME,
   alternateName: "ICpEP.SE CIT-U",
   url: SITE_URL,
-  logo: `${SITE_URL}/icpep logo.png`,
+  logo: `${SITE_URL}/brand/icpep-logo.png`,
   description: SITE_DESCRIPTION,
   sameAs: SOCIAL_LINKS,
 };

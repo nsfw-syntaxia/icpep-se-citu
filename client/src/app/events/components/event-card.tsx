@@ -14,7 +14,7 @@ export default function EventCard({ event }: Props) {
   const defaultImg =
     event.bannerImageUrl ??
     (event as unknown as { image?: string }).image ??
-    "/placeholder.svg";
+    "/placeholders/placeholder.svg";
   const [imgSrc, setImgSrc] = useState<string>(defaultImg);
   const [imgLoaded, setImgLoaded] = useState(false);
 
@@ -64,7 +64,7 @@ export default function EventCard({ event }: Props) {
           sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
           onLoad={() => setImgLoaded(true)}
           onError={() => {
-            setImgSrc("/placeholder.svg");
+            setImgSrc("/placeholders/placeholder.svg");
             setImgLoaded(true);
           }}
           unoptimized={imgSrc.endsWith(".svg")}

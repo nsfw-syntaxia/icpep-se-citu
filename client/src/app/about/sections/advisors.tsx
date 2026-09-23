@@ -130,7 +130,7 @@ const AdvisorsSection: FC = () => {
             name: toTitleCase(a.name),
             position: a.position,
             year: a.yearRange,
-            imageUrl: a.image || "/gle.png",
+            imageUrl: a.image || "/content/gle.png",
           })),
         );
       } catch {

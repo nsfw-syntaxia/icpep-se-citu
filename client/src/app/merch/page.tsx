@@ -28,7 +28,7 @@ const formatPrice = (prices: ApiMerchItem["prices"]): string => {
 const mapMerchItem = (item: ApiMerchItem): MerchItem => ({
   name: item.name,
   description: item.description,
-  imageSrc: item.image || "/gle.png",
+  imageSrc: item.image || "/content/gle.png",
   price: formatPrice(item.prices),
   status: "Available",
   buyLink: item.orderLink,

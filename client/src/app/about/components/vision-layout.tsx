@@ -7,19 +7,19 @@ import { SectionType } from "../utils/types";
 const VisionLayout: FC<{ section: SectionType }> = ({ section }) => {
   const visionPoints = [
     {
-      iconUrl: "/rocket.png",
+      iconUrl: "/icons/illustrations/rocket.png",
       title: "Fostering Innovators",
       description: "Leading and inspiring technological advancement.",
       sizeClass: "w-[85%] h-[85%] md:w-3/4 md:h-3/4",
     },
     {
-      iconUrl: "/target.png",
+      iconUrl: "/icons/illustrations/target.png",
       title: "Ethical Leadership",
       description: "Impacting society with technical prowess and integrity.",
       sizeClass: "w-[85%] h-[85%] md:w-3/4 md:h-3/4",
     },
     {
-      iconUrl: "/megaphone.png",
+      iconUrl: "/icons/illustrations/megaphone.png",
       title: "Community Driven",
       description: "Building a collaborative and supportive student network.",
       sizeClass: "w-[80%] h-[80%] md:w-2/3 md:h-2/3",

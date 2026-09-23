@@ -11,8 +11,8 @@ export default function DevelopersPage() {
       name: "Maica C. Eupinado",
       title: "UI/UX",
       desc: "Designer",
-      imageSrc: "/eupinado.png",
-      bgSrc: "/bg-mai.png",
+      imageSrc: "/team/eupinado.png",
+      bgSrc: "/team/bg-mai.png",
       imageClassName: "scale-[0.95] origin-bottom",
       details: [
         "3rd Year Batch Representative, 6th Administration",
@@ -26,8 +26,8 @@ export default function DevelopersPage() {
       name: "Gio Christian D. Macatual",
       title: "Frontend",
       desc: "Developer",
-      imageSrc: "/macatual.png",
-      bgSrc: "/bg-gio.png",
+      imageSrc: "/team/macatual.png",
+      bgSrc: "/team/bg-gio.png",
       details: [
         "Auditor, 6th Administration",
         "Asst. Head of Finance Committee, 6th Administration",
@@ -40,8 +40,8 @@ export default function DevelopersPage() {
       name: "Shan Michael V. Raboy",
       title: "Backend",
       desc: "Developer",
-      imageSrc: "/raboy.png",
-      bgSrc: "/bg-shan.png",
+      imageSrc: "/team/raboy.png",
+      bgSrc: "/team/bg-shan.png",
       details: [
         "Vice President - Internal, 6th Administration",
         "Head of Internal Affairs Committee, 6th Administration",
@@ -55,8 +55,8 @@ export default function DevelopersPage() {
       name: "Trixie T. Dolera",
       title: "Fullstack",
       desc: "Developer",
-      imageSrc: "/dolera.png",
-      bgSrc: "/bg-rexi.png",
+      imageSrc: "/team/dolera.png",
+      bgSrc: "/team/bg-rexi.png",
       imageClassName: "scale-[1.095] origin-bottom",
       details: [
         "Public Relations Officer, 6th Administration",

@@ -78,13 +78,13 @@ const OfficersPage = () => {
             position,
             role,
             name: formatOfficerName(o.firstName, o.lastName, o.middleName),
-            image: o.profilePicture || "/faculty.png",
+            image: o.profilePicture || "/content/faculty.png",
           };
         }
         return {
           position: o.committeeTitle || o.position || "",
           name: formatOfficerName(o.firstName, o.lastName, o.middleName),
-          image: o.profilePicture || "/faculty.png",
+          image: o.profilePicture || "/content/faculty.png",
         };
       });
     };
@@ -102,7 +102,7 @@ const OfficersPage = () => {
         // Manually-entered archive rows are already typed as "Last, First" —
         // just normalize the casing rather than reordering them.
         name: toTitleCase(t.name),
-        image: t.image || "/faculty.png",
+        image: t.image || "/content/faculty.png",
       }));
     };
 

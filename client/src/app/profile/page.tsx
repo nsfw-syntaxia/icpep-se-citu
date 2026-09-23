@@ -331,7 +331,7 @@ export default function ProfilePage() {
                 {/* Watermark Logo - REDUCED SIZE */}
                 <div className="absolute -right-7.5 top-1/2 -translate-y-1/2 w-75 h-75 opacity-[0.08] pointer-events-none hidden lg:block mix-blend-overlay">
                   <Image
-                    src="/icpep logo.png"
+                    src="/brand/icpep-logo.png"
                     alt="Logo"
                     fill
                     className="object-contain"

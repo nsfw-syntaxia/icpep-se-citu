@@ -125,7 +125,7 @@ export function EventsSection() {
                 typeof item.organizer === "string"
                   ? item.organizer
                   : item.organizer?.name || "ICpEP.SE CIT-U",
-              avatarImageUrl: "/icpep logo.png",
+              avatarImageUrl: "/brand/icpep-logo.png",
             },
             tags: item.tags || [],
             bannerImageUrl:
