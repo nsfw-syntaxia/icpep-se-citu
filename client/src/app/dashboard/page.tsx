@@ -1,23 +1,23 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { LoadingScreen } from "@/app/components/loading";
 import { OFFICER_DASHBOARD_ROLES } from "./roles";
+import OfficerDashboard from "./components/officer-dashboard";
+import StudentDashboard from "./components/student-dashboard";
 
 /**
- * Dashboard index — auto-routes to the appropriate dashboard
- * based on the user's role stored in localStorage.
- *
- * Officer roles   → /dashboard/officer
- * Student/Member  → /dashboard/student
- * Unauthenticated → /login
+ * Dashboard — renders the officer or student dashboard based on the user's
+ * role, without moving to a role-named route (so the URL always just reads
+ * /dashboard, not /dashboard/officer or /dashboard/student).
  */
-export default function DashboardIndexPage() {
+export default function DashboardPage() {
   const router = useRouter();
+  const [role, setRole] = useState<string | null>(null);
 
   useEffect(() => {
-    const token    = localStorage.getItem("authToken");
+    const token = localStorage.getItem("authToken");
     const userRole = localStorage.getItem("userRole");
 
     if (!token || !userRole) {
@@ -25,15 +25,16 @@ export default function DashboardIndexPage() {
       return;
     }
 
-    if (OFFICER_DASHBOARD_ROLES.includes(userRole)) {
-      router.replace("/dashboard/officer");
-    } else {
-      router.replace("/dashboard/student");
-    }
+    setRole(userRole);
   }, [router]);
 
-  // Brief loading state while redirecting
-  return (
-    <LoadingScreen showEntrance={false} />
+  if (!role) {
+    return <LoadingScreen showEntrance={false} />;
+  }
+
+  return OFFICER_DASHBOARD_ROLES.includes(role) ? (
+    <OfficerDashboard />
+  ) : (
+    <StudentDashboard />
   );
 }

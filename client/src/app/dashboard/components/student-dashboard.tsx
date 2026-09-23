@@ -85,7 +85,7 @@ const lowestPrice = (prices: MerchItem["prices"]) => {
   return `₱${min.toLocaleString()}`;
 };
 
-export default function StudentDashboardPage() {
+export default function StudentDashboard() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<CurrentUser | null>(null);
@@ -118,7 +118,7 @@ export default function StudentDashboardPage() {
             title: e.title,
             date: formatEventDate(e.eventDate, e.time),
             venue: e.location || "TBA",
-            imageUrl: e.coverImage || "/gle.png",
+            imageUrl: e.coverImage || "/content/gle.png",
             status: eventStatus(e.eventDate),
           })),
         );
@@ -320,7 +320,7 @@ export default function StudentDashboardPage() {
                         key={item._id}
                         name={item.name}
                         price={lowestPrice(item.prices)}
-                        imageUrl={item.image || "/gle.png"}
+                        imageUrl={item.image || "/content/gle.png"}
                         onClick={() => router.push("/merch")}
                       />
                     ))}

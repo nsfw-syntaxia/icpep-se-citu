@@ -149,7 +149,7 @@ const timeAgo = (dateStr: string) => {
   return new Date(dateStr).toLocaleDateString("en-US", { month: "short", day: "numeric" });
 };
 
-export default function OfficerDashboardPage() {
+export default function OfficerDashboard() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<CurrentUser | null>(null);
@@ -193,7 +193,7 @@ export default function OfficerDashboardPage() {
             title: e.title,
             date: formatEventDate(e.eventDate, e.time),
             venue: e.location || "TBA",
-            imageUrl: e.coverImage || "/gle.png",
+            imageUrl: e.coverImage || "/content/gle.png",
             status: eventStatus(e.eventDate),
           })),
         );
