@@ -59,7 +59,7 @@ export default function MaintenanceGate({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const [status, setStatus] = useState<{ suspended: boolean; message: string } | null>(null);
+  const [status, setStatus] = useState<{ maintenanceMode: boolean; message: string } | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -69,16 +69,14 @@ export default function MaintenanceGate({
         const settings = await siteService.getSettings();
         if (cancelled) return;
 
-        const role = localStorage.getItem("userRole");
-        const isAdmin = role === "admin";
         setStatus({
-          suspended: settings.maintenanceMode && !isAdmin,
+          maintenanceMode: settings.maintenanceMode,
           message: settings.maintenanceMessage,
         });
       } catch {
         // Can't reach the API — don't block the whole site over that; let
         // the page's own error handling (ApiErrorNotice) surface it instead.
-        if (!cancelled) setStatus({ suspended: false, message: "" });
+        if (!cancelled) setStatus({ maintenanceMode: false, message: "" });
       }
     };
 
@@ -92,7 +90,12 @@ export default function MaintenanceGate({
 
   const exempt = EXEMPT_PATHS.some((p) => pathname === p || pathname?.startsWith(`${p}/`));
 
-  if (status?.suspended && !exempt) {
+  // Read fresh on every render (pathname changes on navigation) so logging in
+  // as an admin lifts the screen immediately instead of after the next recheck.
+  // status is only set after mount, so this never runs during server render.
+  const isAdmin = status !== null && localStorage.getItem("userRole") === "admin";
+
+  if (status?.maintenanceMode && !isAdmin && !exempt) {
     return <MaintenanceScreen message={status.message} />;
   }
 
