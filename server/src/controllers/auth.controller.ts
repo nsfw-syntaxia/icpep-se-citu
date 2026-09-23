@@ -6,7 +6,7 @@ import { validatePassword } from "../utils/password_validator";
 import { sendNotification } from "../utils/notification";
 import sendEmail from "../utils/email";
 import { DEVELOPER_STUDENT_NUMBERS } from "../config/developers";
-import { getJwtSecret } from "../config/env";
+import { getJwtSecret, getJwtExpiresIn } from "../config/env";
 
 export interface AuthRequest extends Request {
   user?: {
@@ -16,8 +16,10 @@ export interface AuthRequest extends Request {
 }
 
 // Generate JWT Token
-const generateToken = (userId: string, role: string): string => {
-  return jwt.sign({ id: userId, role }, getJwtSecret(), { expiresIn: "7d" });
+const generateToken = (userId: string, role: string, tokenVersion = 0): string => {
+  return jwt.sign({ id: userId, role, tv: tokenVersion }, getJwtSecret(), {
+    expiresIn: getJwtExpiresIn() as jwt.SignOptions["expiresIn"],
+  });
 };
 
 // @desc    Login user
@@ -88,7 +90,7 @@ export const login = async (req: Request, res: Response) => {
     }
 
     // Generate token
-    const token = generateToken(user._id.toString(), user.role);
+    const token = generateToken(user._id.toString(), user.role, user.tokenVersion);
 
     // Prepare user data (exclude sensitive fields)
     const userData = {
@@ -178,6 +180,7 @@ export const firstLoginPasswordChange = async (
     // Update password
     user.password = newPassword;
     user.firstLogin = false;
+    user.$locals.keepSessions = true;
     await user.save();
 
     // Send notification
@@ -261,6 +264,7 @@ export const changePassword = async (
     // Update password
     user.password = newPassword;
     user.firstLogin = false;
+    user.$locals.keepSessions = true;
     await user.save();
 
     // Send notification

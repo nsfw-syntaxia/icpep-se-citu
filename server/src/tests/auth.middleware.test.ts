@@ -60,6 +60,25 @@ describe("authenticateToken", () => {
     expect(res.statusCode).toBe(401);
   });
 
+  it("rejects a token issued before the password was reset", async () => {
+    account({ role: "student", isActive: true, tokenVersion: 2 });
+    const res = mockRes();
+    const next = vi.fn();
+    await authenticateToken(bearer(sign({ id: ID, role: "student", tv: 1 })), res, next);
+    expect(res.statusCode).toBe(401);
+    expect(next).not.toHaveBeenCalled();
+  });
+
+  it("accepts a token whose version matches, and older tokens without one", async () => {
+    account({ role: "student", isActive: true, tokenVersion: 0 });
+    const next = vi.fn();
+    await authenticateToken(bearer(sign({ id: ID, role: "student" })), mockRes(), next);
+    expect(next).toHaveBeenCalledTimes(1);
+    account({ role: "student", isActive: true, tokenVersion: 3 });
+    await authenticateToken(bearer(sign({ id: ID, role: "student", tv: 3 })), mockRes(), next);
+    expect(next).toHaveBeenCalledTimes(2);
+  });
+
   it("uses the current role, not the one in the token", async () => {
     account({ role: "student", isActive: true });
     const req = bearer(sign({ id: ID, role: "admin" }));

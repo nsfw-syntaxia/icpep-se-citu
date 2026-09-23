@@ -8,6 +8,7 @@ export interface JwtPayload {
   id: string;
   role: string;
   userId?: string;
+  tv?: number;
 }
 
 // Extend Express Request type to include user
@@ -55,12 +56,16 @@ export const authenticateToken = async (
   }
 
   try {
-    const account = await User.findById(decoded.id).select('role isActive').lean();
+    const account = await User.findById(decoded.id).select('role isActive tokenVersion').lean();
 
-    if (!account || !account.isActive) {
+    if (
+      !account ||
+      !account.isActive ||
+      (decoded.tv ?? 0) !== (account.tokenVersion ?? 0)
+    ) {
       return res.status(401).json({
         success: false,
-        message: 'Invalid token: this account is no longer active.',
+        message: 'Invalid token: this session is no longer valid.',
       });
     }
 

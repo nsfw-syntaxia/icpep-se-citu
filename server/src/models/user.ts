@@ -33,6 +33,8 @@ export interface IUser extends Document {
   isActive: boolean;
   registeredBy?: mongoose.Types.ObjectId | IUser;
   firstLogin: boolean;
+  // Bumped when the password is reset, which signs out every existing session.
+  tokenVersion: number;
   createdAt: Date;
   updatedAt: Date;
   fullName: string;
@@ -146,6 +148,10 @@ const userSchema = new Schema<IUser>(
       default: true,
       select: false,
     },
+    tokenVersion: {
+      type: Number,
+      default: 0,
+    },
     resetPasswordCode: {
       type: String,
       select: false,
@@ -181,6 +187,12 @@ userSchema.virtual("registeredByName").get(function (this: IUser) {
 
 // Pre-save middleware to hash password
 userSchema.pre("save", async function (this: IUser, next) {
+  // A changed password revokes every token issued before it, unless the
+  // caller is the signed-in owner changing it themselves ($locals.keepSessions).
+  if (this.isModified("password") && !this.isNew && !this.$locals.keepSessions) {
+    this.tokenVersion = (this.tokenVersion ?? 0) + 1;
+  }
+
   // Bulk creates pre-hash their passwords (see user.controller), so skip re-hashing.
   if (!this.isModified("password") || this.$locals.passwordAlreadyHashed) {
     return next();

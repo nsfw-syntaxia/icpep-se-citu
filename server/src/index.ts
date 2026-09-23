@@ -27,11 +27,13 @@ import membershipRoutes from "./routes/membership.routes";
 import siteRoutes from "./routes/site.routes";
 import startAnnouncementScheduler from "./utils/scheduler";
 import { escapeRegExp } from "./utils/regex";
-import { getJwtSecret } from "./config/env";
+import { getJwtSecret, getDefaultPassword } from "./config/env";
 import { enforceMaintenanceMode } from "./middleware/maintenance.middleware";
 
-// Refuse to start without a usable JWT secret
+// Refuse to start without a usable JWT secret (and, in production, a
+// deliberate default password for new accounts)
 getJwtSecret();
+getDefaultPassword();
 
 // Initialize express app
 const app: Application = express();
