@@ -32,6 +32,8 @@ export default function DashboardPage() {
     return <LoadingScreen showEntrance={false} />;
   }
 
+  if (role === "admin") return <OfficerDashboard variant="admin" />;
+
   return OFFICER_DASHBOARD_ROLES.includes(role) ? (
     <OfficerDashboard />
   ) : (

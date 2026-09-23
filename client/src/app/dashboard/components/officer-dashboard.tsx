@@ -20,6 +20,7 @@ import eventService from "../../services/event";
 import announcementService from "../../services/announcement";
 import merchService from "../../services/merch";
 import { notificationService } from "../../services/notification";
+import siteService from "../../services/site";
 
 import {
   Users,
@@ -31,6 +32,7 @@ import {
   Package,
   CalendarClock,
   ChevronRight,
+  Wrench,
 } from "lucide-react";
 
 // ─── Icon map for stat cards ──────────────────────────────────────────────────
@@ -149,7 +151,11 @@ const timeAgo = (dateStr: string) => {
   return new Date(dateStr).toLocaleDateString("en-US", { month: "short", day: "numeric" });
 };
 
-export default function OfficerDashboard() {
+export default function OfficerDashboard({
+  variant = "officer",
+}: {
+  variant?: "officer" | "admin";
+}) {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<CurrentUser | null>(null);
@@ -157,6 +163,7 @@ export default function OfficerDashboard() {
   const [events, setEvents] = useState<DisplayEvent[]>([]);
   const [announcements, setAnnouncements] = useState<DisplayAnnouncement[]>([]);
   const [activities, setActivities] = useState<DisplayActivity[]>([]);
+  const [maintenanceOn, setMaintenanceOn] = useState<boolean | null>(null);
 
   useEffect(() => {
     const load = async () => {
@@ -178,6 +185,13 @@ export default function OfficerDashboard() {
           ]);
 
         if (userRes?.success && userRes.data) setUser(userRes.data);
+
+        if (variant === "admin") {
+          siteService
+            .getSettings()
+            .then((settings) => setMaintenanceOn(settings.maintenanceMode))
+            .catch(() => {});
+        }
 
         setStats({
           members: userStatsRes?.data?.members ?? 0,
@@ -231,7 +245,7 @@ export default function OfficerDashboard() {
       }
     };
     load();
-  }, []);
+  }, [variant]);
 
   const handleActivityClick = async (activity: DisplayActivity) => {
     if (!activity.isRead) {
@@ -303,8 +317,8 @@ export default function OfficerDashboard() {
             >
               <DashboardHeader
                 userName={user?.firstName || "there"}
-                role="officer"
-                position={officerPosition(user)}
+                role={variant}
+                position={variant === "admin" ? "Administrator" : officerPosition(user)}
                 academicYear={currentAcademicYear()}
               />
             </motion.div>
@@ -348,7 +362,11 @@ export default function OfficerDashboard() {
               <h3 className="font-rubik text-sm font-bold text-primary3 tracking-wide uppercase">
                 Action Shortcuts
               </h3>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+              <div
+                className={`grid grid-cols-2 sm:grid-cols-3 gap-3 ${
+                  variant === "admin" ? "md:grid-cols-6" : "md:grid-cols-5"
+                }`}
+              >
                 {canManage && (
                   <>
                 <QuickActionCard
@@ -393,8 +411,59 @@ export default function OfficerDashboard() {
                   accentColor="primary"
                   actionLabel="Schedule"
                 />
+                {variant === "admin" && (
+                  <QuickActionCard
+                    title="Maintenance"
+                    description="Suspend the site."
+                    icon={<Wrench className="h-4 w-4" />}
+                    onClick={() => router.push("/create/maintenance")}
+                    accentColor="steel"
+                    actionLabel="Manage"
+                  />
+                )}
               </div>
             </motion.div>
+
+            {variant === "admin" && (
+              <motion.div
+                custom={2}
+                variants={fadeUp}
+                initial="hidden"
+                animate="visible"
+                className="flex flex-col gap-3"
+              >
+                <h3 className="font-rubik text-sm font-bold text-primary3 tracking-wide uppercase">
+                  System
+                </h3>
+                <div className="flex flex-col gap-3 rounded-2xl border border-blue-100 bg-white p-5 shadow-sm transition-all duration-300 hover:border-blue-300 hover:shadow-md hover:-translate-y-1 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="flex items-center gap-3">
+                    <span
+                      className={`h-3 w-3 rounded-full ${
+                        maintenanceOn ? "bg-amber-500" : "bg-emerald-500"
+                      }`}
+                    />
+                    <div className="font-raleway">
+                      <p className="text-sm font-semibold text-primary3">
+                        {maintenanceOn === null
+                          ? "Checking site status..."
+                          : maintenanceOn
+                            ? "Under maintenance — visitors see the maintenance screen"
+                            : "Site is live"}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        Only admins can turn maintenance mode on or off.
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => router.push("/create/maintenance")}
+                    className="rounded-full border-2 border-primary1 px-5 py-2 font-raleway text-xs font-semibold text-primary1 transition-all duration-300 hover:bg-primary1 hover:text-white cursor-pointer"
+                  >
+                    Manage maintenance
+                  </button>
+                </div>
+              </motion.div>
+            )}
 
             {/* 4. Bento grid bottom section: Left (Events + Announcements), Right (Tall Notifications) */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
