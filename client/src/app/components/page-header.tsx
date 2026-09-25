@@ -20,7 +20,6 @@ export default function PageHeader({
   return (
     <div className={className}>
       <div className="inline-flex items-center gap-2 rounded-full bg-primary1/10 px-3 py-1 mb-4">
-        <div className="h-2 w-2 rounded-full bg-primary1"></div>
         <span className="font-raleway text-sm font-semibold text-primary1">
           {badge}
         </span>
