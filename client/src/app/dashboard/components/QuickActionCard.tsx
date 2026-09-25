@@ -46,7 +46,7 @@ export const QuickActionCard: FC<QuickActionCardProps> = ({
   return (
     <button
       onClick={onClick}
-      className={`flex flex-col text-left rounded-2xl p-4 pt-5 border shadow-sm transition-all duration-300 hover:shadow-md hover:-translate-y-1 active:scale-[0.98] group w-full cursor-pointer ${styles.bg} ${styles.border}`}
+      className={`flex h-full flex-col justify-between text-left rounded-2xl p-4 pt-5 border shadow-sm transition-all duration-300 hover:shadow-md hover:-translate-y-1 active:scale-[0.98] group w-full cursor-pointer ${styles.bg} ${styles.border}`}
     >
       <div className="flex items-center gap-3 mb-2 w-full">
         <div
@@ -54,7 +54,7 @@ export const QuickActionCard: FC<QuickActionCardProps> = ({
         >
           {icon}
         </div>
-        <h4 className="font-rubik text-sm font-medium text-slate-800 tracking-tight truncate">
+        <h4 className="font-rubik text-sm font-medium text-slate-800 tracking-tight leading-snug">
           {title}
         </h4>
       </div>
