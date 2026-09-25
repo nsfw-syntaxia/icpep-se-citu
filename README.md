@@ -2,6 +2,8 @@
 
 This project is the **official website of the ICPEP.SE CIT-U Chapter**, developed using the **MERN stack** (MongoDB, Express, React/Next.js, Node.js). 
 
+> **Working with an AI coding agent (Claude Code, Cursor, etc.)?** Start with [AGENTS.md](AGENTS.md) — it links to the fuller [`docs/`](docs/) suite covering architecture, conventions and the full API surface.
+
 ---
 
 ## 📑 Table of Contents
@@ -107,7 +109,7 @@ docker compose up --build
 ## ✅ Verify Setup
 
 * Open **[http://localhost:3000](http://localhost:3000)** → frontend should load.
-* Open **[http://localhost:5000](http://localhost:5000)** → should display: `API is running...`.
+* Open **[http://localhost:5000](http://localhost:5000)** → should display a JSON API index (`"message": "ICPEP CITU API Server"`).
 * Docker logs should show:
 
   ```
@@ -122,6 +124,9 @@ docker compose up --build
 * **Backend (server/)** → Express + MongoDB, auto-restarts with `nodemon`.
 * **Frontend (client/)** → Next.js + TailwindCSS, supports hot reload.
 * **Database** → MongoDB 6.0 with Docker volume (`mongo-data`) for persistence.
+* **Public assets** (`client/public/`) → organized into subfolders: `brand/`, `icons/{social,ui,illustrations,decorative}/`, `team/`, `content/`, `placeholders/`, `documents/`. Add new files to the matching folder rather than the root.
+* **Maintenance mode** → an `admin`-only toggle at `/create/maintenance` suspends the site for everyone else (a maintenance screen on the client, a `503` on the API). See [docs/architecture.md](docs/architecture.md#maintenance-mode).
+* **Dashboard** → one URL (`/dashboard`) shows a different view per role (admin / officer / student) rather than separate role-named routes.
 
 ---
 
