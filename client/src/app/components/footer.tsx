@@ -115,8 +115,8 @@ const Footer = () => {
                     collaboration, and leadership.
                   </p>
                   <p className="text-xs text-sky-200 mt-2">
-                    © 2025 ICpEP Student Edition R7 CIT-U Chapter. All rights
-                    reserved.
+                    © {new Date().getFullYear()} ICpEP Student Edition R7
+                    CIT-U Chapter. All rights reserved.
                   </p>
                 </div>
               </div>
