@@ -20,7 +20,6 @@ export default function NotFound() {
 
           <div className="flex grow flex-col items-center justify-center px-6 pt-38 pb-24 text-center">
             <div className="inline-flex items-center gap-2 rounded-full bg-primary1/10 px-3 py-1 mb-6">
-              <div className="h-2 w-2 rounded-full bg-primary1" />
               <span className="font-raleway text-sm font-semibold text-primary1">
                 404 Error
               </span>
