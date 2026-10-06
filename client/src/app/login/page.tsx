@@ -3,10 +3,10 @@
 import React, { useEffect, useState } from "react";
 import { Eye, EyeOff, AlertCircle, X, Check, CheckCircle } from "lucide-react";
 import Image from "next/image";
+import axios from "axios";
 import Button from "@/app/components/button";
 import { useRouter } from "next/navigation";
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+import { api, errorMessage } from "@/app/services/api-client";
 const REMEMBERED_STUDENT_NUMBER_KEY = "rememberedStudentNumber";
 
 const validatePassword = (password: string) => {
@@ -23,21 +23,19 @@ const validatePassword = (password: string) => {
   return { isValid, checks };
 };
 
-const apiCall = async (endpoint: string, options: RequestInit = {}) => {
-  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-    headers: {
-      "Content-Type": "application/json",
-    },
-    ...options,
-  });
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.message || "An error occurred");
+// Goes through the shared axios client so the /api prefix is normalized the
+// same way as everywhere else (see services/api-client.ts).
+const apiCall = async (endpoint: string, options: { method?: string; body?: string } = {}) => {
+  try {
+    const response = await api.request({
+      url: endpoint,
+      method: options.method ?? "GET",
+      data: options.body ? JSON.parse(options.body) : undefined,
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(errorMessage(error, "An error occurred"));
   }
-
-  return data;
 };
 
 type PasswordChecks = ReturnType<typeof validatePassword>["checks"];
@@ -236,30 +234,8 @@ export default function Login() {
     setIsLoading(true);
 
     try {
-      const token = localStorage.getItem("authToken");
-
-      const response = await fetch(
-        `${API_BASE_URL}/auth/first-login-password`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            newPassword,
-          }),
-        },
-      );
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        if (data.errors && Array.isArray(data.errors)) {
-          throw new Error(data.errors.join(". "));
-        }
-        throw new Error(data.message || "Password change failed");
-      }
+      // The shared client attaches the stored token itself.
+      await api.post("/auth/first-login-password", { newPassword });
 
       setError("");
       setSuccessMessage({
@@ -269,9 +245,15 @@ export default function Login() {
       });
       setShowSuccessModal(true);
     } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : "Password change failed";
-      setError(errorMessage);
+      // Password rule failures come back as a list; show each one.
+      const rules = axios.isAxiosError<{ errors?: string[] }>(error)
+        ? error.response?.data?.errors
+        : undefined;
+      const message =
+        Array.isArray(rules) && rules.length > 0
+          ? rules.join(". ")
+          : errorMessage(error, "Password change failed");
+      setError(message);
     } finally {
       setIsLoading(false);
     }
