@@ -75,12 +75,18 @@ export const getAllUsers = async (
     }
 
     // Build sort object
+    // Only fields that are safe to order by. Sorting on a hidden field (e.g. a
+    // password hash or reset code) would leak its order even without the value.
+    const SORTABLE = ["createdAt", "updatedAt", "studentNumber", "lastName", "firstName", "role", "yearLevel", "isActive"];
     const sort: any = {};
-    sort[sortBy as string] = sortOrder === "asc" ? 1 : -1;
+    sort[SORTABLE.includes(String(sortBy)) ? String(sortBy) : "createdAt"] = sortOrder === "asc" ? 1 : -1;
 
     // Pagination
-    const pageNum = parseInt(page as string);
-    const limitNum = parseInt(limit as string);
+    // Cap page size: staff get up to 10000 (the users page loads everyone at once),
+    // everyone else 500. Pages are never below 1.
+    const pageNum = Math.max(1, parseInt(page as string) || 1);
+    const maxLimit = canSeeEveryone ? 10000 : 500;
+    const limitNum = Math.min(maxLimit, Math.max(1, parseInt(limit as string) || 50));
     const skip = (pageNum - 1) * limitNum;
 
     // Execute query
