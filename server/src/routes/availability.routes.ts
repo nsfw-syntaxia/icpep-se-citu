@@ -1,5 +1,5 @@
 import express from "express";
-import { authenticate } from "../middleware/auth.middleware";
+import { authenticate, optionalAuth } from "../middleware/auth.middleware";
 import {
   getMeetingAvailability,
   getMyAvailability,
@@ -10,7 +10,7 @@ import {
 const router = express.Router();
 
 // Meeting-level availability list (public read)
-router.get("/:meetingId", getMeetingAvailability);
+router.get("/:meetingId", optionalAuth, getMeetingAvailability);
 router.get("/:meetingId/summary", getAvailabilitySummary);
 
 // Current user availability for a meeting
