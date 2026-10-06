@@ -8,6 +8,7 @@ import {
 } from "../utils/cloudinary";
 import mongoose from "mongoose";
 import { notifyTargetAudience } from "../utils/notification";
+import { listVisibility, canViewItem } from "../utils/visibility";
 
 // Local Multer file shape (avoid relying on global Express.Multer augmentation)
 type MulterFile = MulterLocal.MulterFile;
@@ -285,16 +286,20 @@ export const getAnnouncements = async (
     const query: AnnouncementQuery = {};
 
     if (type) query.type = type as string;
-    if (isPublished !== undefined) query.isPublished = isPublished === "true";
     if (targetAudience)
       query.targetAudience = { $in: [targetAudience as string] };
     if (priority) query.priority = priority as string;
 
-    // Don't show expired announcements by default
-    query.$or = [
-      { expiryDate: { $exists: false } },
-      { expiryDate: null },
-      { expiryDate: { $gt: new Date() } },
+    // Visibility (drafts) and expiry must both hold
+    (query as any).$and = [
+      listVisibility(req.user, isPublished as string | undefined),
+      {
+        $or: [
+          { expiryDate: { $exists: false } },
+          { expiryDate: null },
+          { expiryDate: { $gt: new Date() } },
+        ],
+      },
     ];
 
     const pageNum = parseInt(page as string);
@@ -343,7 +348,7 @@ export const getAnnouncementById = async (
       "firstName lastName studentNumber"
     );
 
-    if (!announcement) {
+    if (!announcement || !canViewItem(req.user, announcement)) {
       res.status(404).json({ message: "Announcement not found" });
       return;
     }

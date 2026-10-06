@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import Event from "../models/event";
 import { canManagePost } from "../utils/ownership";
 import { escapeHtml } from "../utils/html";
+import { listVisibility, canViewItem } from "../utils/visibility";
 import {
   uploadToCloudinary,
   deleteFromCloudinary,
@@ -305,7 +306,6 @@ export const getEvents = async (
     const query: EventQuery = {};
 
     if (tags) query.tags = { $in: (tags as string).split(",") };
-    if (isPublished !== undefined) query.isPublished = isPublished === "true";
     if (targetAudience)
       query.targetAudience = { $in: [targetAudience as string] };
     if (priority) query.priority = priority as string;
@@ -317,11 +317,16 @@ export const getEvents = async (
       if (endDate) query.eventDate.$lte = new Date(endDate as string);
     }
 
-    // Don't show expired events by default
-    query.$or = [
-      { expiryDate: { $exists: false } },
-      { expiryDate: null },
-      { expiryDate: { $gt: new Date() } },
+    // Visibility (drafts) and expiry must both hold
+    (query as any).$and = [
+      listVisibility(req.user, isPublished as string | undefined),
+      {
+        $or: [
+          { expiryDate: { $exists: false } },
+          { expiryDate: null },
+          { expiryDate: { $gt: new Date() } },
+        ],
+      },
     ];
 
     const pageNum = parseInt(page as string);
@@ -370,7 +375,8 @@ export const getEventById = async (
       "firstName lastName studentNumber"
     );
 
-    if (!event) {
+    // A draft is reported as missing to anyone who can't manage it.
+    if (!event || !canViewItem(req.user, event)) {
       res.status(404).json({ message: "Event not found" });
       return;
     }

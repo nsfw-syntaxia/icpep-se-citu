@@ -79,6 +79,35 @@ export const authenticateToken = async (
   }
 };
 
+// Like authenticateToken, but never rejects: public routes use it to tell
+// staff apart from anonymous visitors (drafts, private fields). An invalid,
+// expired or revoked token just leaves req.user unset.
+export const optionalAuth = async (
+  req: Request,
+  _res: Response,
+  next: NextFunction
+) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+  if (!token) return next();
+
+  try {
+    const decoded = jwt.verify(token, getJwtSecret()) as JwtPayload;
+    if (!mongoose.isValidObjectId(decoded.id)) return next();
+    const account = await User.findById(decoded.id).select('role isActive tokenVersion').lean();
+    if (
+      account &&
+      account.isActive &&
+      (decoded.tv ?? 0) === (account.tokenVersion ?? 0)
+    ) {
+      req.user = { ...decoded, role: account.role };
+    }
+  } catch {
+    // anonymous — fine for a public route
+  }
+  next();
+};
+
 // Alias for authenticateToken
 export const protect = authenticateToken;
 export const authenticate = authenticateToken;
