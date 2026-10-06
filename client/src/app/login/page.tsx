@@ -318,12 +318,8 @@ export default function Login() {
         body: JSON.stringify({ studentNumber }),
       });
 
-      if (data.email) {
-        const [user, domain] = data.email.split("@");
-        const masked = `${user.slice(0, 1)}***${user.slice(-1)}@${domain}`;
-        setMaskedEmail(masked);
-      }
-
+      // The server answers the same way whether or not the account exists, so
+      // the step always moves on and never reveals an address.
       setForgotPasswordStep(2);
     } catch (err: any) {
       setError(err.message || "Failed to send reset code.");
