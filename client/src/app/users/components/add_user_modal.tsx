@@ -28,9 +28,12 @@ export interface NewUser {
   lastName: string;
   firstName: string;
   middleName?: string;
+  email?: string;
   yearLevel?: number;
   password: string;
   role: string;
+  position?: string;
+  department?: string;
   membershipStatus: string;
 }
 
@@ -44,9 +47,12 @@ export default function AddUserModal({
     lastName: "",
     firstName: "",
     middleName: "",
+    email: "",
     yearLevel: undefined,
     password: "",
     role: "student",
+    position: "",
+    department: "",
     membershipStatus: "non-member",
   });
 
@@ -67,6 +73,15 @@ export default function AddUserModal({
 
   const selectedYearLabel = YEAR_OPTIONS.find((o) => o.value === String(formData.yearLevel || ""))?.label ?? "Select Year Level";
   const selectedRoleLabel = ROLE_OPTIONS.find((o) => o.value === formData.role)?.label ?? "Student";
+  // Faculty aren't students, so they get an employee ID and no year level.
+  // Everyone else (students and officers are students too) gets a student ID.
+  const isFaculty = formData.role === "faculty";
+  const isStudent = formData.role === "student";
+  const isOfficer = formData.role === "council-officer" || formData.role === "committee-officer";
+  const showsPosition = isOfficer || isFaculty;
+  const showsDepartment = formData.role === "committee-officer" || isFaculty;
+  const idLabel = isFaculty ? "Employee ID Number" : "Student ID Number";
+  const idPlaceholder = isFaculty ? "e.g. 2024-0001" : "23-2502-326";
   const selectedMembershipLabel = MEMBERSHIP_OPTIONS.find((o) => o.value === formData.membershipStatus)?.label ?? "Non-Member";
 
   useBodyScrollLock(isOpen);
@@ -105,7 +120,13 @@ export default function AddUserModal({
     const newErrors: Record<string, string> = {};
 
     if (!formData.studentNumber.trim()) {
-      newErrors.studentNumber = "Student number is required";
+      newErrors.studentNumber = `${idLabel} is required`;
+    }
+    const email = (formData.email ?? "").trim();
+    if (!isStudent && !email) {
+      newErrors.email = "Email is required for this role";
+    } else if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      newErrors.email = "Enter a valid email address";
     }
     if (!formData.lastName.trim()) {
       newErrors.lastName = "Last name is required";
@@ -139,9 +160,12 @@ export default function AddUserModal({
       lastName: "",
       firstName: "",
       middleName: "",
+      email: "",
       yearLevel: undefined,
       password: "",
       role: "student",
+      position: "",
+      department: "",
       membershipStatus: "non-member",
     });
     setErrors({});
@@ -200,17 +224,17 @@ export default function AddUserModal({
         {/* Form */}
         <form onSubmit={handleSubmit} className="flex flex-col flex-1 min-h-0">
           <div ref={scrollRef} className={`space-y-4 overflow-y-auto themed-scrollbar px-6 sm:px-7 py-5 flex-1`}>
-            {/* Student Number */}
+            {/* ID Number (student or employee) */}
             <div>
               <label className="block font-raleway text-sm font-semibold text-gray-700 mb-2">
-                Student Number <span className="text-red-500">*</span>
+                {idLabel} <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
                 name="studentNumber"
                 value={formData.studentNumber}
                 onChange={handleChange}
-                placeholder="23-2502-326"
+                placeholder={idPlaceholder}
                 className={`w-full font-rubik text-base bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 outline-none transition-all placeholder-gray-400 text-gray-800 focus:bg-white focus:border-primary1 focus:ring-4 focus:ring-primary1/10 ${
                   errors.studentNumber ? "border-red-300 ring-2 ring-red-100" : ""
                 }`}
@@ -282,9 +306,64 @@ export default function AddUserModal({
               </div>
             </div>
 
+            {/* Email — school email, used for password reset codes */}
+            <div>
+              <label className="block font-raleway text-sm font-semibold text-gray-700 mb-2">
+                Email {isStudent ? <span className="text-gray-400 font-normal">(Optional)</span> : <span className="text-red-500">*</span>}
+              </label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="name@cit.edu"
+                className={`w-full font-rubik text-base bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 outline-none transition-all placeholder-gray-400 text-gray-800 focus:bg-white focus:border-primary1 focus:ring-4 focus:ring-primary1/10 ${
+                  errors.email ? "border-red-300 ring-2 ring-red-100" : ""
+                }`}
+              />
+              {errors.email && (
+                <p className="mt-1 text-sm text-red-600 font-raleway">{errors.email}</p>
+              )}
+            </div>
+
+            {/* Position and department — officers and faculty only */}
+            {showsPosition && (
+              <div className={`grid grid-cols-1 gap-4 ${showsDepartment ? "md:grid-cols-2" : ""}`}>
+                <div>
+                  <label className="block font-raleway text-sm font-semibold text-gray-700 mb-2">
+                    {isFaculty ? "Position" : "Officer Position"} <span className="text-gray-400 font-normal">(Optional)</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="position"
+                    value={formData.position}
+                    onChange={handleChange}
+                    placeholder={isFaculty ? "e.g. Department Head" : "e.g. President"}
+                    className="w-full font-rubik text-base bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 outline-none transition-all placeholder-gray-400 text-gray-800 focus:bg-white focus:border-primary1 focus:ring-4 focus:ring-primary1/10"
+                  />
+                </div>
+                {showsDepartment && (
+                  <div>
+                    <label className="block font-raleway text-sm font-semibold text-gray-700 mb-2">
+                      {isFaculty ? "Department" : "Committee"} <span className="text-gray-400 font-normal">(Optional)</span>
+                    </label>
+                    <input
+                      type="text"
+                      name="department"
+                      value={formData.department}
+                      onChange={handleChange}
+                      placeholder={isFaculty ? "e.g. Computer Engineering" : "e.g. Internal Affairs"}
+                      className="w-full font-rubik text-base bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 outline-none transition-all placeholder-gray-400 text-gray-800 focus:bg-white focus:border-primary1 focus:ring-4 focus:ring-primary1/10"
+                    />
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Year Level and Password */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Year Level */}
+              {/* Year Level — students and officers only */}
+              {!isFaculty && (
               <div>
                 <label className="block font-raleway text-sm font-semibold text-gray-700 mb-2">
                   Year Level
@@ -342,6 +421,7 @@ export default function AddUserModal({
                   <p className="mt-1 text-sm text-red-600 font-raleway">{errors.yearLevel}</p>
                 )}
               </div>
+              )}
 
               <div>
                 <label className="block font-raleway text-sm font-semibold text-gray-500 mb-2">

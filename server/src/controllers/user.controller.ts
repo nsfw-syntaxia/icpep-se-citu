@@ -15,6 +15,9 @@ export interface AuthRequest extends Request {
   };
 }
 
+const VALID_ROLES = ["student", "council-officer", "committee-officer", "faculty", "admin"];
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 // Only admins may hand out the admin role (e.g. via an Excel upload).
 const assignableRole = (role: string | undefined, requesterRole?: string) =>
   role === "admin" && requesterRole !== "admin" ? "student" : role;
@@ -169,6 +172,9 @@ export const createUser = async (
       role = "student",
       yearLevel,
       membershipStatus,
+      email,
+      position,
+      department,
     } = req.body;
     const password = submittedPassword || getDefaultPassword();
 
@@ -176,7 +182,15 @@ export const createUser = async (
     if (!studentNumber || !lastName || !firstName) {
       res.status(400).json({
         success: false,
-        message: "Student number, first name, and last name are required",
+        message: "ID number, first name, and last name are required",
+      });
+      return;
+    }
+
+    if (!VALID_ROLES.includes(role)) {
+      res.status(400).json({
+        success: false,
+        message: "Invalid role",
       });
       return;
     }
@@ -187,6 +201,43 @@ export const createUser = async (
         message: "Only admins can create admin accounts",
       });
       return;
+    }
+
+    // Non-students need an email on file: it's where password reset codes go.
+    const cleanEmail = typeof email === "string" ? email.trim().toLowerCase() : "";
+    if (role !== "student" && !cleanEmail) {
+      res.status(400).json({
+        success: false,
+        message: "An email is required for this role",
+      });
+      return;
+    }
+    if (cleanEmail && !EMAIL_PATTERN.test(cleanEmail)) {
+      res.status(400).json({
+        success: false,
+        message: "Enter a valid email address",
+      });
+      return;
+    }
+
+    // Officer and faculty titles live in different fields depending on role.
+    const positionFields = {
+      position: null as string | null,
+      department: null as string | null,
+      councilPosition: null as string | null,
+      committeeTitle: null as string | null,
+      committeeDepartment: null as string | null,
+    };
+    const cleanPosition = typeof position === "string" && position.trim() ? position.trim() : null;
+    const cleanDepartment = typeof department === "string" && department.trim() ? department.trim() : null;
+    if (role === "council-officer") {
+      positionFields.councilPosition = cleanPosition;
+    } else if (role === "committee-officer") {
+      positionFields.committeeTitle = cleanPosition;
+      positionFields.committeeDepartment = cleanDepartment;
+    } else if (role === "faculty") {
+      positionFields.position = cleanPosition;
+      positionFields.department = cleanDepartment;
     }
 
     // Check if user already exists
@@ -251,9 +302,13 @@ export const createUser = async (
       lastName,
       firstName,
       middleName: middleName || null,
+      email: cleanEmail || null,
       password,
       role,
-      yearLevel,
+      // Year level only means something for students and officers, who are
+      // students too; faculty don't get one.
+      yearLevel: role === "faculty" ? undefined : yearLevel,
+      ...positionFields,
       membershipStatus: membershipStatusObj,
       registeredBy: req.user?.id || null,
     });
