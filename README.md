@@ -9,6 +9,7 @@ This project is the **official website of the ICPEP.SE CIT-U Chapter**, develope
 ## 📑 Table of Contents
 - [Prerequisites](#-prerequisites)  
 - [Setup Instructions](#-setup-instructions)  
+- [First-Time Setup](#-first-time-setup-creating-the-first-admin)  
 - [Environment Variables](#-environment-variables)  
 - [Tests & Checks](#-tests--checks)  
 - [Updating After Pulling New Code](#-updating-after-pulling-new-code)  
@@ -57,6 +58,36 @@ This project is the **official website of the ICPEP.SE CIT-U Chapter**, develope
    ```bash
    docker compose down
    ```
+
+---
+
+## 🚀 First-Time Setup (creating the first admin)
+
+Registration is closed and user creation needs an admin token, so a brand-new database has no way to log in yet. Create the first admin once, by hand:
+
+1. Pick a student number from `DEVELOPER_STUDENT_NUMBERS` in `server/src/config/developers.ts` (for example `23-3403-881`). That list makes the server keep this account as `admin` and active on every login.
+2. Hash a password with the server's own bcrypt (run from the repo root):
+
+   ```bash
+   node -e "console.log(require('./server/node_modules/bcryptjs').hashSync('YourPassword!1', 10))"
+   ```
+
+3. Insert one document into the `users` collection with MongoDB Compass or `mongosh`. Inserting directly skips the model's hashing hook, so the password must already be hashed:
+
+   ```json
+   {
+     "studentNumber": "23-3403-881",
+     "firstName": "Your",
+     "lastName": "Name",
+     "password": "<the hash from step 2>",
+     "role": "admin",
+     "isActive": true,
+     "firstLogin": false,
+     "membershipStatus": { "isMember": false, "membershipType": null }
+   }
+   ```
+
+4. Log in with that student number and password. Add more users from the Users page once you're in.
 
 ---
 

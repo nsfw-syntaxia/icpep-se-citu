@@ -42,6 +42,10 @@ Older history (pre-redesign) uses a different, more formal convention — `type(
 - Anything that gates server startup or needs validation lives in `server/src/config/env.ts` as a `getX()` function, not a bare `process.env.X` scattered through the codebase.
 - A new sitewide admin-controlled toggle (like maintenance mode or membership registration status) is a Mongoose "singleton" model: one schema, a controller that does `findOne()` and lazily creates the default document if none exists, a public `GET` and an admin-gated `PUT`. Copy `server/src/models/siteSettings.ts` + `controllers/siteSettings.controller.ts` rather than building a new pattern.
 
+## First-time setup
+
+There's deliberately no seed script that creates accounts. To bootstrap an empty database, follow [README.md](../README.md#-first-time-setup-creating-the-first-admin): insert one admin document by hand, using a student number from `DEVELOPER_STUDENT_NUMBERS`.
+
 ## Things not to do
 
 - Don't add `console.log`/`console.error`/`console.warn` calls for error handling — this was deliberately removed. Client errors surface via `ApiErrorNotice`; server errors return a JSON error response.
