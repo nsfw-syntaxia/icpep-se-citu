@@ -9,6 +9,15 @@ import {
 import mongoose from "mongoose";
 import { notifyTargetAudience } from "../utils/notification";
 import { listVisibility, canViewItem } from "../utils/visibility";
+import { pickFields } from "../utils/pick";
+
+const ANNOUNCEMENT_EDITABLE_FIELDS = [
+  "title", "description", "content", "type", "priority", "targetAudience",
+  "isPublished", "publishDate", "date", "expiryDate", "time", "location",
+  "organizer", "contact", "attendees", "agenda", "awardees", "attachments",
+  "galleryImages", "imageUrl",
+] as const;
+
 
 // Local Multer file shape (avoid relying on global Express.Multer augmentation)
 type MulterFile = MulterLocal.MulterFile;
@@ -447,8 +456,8 @@ export const updateAnnouncement = async (
       : null;
     const requestWantsPublish = String(req.body.isPublished) === "true";
 
-    // Create a clean update object
-    const updateData: any = { ...req.body };
+    // Only whitelisted fields can change. Authorship, views and ids never do.
+    const updateData: any = pickFields(req.body, ANNOUNCEMENT_EDITABLE_FIELDS);
 
     if (
       requestWantsPublish &&

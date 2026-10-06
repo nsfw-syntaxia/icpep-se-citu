@@ -3,6 +3,16 @@ import Event from "../models/event";
 import { canManagePost } from "../utils/ownership";
 import { escapeHtml } from "../utils/html";
 import { listVisibility, canViewItem } from "../utils/visibility";
+import { pickFields } from "../utils/pick";
+
+const EVENT_EDITABLE_FIELDS = [
+  "title", "description", "content", "tags", "priority", "targetAudience",
+  "isPublished", "publishDate", "expiryDate", "eventDate", "time", "location",
+  "organizer", "contact", "rsvpLink", "admissions", "registrationRequired",
+  "registrationStart", "registrationEnd", "mode", "details", "galleryImages",
+  "coverImage",
+] as const;
+
 import {
   uploadToCloudinary,
   deleteFromCloudinary,
@@ -505,8 +515,8 @@ export const updateEvent = async (
       : null;
     const requestWantsPublish = String(req.body.isPublished) === "true";
 
-    // Create a clean update object
-    const updateData: any = { ...req.body };
+    // Only whitelisted fields can change. Authorship, views and ids never do.
+    const updateData: any = pickFields(req.body, EVENT_EDITABLE_FIELDS);
 
     if (
       requestWantsPublish &&
