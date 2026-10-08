@@ -17,6 +17,7 @@ export interface User {
   registeredBy?: {
     id: string;
     fullName: string;
+    role?: string;
   } | null;
   createdAt: string;
   updatedAt: string;

@@ -92,7 +92,7 @@ export const getAllUsers = async (
     // Execute query
     let query = User.find(filter);
     query = canSeeEveryone
-      ? query.populate("registeredBy", "firstName lastName middleName")
+      ? query.populate("registeredBy", "firstName lastName middleName role")
       : query.select(PUBLIC_DIRECTORY_FIELDS);
     const users = await query.sort(sort).skip(skip).limit(limitNum).lean();
 
@@ -136,7 +136,7 @@ export const getUserById = async (
 
     const user = await User.findById(id).populate(
       "registeredBy",
-      "firstName lastName middleName",
+      "firstName lastName middleName role",
     );
 
     if (!user) {
@@ -265,7 +265,7 @@ export const createUser = async (
     });
 
     // Populate registeredBy before sending response
-    await newUser.populate("registeredBy", "firstName lastName middleName");
+    await newUser.populate("registeredBy", "firstName lastName middleName role");
 
     res.status(201).json({
       success: true,
@@ -767,7 +767,7 @@ export const updateUser = async (
       id,
       { ...updates, updatedAt: new Date() },
       { new: true, runValidators: true },
-    ).populate("registeredBy", "firstName lastName middleName");
+    ).populate("registeredBy", "firstName lastName middleName role");
 
     if (!updatedUser) {
       res.status(404).json({
@@ -873,7 +873,7 @@ export const toggleUserStatus = async (
     user.isActive = !user.isActive;
     await user.save();
 
-    await user.populate("registeredBy", "firstName lastName middleName");
+    await user.populate("registeredBy", "firstName lastName middleName role");
 
     res.status(200).json({
       success: true,
@@ -1038,7 +1038,7 @@ export const searchUsers = async (
         { middleName: searchRegex },
       ],
     })
-      .populate("registeredBy", "firstName lastName middleName")
+      .populate("registeredBy", "firstName lastName middleName role")
       .limit(20);
 
     res.status(200).json({
