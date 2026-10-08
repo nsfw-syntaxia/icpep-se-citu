@@ -14,6 +14,7 @@ import { formatOfficerName, toTitleCase } from "../utils/format-name";
 import officerService from "../../services/officer";
 import officerTermService from "../../services/officerTerm";
 import { LoadingIndicator } from "@/app/components/loading";
+import { placeholderPhoto } from "@/app/utils/placeholder-photo";
 
 interface DisplayOfficer {
   position: string;
@@ -78,13 +79,17 @@ const OfficersPage = () => {
             position,
             role,
             name: formatOfficerName(o.firstName, o.lastName, o.middleName),
-            image: o.profilePicture || "/content/faculty.png",
+            image:
+              o.profilePicture ||
+              placeholderPhoto(`${o.firstName} ${o.lastName}`),
           };
         }
         return {
           position: o.committeeTitle || o.position || "",
           name: formatOfficerName(o.firstName, o.lastName, o.middleName),
-          image: o.profilePicture || "/content/faculty.png",
+          image:
+            o.profilePicture ||
+            placeholderPhoto(`${o.firstName} ${o.lastName}`),
         };
       });
     };
@@ -102,7 +107,7 @@ const OfficersPage = () => {
         // Manually-entered archive rows are already typed as "Last, First" —
         // just normalize the casing rather than reordering them.
         name: toTitleCase(t.name),
-        image: t.image || "/content/faculty.png",
+        image: t.image || placeholderPhoto(t.name),
       }));
     };
 

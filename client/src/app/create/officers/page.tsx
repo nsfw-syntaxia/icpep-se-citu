@@ -38,6 +38,7 @@ import { getCurrentAcademicYear } from "@/app/utils/academic-year";
 import { shortDepartmentName } from "@/app/utils/department";
 import { useDropdownDismiss } from "@/app/utils/use-dropdown-dismiss";
 import { LoadingIndicator } from "@/app/components/loading";
+import { placeholderPhoto } from "@/app/utils/placeholder-photo";
 
 // --- DATA CONFIGURATION ---
 const departments: Record<string, any> = {
@@ -279,7 +280,7 @@ export default function OfficersPage() {
           !!o.committeeDepartment ||
           o.role === "committee-officer";
         const name = `${o.firstName} ${o.lastName}`;
-        const image = o.profilePicture || "/content/faculty.png";
+        const image = o.profilePicture || placeholderPhoto(name);
 
         const committeeSummary = [
           o.committeeTitle,
@@ -367,7 +368,10 @@ export default function OfficersPage() {
       ...prev,
       name: `${user.firstName} ${user.lastName}`,
     }));
-    setPreview(user.profilePicture || "/content/faculty.png");
+    setPreview(
+      user.profilePicture ||
+        placeholderPhoto(`${user.firstName} ${user.lastName}`),
+    );
     setSearchResults([]);
     setSearchQuery("");
   };

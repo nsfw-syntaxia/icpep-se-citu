@@ -74,7 +74,13 @@ const OfficerCard: FC<OfficerCardProps> = ({
           <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[110%] h-[90%] bg-white/20 rounded-t-full backdrop-blur-sm z-0" />
 
           {image && (
-            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[140%] h-[110%] z-10">
+            <div
+              className={`absolute left-1/2 -translate-x-1/2 z-10 ${
+                image.startsWith("/placeholders/")
+                  ? "bottom-4 sm:bottom-6 w-[160%] h-[125%]"
+                  : "bottom-0 w-[140%] h-[110%]"
+              }`}
+            >
               <Image
                 src={image}
                 alt={name}
@@ -84,6 +90,8 @@ const OfficerCard: FC<OfficerCardProps> = ({
             </div>
           )}
         </div>
+
+        <div className="absolute inset-x-0 bottom-0 h-2/5 bg-linear-to-t from-black/80 via-black/40 to-transparent pointer-events-none z-10" />
 
         <div className="absolute bottom-3 left-3 sm:bottom-6 sm:left-6 text-left z-20">
           <h3 className="font-raleway text-base sm:text-2xl font-bold leading-none text-white drop-shadow-md">

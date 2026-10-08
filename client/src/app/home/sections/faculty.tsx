@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import officerService from "@/app/services/officer";
 import advisorService from "@/app/services/advisor";
 import { toTitleCase } from "@/app/officers/utils/format-name";
+import { placeholderPhoto } from "@/app/utils/placeholder-photo";
 
 const shimmerStyle = `
   @keyframes shimmer {
@@ -113,7 +114,7 @@ export function FacultyOfficersSection() {
           (a: any) => ({
             name: toTitleCase(a.name),
             title: a.position,
-            image: a.image || "/content/faculty.png",
+            image: a.image || placeholderPhoto(a.name),
           }),
         );
 
@@ -123,7 +124,9 @@ export function FacultyOfficersSection() {
               [o.firstName, o.middleName, o.lastName].filter(Boolean).join(" "),
             ),
             title: o.position || "Officer",
-            image: o.profilePicture || "/content/faculty.png",
+            image:
+              o.profilePicture ||
+              placeholderPhoto(`${o.firstName} ${o.lastName}`),
           }),
         );
 
