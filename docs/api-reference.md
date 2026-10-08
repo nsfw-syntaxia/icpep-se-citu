@@ -11,7 +11,7 @@ While maintenance mode is on, every route below except `/api/auth/*` and `/api/s
 | Method & path | Auth | Notes |
 | --- | --- | --- |
 | `POST /login` | public | rate-limited by IP and by account |
-| `POST /logout` | public | |
+| `POST /logout` | public | revokes the token if one is sent |
 | `POST /forgot-password` | public | rate-limited; emails a reset code |
 | `POST /verify-code` | public | rate-limited |
 | `POST /reset-password` | public | rate-limited; revokes all other sessions for the account |
@@ -26,7 +26,7 @@ While maintenance mode is on, every route below except `/api/auth/*` and `/api/s
 | `GET /search` | `council-officer` | |
 | `GET /stats` | `council-officer` | member counts for dashboards |
 | `POST /bulk-upload` | `council-officer` | Excel roster import |
-| `POST /sync-delete` | `council-officer` | roster sync: removes users not in the uploaded file (admins protected) |
+| `POST /sync-delete` | `council-officer` | roster sync: deactivates *students* missing from the uploaded file (officers, faculty and admins are left alone; non-admins can't deactivate more than half of active students in one run) |
 | `POST /sync-upsert-batch` | `council-officer` | roster sync: batched upsert |
 | `GET /` | any authenticated user | filtering/sorting/pagination |
 | `POST /` | `council-officer` | only `admin` can assign the `admin` role |
@@ -103,6 +103,12 @@ All routes expect an authenticated user and operate on that user's own notificat
 ## FAQs — `/api/faqs`
 
 `GET /` public (feeds both the home page display and its FAQPage structured data); `GET /admin` and all mutations behind `admin` or `council-officer`.
+
+## Audit log — `/api/audit`
+
+| Route | Auth | Notes |
+| --- | --- | --- |
+| `GET /` | `admin` | newest first; `?page=`, `?limit=` (max 200), `?action=` |
 
 ## Site settings — `/api/site`
 

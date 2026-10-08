@@ -99,7 +99,7 @@ Copy `.env.example` and fill in real values. The ones that change behavior:
 | -------- | ------- |
 | `JWT_SECRET` | **Required.** The server refuses to start without it (at least 16 characters, use a long random string). |
 | `DEFAULT_PASSWORD` | Password given to new accounts when none is supplied; users must change it at first login. **Required in production** (the server won't start without it); falls back to `123456` in development. |
-| `JWT_EXPIRES_IN` | How long a login stays valid, e.g. `12h` or `3d`. Defaults to `7d`. Resetting a password signs out all of that account's sessions. |
+| `JWT_EXPIRES_IN` | How long a login stays valid, e.g. `12h` or `3d`. Defaults to `1d`. Resetting a password signs out all of that account's sessions. |
 | `NEXT_PUBLIC_SITE_URL` | The deployed site's public URL, used for the sitemap, canonical links and structured data. Defaults to the production domain. |
 | `TRUST_PROXY` | Number of reverse proxies in front of the server (e.g. `1` on Render) so rate limits see the real client IP. Leave unset when the server is exposed directly. |
 | `SMTP_TLS_REJECT_UNAUTHORIZED` | Certificates are verified by default. Set to `false` only for a local mail catcher with a self-signed certificate. |
@@ -152,7 +152,7 @@ docker compose up --build
 
 ## 🛠 Development Notes
 
-* **Backend (server/)** → Express + MongoDB, auto-restarts with `nodemon`.
+* **Backend (server/)** → Express + MongoDB, auto-restarts with `tsx watch`.
 * **Frontend (client/)** → Next.js + TailwindCSS, supports hot reload.
 * **Database** → MongoDB 6.0 with Docker volume (`mongo-data`) for persistence.
 * **Public assets** (`client/public/`) → organized into subfolders: `brand/`, `icons/{social,ui,illustrations,decorative}/`, `team/`, `content/`, `placeholders/`, `documents/`. Add new files to the matching folder rather than the root.
@@ -163,7 +163,7 @@ docker compose up --build
 
 ## 📝 Common Issues
 
-* **`nodemon: not found`** → rebuild without cache:
+* **`tsx: not found`** → rebuild without cache:
 
   ```bash
   docker compose build --no-cache
