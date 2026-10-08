@@ -5,6 +5,7 @@ import bcrypt from "bcryptjs";
 import { sendNotification } from "../utils/notification";
 import { escapeRegExp } from "../utils/regex";
 import { getDefaultPassword } from "../config/env";
+import { recordAudit } from "../utils/audit";
 
 // Interface for request with authenticated user
 export interface AuthRequest extends Request {
@@ -21,6 +22,11 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 // Only admins may hand out the admin role (e.g. via an Excel upload).
 const assignableRole = (role: string | undefined, requesterRole?: string) =>
   role === "admin" && requesterRole !== "admin" ? "student" : role;
+
+// Council officers are peers: only an admin can delete, deactivate, demote or
+// otherwise manage another council officer's account (their own is theirs to edit).
+const isProtectedPeer = (target: { role: string }, actor?: { id?: string; role?: string }, targetId?: string) =>
+  target.role === "council-officer" && actor?.role !== "admin" && actor?.id !== targetId;
 
 const PUBLIC_DIRECTORY_ROLES = ["council-officer", "committee-officer"];
 const PUBLIC_DIRECTORY_FIELDS =
@@ -116,7 +122,6 @@ export const getAllUsers = async (
     res.status(500).json({
       success: false,
       message: "Error fetching users",
-      error: error.message,
     });
   }
 };
@@ -158,7 +163,6 @@ export const getUserById = async (
     res.status(500).json({
       success: false,
       message: "Error fetching user",
-      error: error.message,
     });
   }
 };
@@ -322,6 +326,13 @@ export const createUser = async (
     // Populate registeredBy before sending response
     await newUser.populate("registeredBy", "firstName lastName middleName role");
 
+    await recordAudit({
+      action: "user.create",
+      actorId: req.user?.id,
+      targetId: newUser._id,
+      details: { role: newUser.role },
+    });
+
     res.status(201).json({
       success: true,
       message: "User created successfully",
@@ -331,7 +342,6 @@ export const createUser = async (
     res.status(500).json({
       success: false,
       message: "Error creating user",
-      error: error.message,
     });
   }
 };
@@ -491,7 +501,11 @@ export const bulkUploadUsers = async (
           if (userData.middleName !== undefined)
             existingUser.middleName = userData.middleName || null;
 
-          if (userData.role && existingUser.role !== "admin") {
+          if (
+            userData.role &&
+            existingUser.role !== "admin" &&
+            !isProtectedPeer(existingUser, req.user, existingUser._id.toString())
+          ) {
             existingUser.role = assignableRole(
               userData.role,
               req.user?.role,
@@ -554,7 +568,6 @@ export const bulkUploadUsers = async (
     res.status(500).json({
       success: false,
       message: "Error during bulk upload",
-      error: error.message,
     });
   }
 };
@@ -595,12 +608,33 @@ export const syncDeleteUsers = async (
       id: user._id.toString(),
     });
 
+    // The roster is a list of students: officers, faculty and admins who aren't
+    // on it are left alone rather than locked out.
     const skippedAdmins = missingUsers
       .filter((user) => user.role === "admin")
       .map(summarize);
+    const skippedStaff = missingUsers
+      .filter((user) => user.role !== "admin" && user.role !== "student")
+      .map(summarize);
     const toDeactivate = missingUsers.filter(
-      (user) => user.role !== "admin" && user.isActive,
+      (user) => user.role === "student" && user.isActive,
     );
+
+    // A wrong or partial file would lock out most of the chapter, so anything
+    // that large needs an admin.
+    if (req.user?.role !== "admin") {
+      const activeStudents = await User.countDocuments({
+        role: "student",
+        isActive: true,
+      });
+      if (toDeactivate.length > Math.max(10, activeStudents * 0.5)) {
+        res.status(400).json({
+          success: false,
+          message: `This file would deactivate ${toDeactivate.length} of ${activeStudents} active students, which looks like a wrong or partial roster. Please check the file, or ask an admin to run it.`,
+        });
+        return;
+      }
+    }
 
     if (toDeactivate.length > 0) {
       await User.updateMany(
@@ -610,16 +644,21 @@ export const syncDeleteUsers = async (
     }
     const deactivated = toDeactivate.map(summarize);
 
+    await recordAudit({
+      action: "roster.deactivate",
+      actorId: req.user?.id,
+      details: { deactivated: deactivated.length, rosterSize: uploadedStudentNumbers.length },
+    });
+
     res.status(200).json({
       success: true,
-      message: `Delete phase complete. ${deactivated.length} deactivated, ${skippedAdmins.length} admins protected.`,
-      data: { deactivated, skippedAdmins },
+      message: `Delete phase complete. ${deactivated.length} deactivated, ${skippedAdmins.length + skippedStaff.length} admins, officers and faculty left alone.`,
+      data: { deactivated, skippedAdmins, skippedStaff },
     });
   } catch (error: any) {
     res.status(500).json({
       success: false,
       message: "Error during sync delete",
-      error: error.message,
     });
   }
 };
@@ -680,7 +719,10 @@ export const syncUpsertBatch = async (
 
           existingUser.membershipStatus = membershipStatus;
 
-          if (userData.role) {
+          if (
+            userData.role &&
+            !isProtectedPeer(existingUser, req.user, existingUser._id.toString())
+          ) {
             const newRole = userData.role.toLowerCase();
             if (
               ["student", "council-officer", "committee-officer", "faculty"].includes(
@@ -743,6 +785,12 @@ export const syncUpsertBatch = async (
       }
     });
 
+    await recordAudit({
+      action: "roster.upsert",
+      actorId: req.user?.id,
+      details: { successful, failed: failedUsers.length },
+    });
+
     res.status(200).json({
       success: true,
       data: { successful, failed: failedUsers.length, failedUsers },
@@ -751,7 +799,6 @@ export const syncUpsertBatch = async (
     res.status(500).json({
       success: false,
       message: "Error during sync upsert batch",
-      error: error.message,
     });
   }
 };
@@ -810,6 +857,14 @@ export const updateUser = async (
       return;
     }
 
+    if (isProtectedPeer(originalUser, req.user, id)) {
+      res.status(403).json({
+        success: false,
+        message: "Only admins can edit another council officer's account",
+      });
+      return;
+    }
+
     // People editing their own record can only change profile details;
     // role, membership and status are managed by officers and admins.
     const isSelfService = req.user?.id === id && !isAdmin;
@@ -830,6 +885,15 @@ export const updateUser = async (
         message: "User not found",
       });
       return;
+    }
+
+    if (updates.role && updates.role !== originalUser.role) {
+      await recordAudit({
+        action: "user.role-change",
+        actorId: req.user?.id,
+        targetId: id,
+        details: { from: originalUser.role, to: updates.role },
+      });
     }
 
     // Notification Logic
@@ -886,7 +950,6 @@ export const updateUser = async (
     res.status(500).json({
       success: false,
       message: "Error updating user",
-      error: error.message,
     });
   }
 };
@@ -925,8 +988,29 @@ export const toggleUserStatus = async (
       return;
     }
 
+    if (req.user?.id === id) {
+      res.status(400).json({
+        success: false,
+        message: "You can't deactivate your own account",
+      });
+      return;
+    }
+
+    if (isProtectedPeer(user, req.user, id)) {
+      res.status(403).json({
+        success: false,
+        message: "Only admins can change another council officer's status",
+      });
+      return;
+    }
+
     user.isActive = !user.isActive;
     await user.save();
+    await recordAudit({
+      action: user.isActive ? "user.activate" : "user.deactivate",
+      actorId: req.user?.id,
+      targetId: id,
+    });
 
     await user.populate("registeredBy", "firstName lastName middleName role");
 
@@ -941,7 +1025,6 @@ export const toggleUserStatus = async (
     res.status(500).json({
       success: false,
       message: "Error toggling user status",
-      error: error.message,
     });
   }
 };
@@ -980,7 +1063,29 @@ export const deleteUser = async (
       return;
     }
 
+    if (req.user?.id === id) {
+      res.status(400).json({
+        success: false,
+        message: "You can't delete your own account",
+      });
+      return;
+    }
+
+    if (isProtectedPeer(userToDelete, req.user, id)) {
+      res.status(403).json({
+        success: false,
+        message: "Only admins can delete a council officer's account",
+      });
+      return;
+    }
+
     await userToDelete.deleteOne();
+    await recordAudit({
+      action: "user.delete",
+      actorId: req.user?.id,
+      targetId: id,
+      details: { studentNumber: userToDelete.studentNumber, role: userToDelete.role },
+    });
 
     res.status(200).json({
       success: true,
@@ -991,7 +1096,6 @@ export const deleteUser = async (
     res.status(500).json({
       success: false,
       message: "Error deleting user",
-      error: error.message,
     });
   }
 };
@@ -1062,7 +1166,6 @@ export const getUserStats = async (
     res.status(500).json({
       success: false,
       message: "Error fetching user statistics",
-      error: error.message,
     });
   }
 };
@@ -1104,7 +1207,6 @@ export const searchUsers = async (
     res.status(500).json({
       success: false,
       message: "Error searching users",
-      error: error.message,
     });
   }
 };
