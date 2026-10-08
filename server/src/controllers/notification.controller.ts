@@ -254,7 +254,6 @@ export const getNotifications = async (
     res.status(500).json({
       success: false,
       message: "Error fetching notifications",
-      error: error.message,
     });
   }
 };
@@ -388,7 +387,6 @@ export const markAsRead = async (
     res.status(500).json({
       success: false,
       message: "Error marking notification as read",
-      error: error.message,
     });
   }
 };
@@ -422,7 +420,6 @@ export const markAllAsRead = async (
     res.status(500).json({
       success: false,
       message: "Error marking all notifications as read",
-      error: error.message,
     });
   }
 };
@@ -559,7 +556,6 @@ export const deleteNotification = async (
     res.status(500).json({
       success: false,
       message: "Error deleting notification",
-      error: error.message,
     });
   }
 };

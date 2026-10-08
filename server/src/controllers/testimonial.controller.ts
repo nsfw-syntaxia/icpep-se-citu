@@ -34,7 +34,6 @@ export const createTestimonial = async (req: Request, res: Response): Promise<vo
     res.status(500).json({
       success: false,
       message: 'Failed to create testimonial',
-      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };
@@ -50,7 +49,6 @@ export const getTestimonials = async (req: Request, res: Response): Promise<void
     res.status(500).json({
       success: false,
       message: 'Failed to fetch testimonials',
-      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };
@@ -66,7 +64,6 @@ export const getAllTestimonials = async (req: Request, res: Response): Promise<v
     res.status(500).json({
       success: false,
       message: 'Failed to fetch testimonials',
-      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };
@@ -105,7 +102,6 @@ export const updateTestimonial = async (req: Request, res: Response): Promise<vo
     res.status(500).json({
       success: false,
       message: 'Failed to update testimonial',
-      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };
@@ -128,7 +124,6 @@ export const deleteTestimonial = async (req: Request, res: Response): Promise<vo
     res.status(500).json({
       success: false,
       message: 'Failed to delete testimonial',
-      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };

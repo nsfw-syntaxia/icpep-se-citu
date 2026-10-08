@@ -34,7 +34,6 @@ export const createAdvisor = async (req: Request, res: Response): Promise<void> 
     res.status(500).json({
       success: false,
       message: 'Failed to create advisor',
-      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };
@@ -54,7 +53,6 @@ export const getAdvisors = async (req: Request, res: Response): Promise<void> =>
     res.status(500).json({
       success: false,
       message: 'Failed to fetch advisors',
-      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };
@@ -70,7 +68,6 @@ export const getAllAdvisors = async (req: Request, res: Response): Promise<void>
     res.status(500).json({
       success: false,
       message: 'Failed to fetch advisors',
-      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };
@@ -109,7 +106,6 @@ export const updateAdvisor = async (req: Request, res: Response): Promise<void> 
     res.status(500).json({
       success: false,
       message: 'Failed to update advisor',
-      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };
@@ -132,7 +128,6 @@ export const deleteAdvisor = async (req: Request, res: Response): Promise<void> 
     res.status(500).json({
       success: false,
       message: 'Failed to delete advisor',
-      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };

@@ -20,7 +20,6 @@ export const getMeetingAvailability = async (req: Request, res: Response) => {
     res.status(500).json({
       success: false,
       message: "Failed to fetch availability",
-      error: (error as Error).message,
     });
   }
 };
@@ -47,7 +46,6 @@ export const getMyAvailability = async (req: Request, res: Response) => {
     res.status(500).json({
       success: false,
       message: "Failed to fetch my availability",
-      error: (error as Error).message,
     });
   }
 };
@@ -128,7 +126,6 @@ export const setMyAvailability = async (req: Request, res: Response) => {
     res.status(500).json({
       success: false,
       message: "Failed to save availability",
-      error: (error as Error).message,
     });
   }
 };
@@ -159,7 +156,6 @@ export const getAvailabilitySummary = async (req: Request, res: Response) => {
     res.status(500).json({
       success: false,
       message: "Failed to summarize availability",
-      error: (error as Error).message,
     });
   }
 };

@@ -229,7 +229,6 @@ export const createMeeting = async (
     res.status(500).json({
       success: false,
       message: "Failed to create meeting",
-      error: (error as Error).message,
     });
   }
 };
@@ -283,7 +282,6 @@ export const getMeetings = async (req: Request, res: Response) => {
     res.status(500).json({
       success: false,
       message: "Failed to fetch meetings",
-      error: (error as Error).message,
     });
   }
 };
@@ -310,7 +308,6 @@ export const getMeetingById = async (req: Request, res: Response) => {
     res.status(500).json({
       success: false,
       message: "Failed to fetch meeting",
-      error: (error as Error).message,
     });
   }
 };
@@ -351,7 +348,6 @@ export const updateMeeting = async (req: Request, res: Response) => {
     res.status(500).json({
       success: false,
       message: "Failed to update meeting",
-      error: (error as Error).message,
     });
   }
 };
@@ -374,7 +370,6 @@ export const deleteMeeting = async (req: Request, res: Response) => {
     res.status(500).json({
       success: false,
       message: "Failed to delete meeting",
-      error: (error as Error).message,
     });
   }
 };

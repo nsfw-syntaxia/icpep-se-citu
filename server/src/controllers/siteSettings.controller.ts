@@ -30,7 +30,6 @@ export const getSiteSettings = async (req: Request, res: Response): Promise<void
     res.status(500).json({
       success: false,
       message: 'Failed to fetch site settings',
-      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };
@@ -64,7 +63,6 @@ export const updateSiteSettings = async (req: AuthRequest, res: Response): Promi
     res.status(500).json({
       success: false,
       message: 'Failed to update site settings',
-      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };

@@ -36,7 +36,6 @@ export const createMembershipTier = async (req: Request, res: Response): Promise
     res.status(500).json({
       success: false,
       message: 'Failed to create membership tier',
-      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };
@@ -53,7 +52,6 @@ export const getMembershipTiers = async (req: Request, res: Response): Promise<v
     res.status(500).json({
       success: false,
       message: 'Failed to fetch membership tiers',
-      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };
@@ -69,7 +67,6 @@ export const getAllMembershipTiers = async (req: Request, res: Response): Promis
     res.status(500).json({
       success: false,
       message: 'Failed to fetch membership tiers',
-      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };
@@ -117,7 +114,6 @@ export const updateMembershipTier = async (req: Request, res: Response): Promise
     res.status(500).json({
       success: false,
       message: 'Failed to update membership tier',
-      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };
@@ -137,7 +133,6 @@ export const deleteMembershipTier = async (req: Request, res: Response): Promise
     res.status(500).json({
       success: false,
       message: 'Failed to delete membership tier',
-      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };

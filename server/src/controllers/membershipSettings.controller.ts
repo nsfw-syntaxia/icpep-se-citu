@@ -23,7 +23,6 @@ export const getMembershipSettings = async (req: Request, res: Response): Promis
     res.status(500).json({
       success: false,
       message: 'Failed to fetch membership settings',
-      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };
@@ -47,7 +46,6 @@ export const updateMembershipSettings = async (req: Request, res: Response): Pro
     res.status(500).json({
       success: false,
       message: 'Failed to update membership settings',
-      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };

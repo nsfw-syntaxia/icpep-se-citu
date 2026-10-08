@@ -32,7 +32,6 @@ export const createSponsor = async (req: Request, res: Response): Promise<void> 
     res.status(500).json({
       success: false,
       message: 'Failed to create sponsor',
-      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };
@@ -48,7 +47,6 @@ export const getSponsors = async (req: Request, res: Response): Promise<void> =>
     res.status(500).json({
       success: false,
       message: 'Failed to fetch sponsors',
-      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };
@@ -64,7 +62,6 @@ export const getAllSponsors = async (req: Request, res: Response): Promise<void>
     res.status(500).json({
       success: false,
       message: 'Failed to fetch sponsors',
-      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };
@@ -101,7 +98,6 @@ export const updateSponsor = async (req: Request, res: Response): Promise<void> 
     res.status(500).json({
       success: false,
       message: 'Failed to update sponsor',
-      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };
@@ -124,7 +120,6 @@ export const deleteSponsor = async (req: Request, res: Response): Promise<void> 
     res.status(500).json({
       success: false,
       message: 'Failed to delete sponsor',
-      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };

@@ -32,7 +32,6 @@ export const createFaculty = async (req: Request, res: Response): Promise<void> 
     res.status(500).json({
       success: false,
       message: 'Failed to create faculty member',
-      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };
@@ -48,7 +47,6 @@ export const getFaculty = async (req: Request, res: Response): Promise<void> => 
     res.status(500).json({
       success: false,
       message: 'Failed to fetch faculty',
-      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };
@@ -64,7 +62,6 @@ export const getAllFaculty = async (req: Request, res: Response): Promise<void> 
     res.status(500).json({
       success: false,
       message: 'Failed to fetch faculty',
-      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };
@@ -101,7 +98,6 @@ export const updateFaculty = async (req: Request, res: Response): Promise<void> 
     res.status(500).json({
       success: false,
       message: 'Failed to update faculty member',
-      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };
@@ -124,7 +120,6 @@ export const deleteFaculty = async (req: Request, res: Response): Promise<void> 
     res.status(500).json({
       success: false,
       message: 'Failed to delete faculty member',
-      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };

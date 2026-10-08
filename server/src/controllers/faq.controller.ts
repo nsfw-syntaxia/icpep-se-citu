@@ -24,7 +24,6 @@ export const createFAQ = async (req: Request, res: Response): Promise<void> => {
     res.status(500).json({
       success: false,
       message: 'Failed to create FAQ',
-      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };
@@ -40,7 +39,6 @@ export const getFAQs = async (req: Request, res: Response): Promise<void> => {
     res.status(500).json({
       success: false,
       message: 'Failed to fetch FAQs',
-      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };
@@ -56,7 +54,6 @@ export const getAllFAQs = async (req: Request, res: Response): Promise<void> => 
     res.status(500).json({
       success: false,
       message: 'Failed to fetch all FAQs',
-      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };
@@ -85,7 +82,6 @@ export const updateFAQ = async (req: Request, res: Response): Promise<void> => {
     res.status(500).json({
       success: false,
       message: 'Failed to update FAQ',
-      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };
@@ -112,7 +108,6 @@ export const deleteFAQ = async (req: Request, res: Response): Promise<void> => {
     res.status(500).json({
       success: false,
       message: 'Failed to delete FAQ',
-      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };

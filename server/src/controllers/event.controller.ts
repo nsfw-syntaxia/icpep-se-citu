@@ -112,7 +112,7 @@ export const createEvent = async (
         if (!coverImage && galleryImages.length > 0) {
           coverImage = galleryImages[0];
         }
-      } catch (uploadError) {
+      } catch {
         // Try uploading individually to get partial results
         try {
           for (const f of multerFiles) {
@@ -137,10 +137,6 @@ export const createEvent = async (
             res.status(500).json({
               success: false,
               message: "Failed to upload images",
-              error:
-                uploadError instanceof Error
-                  ? uploadError.message
-                  : "Unknown error",
             });
             return;
           }
@@ -148,10 +144,6 @@ export const createEvent = async (
           res.status(500).json({
             success: false,
             message: "Failed to upload images",
-            error:
-              fallbackErr instanceof Error
-                ? fallbackErr.message
-                : "Unknown error",
           });
           return;
         }
@@ -170,14 +162,10 @@ export const createEvent = async (
         const url = (result as any).secure_url;
         galleryImages = url ? [url] : [];
         coverImage = url || coverImage;
-      } catch (uploadError) {
+      } catch {
         res.status(500).json({
           success: false,
           message: "Failed to upload cover image",
-          error:
-            uploadError instanceof Error
-              ? uploadError.message
-              : "Unknown error",
         });
         return;
       }
@@ -196,12 +184,10 @@ export const createEvent = async (
         req.body.details && typeof req.body.details === "string"
           ? JSON.parse(req.body.details)
           : req.body.details;
-    } catch (parseError) {
+    } catch {
       res.status(400).json({
         success: false,
         message: "Invalid JSON data in request",
-        error:
-          parseError instanceof Error ? parseError.message : "Unknown error",
       });
       return;
     }
@@ -287,7 +273,6 @@ export const createEvent = async (
     res.status(500).json({
       success: false,
       message: "Failed to create event",
-      error: error instanceof Error ? error.message : "Unknown error",
       ...(process.env.NODE_ENV === "development" && {
         stack: error instanceof Error ? error.stack : undefined,
       }),
@@ -462,7 +447,6 @@ export const updateEvent = async (
           .json({
             success: false,
             message: "Failed to upload images",
-            error: err instanceof Error ? err.message : undefined,
           });
         return;
       }

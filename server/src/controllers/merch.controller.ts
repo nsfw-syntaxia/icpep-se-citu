@@ -54,7 +54,6 @@ export const createMerch = async (req: Request, res: Response): Promise<void> =>
     res.status(500).json({
       success: false,
       message: 'Failed to create merch',
-      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };
@@ -70,7 +69,6 @@ export const getMerch = async (req: Request, res: Response): Promise<void> => {
     res.status(500).json({
       success: false,
       message: 'Failed to fetch merch',
-      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };
@@ -134,7 +132,6 @@ export const updateMerch = async (req: Request, res: Response): Promise<void> =>
     res.status(500).json({
       success: false,
       message: 'Failed to update merch',
-      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };
@@ -166,7 +163,6 @@ export const deleteMerch = async (req: Request, res: Response): Promise<void> =>
     res.status(500).json({
       success: false,
       message: 'Failed to delete merch',
-      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };

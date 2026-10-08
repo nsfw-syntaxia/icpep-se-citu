@@ -107,14 +107,10 @@ export const createAnnouncement = async (
           imageUrl = urls[0];
           galleryImages = urls;
         }
-      } catch (uploadError) {
+      } catch {
         res.status(500).json({
           success: false,
           message: "Failed to upload image(s)",
-          error:
-            uploadError instanceof Error
-              ? uploadError.message
-              : "Unknown error",
         });
         return;
       }
@@ -131,16 +127,12 @@ export const createAnnouncement = async (
         const result = await uploadToCloudinary(fileBuf, "announcements");
         imageUrl = result.secure_url;
         galleryImages = imageUrl ? [imageUrl] : undefined;
-      } catch (uploadError) {
+      } catch {
         res
           .status(500)
           .json({
             success: false,
             message: "Failed to upload image",
-            error:
-              uploadError instanceof Error
-                ? uploadError.message
-                : "Unknown error",
           });
         return;
       }
@@ -155,12 +147,10 @@ export const createAnnouncement = async (
       parsedTargetAudience = targetAudience
         ? JSON.parse(targetAudience)
         : ["all"];
-    } catch (parseError) {
+    } catch {
       res.status(400).json({
         success: false,
         message: "Invalid JSON data in request",
-        error:
-          parseError instanceof Error ? parseError.message : "Unknown error",
       });
       return;
     }
@@ -268,7 +258,6 @@ export const createAnnouncement = async (
     res.status(500).json({
       success: false,
       message: "Failed to create announcement",
-      error: error instanceof Error ? error.message : "Unknown error",
       ...(process.env.NODE_ENV === "development" && {
         stack: error instanceof Error ? error.stack : undefined,
       }),

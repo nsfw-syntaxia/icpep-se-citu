@@ -42,7 +42,6 @@ export const createOfficerTerm = async (req: Request, res: Response): Promise<vo
     res.status(500).json({
       success: false,
       message: 'Failed to create officer term',
-      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };
@@ -62,7 +61,6 @@ export const getOfficerTerms = async (req: Request, res: Response): Promise<void
     res.status(500).json({
       success: false,
       message: 'Failed to fetch officer terms',
-      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };
@@ -77,7 +75,6 @@ export const getOfficerTermYears = async (req: Request, res: Response): Promise<
     res.status(500).json({
       success: false,
       message: 'Failed to fetch officer term years',
-      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };
@@ -90,7 +87,6 @@ export const getAllOfficerTerms = async (req: Request, res: Response): Promise<v
     res.status(500).json({
       success: false,
       message: 'Failed to fetch officer terms',
-      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };
@@ -143,7 +139,6 @@ export const updateOfficerTerm = async (req: Request, res: Response): Promise<vo
     res.status(500).json({
       success: false,
       message: 'Failed to update officer term',
-      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };
@@ -161,7 +156,6 @@ export const deleteOfficerTerm = async (req: Request, res: Response): Promise<vo
     res.status(500).json({
       success: false,
       message: 'Failed to delete officer term',
-      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };
