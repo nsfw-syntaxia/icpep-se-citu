@@ -40,6 +40,7 @@ export interface IUser extends Document {
   fullName: string;
   registeredByName: string;
   resetPasswordCode?: string;
+  resetPasswordAttempts?: number;
   resetPasswordExpire?: Date;
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
@@ -158,6 +159,11 @@ const userSchema = new Schema<IUser>(
     },
     resetPasswordExpire: {
       type: Date,
+      select: false,
+    },
+    resetPasswordAttempts: {
+      type: Number,
+      default: 0,
       select: false,
     },
   },

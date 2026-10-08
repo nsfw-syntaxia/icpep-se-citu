@@ -20,6 +20,15 @@ declare global {
   }
 }
 
+// Until a new account has set its own password, the only things its token can
+// do are set that password, look itself up and sign out.
+const FIRST_LOGIN_ALLOWED_PATHS = new Set([
+  '/api/auth/first-login-password',
+  '/api/auth/change-password',
+  '/api/auth/me',
+  '/api/auth/logout',
+]);
+
 // Verifies the JWT, then checks the account behind it: a deactivated or
 // deleted user is rejected, and the role is the current one from the database
 // rather than whatever the token was issued with.
@@ -56,7 +65,9 @@ export const authenticateToken = async (
   }
 
   try {
-    const account = await User.findById(decoded.id).select('role isActive tokenVersion').lean();
+    const account = await User.findById(decoded.id)
+      .select('role isActive tokenVersion +firstLogin')
+      .lean();
 
     if (
       !account ||
@@ -66,6 +77,14 @@ export const authenticateToken = async (
       return res.status(401).json({
         success: false,
         message: 'Invalid token: this session is no longer valid.',
+      });
+    }
+
+    const path = req.originalUrl.split('?')[0].replace(/\/+$/, '');
+    if (account.firstLogin && !FIRST_LOGIN_ALLOWED_PATHS.has(path)) {
+      return res.status(403).json({
+        success: false,
+        message: 'Please set a new password before continuing.',
       });
     }
 

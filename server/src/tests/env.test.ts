@@ -49,9 +49,9 @@ describe("getDefaultPassword", () => {
 });
 
 describe("getJwtExpiresIn", () => {
-  it("defaults to 7 days and can be overridden", () => {
+  it("defaults to 1 day and can be overridden", () => {
     delete process.env.JWT_EXPIRES_IN;
-    expect(getJwtExpiresIn()).toBe("7d");
+    expect(getJwtExpiresIn()).toBe("1d");
     process.env.JWT_EXPIRES_IN = "12h";
     expect(getJwtExpiresIn()).toBe("12h");
   });

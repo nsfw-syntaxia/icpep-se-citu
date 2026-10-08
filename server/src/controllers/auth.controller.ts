@@ -7,6 +7,8 @@ import { sendNotification } from "../utils/notification";
 import sendEmail from "../utils/email";
 import { DEVELOPER_STUDENT_NUMBERS } from "../config/developers";
 import { getJwtSecret, getJwtExpiresIn } from "../config/env";
+import { recordAudit } from "../utils/audit";
+import { hashResetCode, resetCodeMatches, MAX_RESET_ATTEMPTS } from "../utils/reset-code";
 
 export interface AuthRequest extends Request {
   user?: {
@@ -66,17 +68,17 @@ export const login = async (req: Request, res: Response) => {
     // page). Runs after the password check so this can't be triggered by
     // anyone who doesn't already know the account's real password.
     if (DEVELOPER_STUDENT_NUMBERS.includes(user.studentNumber)) {
-      let healed = false;
-      if (user.role !== "admin") {
-        user.role = "admin";
-        healed = true;
-      }
-      if (!user.isActive) {
-        user.isActive = true;
-        healed = true;
-      }
-      if (healed) {
+      const restoredRole = user.role !== "admin";
+      const reactivated = !user.isActive;
+      if (restoredRole) user.role = "admin";
+      if (reactivated) user.isActive = true;
+      if (restoredRole || reactivated) {
         await user.save({ validateBeforeSave: false });
+        await recordAudit({
+          action: "developer.self-heal",
+          targetId: user._id,
+          details: { restoredRole, reactivated },
+        });
       }
     }
 
@@ -197,11 +199,10 @@ export const firstLoginPasswordChange = async (
       success: true,
       message: "Password changed successfully",
     });
-  } catch (error: any) {
+  } catch {
     res.status(500).json({
       success: false,
       message: "Error changing password",
-      error: error.message,
     });
   }
 };
@@ -281,11 +282,10 @@ export const changePassword = async (
       success: true,
       message: "Password changed successfully",
     });
-  } catch (error: any) {
+  } catch {
     res.status(500).json({
       success: false,
       message: "Server error during password change",
-      error: error.message,
     });
   }
 };
@@ -320,8 +320,15 @@ export const getCurrentUser = async (req: AuthRequest, res: Response) => {
 
 // @desc    Logout user
 // @route   POST /api/auth/logout
-// @access  Public
+// @access  Public (a valid token also gets revoked server-side)
 export const logout = async (req: Request, res: Response) => {
+  if (req.user?.id) {
+    try {
+      await User.findByIdAndUpdate(req.user.id, { $inc: { tokenVersion: 1 } });
+    } catch {
+      // signing out on the client still goes ahead
+    }
+  }
   res.status(200).json({
     success: true,
     message: "Logged out successfully",
@@ -331,6 +338,34 @@ export const logout = async (req: Request, res: Response) => {
 // Helper to generate 6-digit code
 const generateResetCode = () => {
   return crypto.randomInt(100000, 1000000).toString();
+};
+
+// Finds the account a reset code belongs to. Wrong guesses are counted, and
+// after MAX_RESET_ATTEMPTS the code is thrown away so it can't be brute-forced.
+const findUserByResetCode = async (studentNumber: string, code: string) => {
+  const user = await User.findOne({
+    studentNumber: studentNumber.toUpperCase(),
+  }).select("+resetPasswordCode +resetPasswordExpire +resetPasswordAttempts");
+
+  if (
+    !user ||
+    !user.resetPasswordCode ||
+    !user.resetPasswordExpire ||
+    user.resetPasswordExpire.getTime() <= Date.now()
+  ) {
+    return null;
+  }
+
+  if (resetCodeMatches(user.resetPasswordCode, code)) return user;
+
+  user.resetPasswordAttempts = (user.resetPasswordAttempts ?? 0) + 1;
+  if (user.resetPasswordAttempts >= MAX_RESET_ATTEMPTS) {
+    user.resetPasswordCode = undefined;
+    user.resetPasswordExpire = undefined;
+    user.resetPasswordAttempts = 0;
+  }
+  await user.save({ validateBeforeSave: false });
+  return null;
 };
 
 // @desc    Forgot Password
@@ -364,7 +399,8 @@ export const forgotPassword = async (req: Request, res: Response) => {
     // Generate reset code
     const resetCode = generateResetCode();
 
-    user.resetPasswordCode = resetCode;
+    user.resetPasswordCode = hashResetCode(resetCode);
+    user.resetPasswordAttempts = 0;
     user.resetPasswordExpire = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
 
     await user.save({ validateBeforeSave: false });
@@ -417,11 +453,7 @@ export const verifyResetCode = async (req: Request, res: Response) => {
       });
     }
 
-    const user = await User.findOne({
-      studentNumber: studentNumber.toUpperCase(),
-      resetPasswordCode: code,
-      resetPasswordExpire: { $gt: Date.now() },
-    });
+    const user = await findUserByResetCode(String(studentNumber), String(code));
 
     if (!user) {
       return res.status(400).json({
@@ -457,11 +489,7 @@ export const resetPassword = async (req: Request, res: Response) => {
       });
     }
 
-    const user = await User.findOne({
-      studentNumber: studentNumber.toUpperCase(),
-      resetPasswordCode: code,
-      resetPasswordExpire: { $gt: Date.now() },
-    });
+    const user = await findUserByResetCode(String(studentNumber), String(code));
 
     if (!user) {
       return res.status(400).json({
@@ -470,15 +498,22 @@ export const resetPassword = async (req: Request, res: Response) => {
       });
     }
 
-    // Set new password
-    user.password = password;
+    const validation = validatePassword(String(password));
+    if (!validation.isValid) {
+      return res.status(400).json({
+        success: false,
+        message: "Password does not meet security requirements",
+        errors: validation.errors,
+      });
+    }
+
+    user.password = String(password);
     user.resetPasswordCode = undefined;
     user.resetPasswordExpire = undefined;
-    
-    // If they were locked out due to first login, this effectively handles it if we don't check firstLogin.
-    // user.firstLogin = false; 
+    user.resetPasswordAttempts = 0;
 
     await user.save();
+    await recordAudit({ action: "password.reset", actorId: user._id, targetId: user._id });
 
     res.status(200).json({
       success: true,

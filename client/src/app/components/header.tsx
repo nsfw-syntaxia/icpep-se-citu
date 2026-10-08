@@ -6,6 +6,7 @@ import Button from "./button";
 import Menu from "./menu";
 import { useRouter } from "next/navigation";
 import { notificationService } from "@/app/services/notification";
+import { api } from "@/app/services/api-client";
 import {
   CheckCheck,
   Megaphone,
@@ -98,6 +99,8 @@ const Header = () => {
 
   // handle logout logic
   const handleLogout = useCallback(() => {
+    // Revoke the session server-side too; the sign-out itself never waits on it.
+    api.post("/auth/logout").catch(() => undefined);
     localStorage.removeItem("authToken");
     localStorage.removeItem("userId");
     localStorage.removeItem("userRole");

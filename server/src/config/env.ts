@@ -9,7 +9,7 @@ export const getJwtSecret = (): string => {
 };
 
 // How long a login stays valid. Shorter is safer; longer means fewer re-logins.
-export const getJwtExpiresIn = (): string => process.env.JWT_EXPIRES_IN || "7d";
+export const getJwtExpiresIn = (): string => process.env.JWT_EXPIRES_IN || "1d";
 
 // New accounts start on this password until they change it at first login.
 // In production it has to be set deliberately: the built-in fallback is a
