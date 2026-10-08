@@ -7,6 +7,7 @@ dotenv.config();
 import express, { Application, Request, Response, NextFunction } from "express";
 import mongoose from "mongoose";
 import cors from "cors";
+import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import authRoutes from "./routes/auth.routes";
 import userRoutes from "./routes/user.routes";
@@ -25,10 +26,12 @@ import facultyRoutes from "./routes/faculty.routes";
 import officerTermRoutes from "./routes/officerTerm.routes";
 import membershipRoutes from "./routes/membership.routes";
 import siteRoutes from "./routes/site.routes";
+import auditRoutes from "./routes/audit.routes";
 import startAnnouncementScheduler from "./utils/scheduler";
 import { escapeRegExp } from "./utils/regex";
 import { getJwtSecret, getDefaultPassword } from "./config/env";
 import { enforceMaintenanceMode } from "./middleware/maintenance.middleware";
+import { rateLimit } from "./utils/rate-limit";
 
 // Refuse to start without a usable JWT secret (and, in production, a
 // deliberate default password for new accounts)
@@ -37,6 +40,10 @@ getDefaultPassword();
 
 // Initialize express app
 const app: Application = express();
+
+// Don't advertise the framework, and send the standard security headers.
+app.disable("x-powered-by");
+app.use(helmet());
 
 // Behind a reverse proxy (Render, etc.) set TRUST_PROXY=1 so req.ip is the real
 // client rather than the proxy; leave it unset when the server is exposed directly.
@@ -53,8 +60,9 @@ app.use(express.urlencoded({ extended: true, limit: "1mb" }));
 // 2. Cookie Parser
 app.use(cookieParser());
 
-// 3. CORS - Allow multiple origins. Support comma-separated FRONTEND_URL(s)
-// and allow vercel subdomains by default (useful for preview deployments).
+// 3. CORS - Allow multiple origins. Support comma-separated FRONTEND_URL(s).
+// *.vercel.app previews are off by default (anyone can host one); turn them on
+// with ALLOW_VERCEL_SUBDOMAINS=true if you need preview deployments.
 const defaultOrigins = [
   "http://localhost:3000",
   "https://icpep-se-citu.vercel.app",
@@ -74,7 +82,7 @@ const allowedOrigins = Array.from(
 const allowAllOrigins =
   String(process.env.ALLOW_ALL_ORIGINS || "false").toLowerCase() === "true";
 const allowVercelSubdomains =
-  String(process.env.ALLOW_VERCEL_SUBDOMAINS ?? "true").toLowerCase() ===
+  String(process.env.ALLOW_VERCEL_SUBDOMAINS ?? "false").toLowerCase() ===
   "true";
 
 app.use(
@@ -143,7 +151,24 @@ if (process.env.NODE_ENV === "development") {
   });
 }
 
-// 5. Maintenance mode — an admin-only switch that suspends the rest of the
+// 5. Request limits for the whole API, on top of the stricter login and reset
+// limits. Generous enough for the Excel roster sync, which sends many batches.
+app.use(
+  "/api",
+  rateLimit({ windowMs: 60 * 1000, max: 600, message: "Too many requests. Please slow down." })
+);
+const mutationLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 300,
+  message: "Too many changes in a short time. Please slow down.",
+});
+app.use("/api", (req: Request, res: Response, next: NextFunction) =>
+  ["POST", "PUT", "PATCH", "DELETE"].includes(req.method)
+    ? mutationLimiter(req, res, next)
+    : next()
+);
+
+// 6. Maintenance mode — an admin-only switch that suspends the rest of the
 // API for everyone else. Sits ahead of every route below.
 app.use(enforceMaintenanceMode);
 
@@ -241,6 +266,7 @@ app.use("/api/faqs", faqRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/officers", officerRoutes);
 app.use("/api/site", siteRoutes);
+app.use("/api/audit", auditRoutes);
 
 // 404 handler - must be after all routes
 app.use((req: Request, res: Response) => {
