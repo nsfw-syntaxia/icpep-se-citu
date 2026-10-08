@@ -10,6 +10,7 @@ import mongoose from "mongoose";
 import { notifyTargetAudience } from "../utils/notification";
 import { listVisibility, canViewItem } from "../utils/visibility";
 import { pickFields } from "../utils/pick";
+import { sanitizeRichText, isBlankRichText } from "../utils/rich-text";
 
 const ANNOUNCEMENT_EDITABLE_FIELDS = [
   "title", "description", "content", "type", "priority", "targetAudience",
@@ -166,7 +167,7 @@ export const createAnnouncement = async (
 
 
     // Validate required fields
-    if (!title || !description || !content) {
+    if (!title || !description || !content || isBlankRichText(String(content))) {
       res.status(400).json({
         success: false,
         message: "Missing required fields: title, description, or content",
@@ -182,7 +183,7 @@ export const createAnnouncement = async (
     const announcementData: any = {
       title,
       description,
-      content,
+      content: sanitizeRichText(String(content)),
       author,
       type,
       priority,
@@ -458,6 +459,14 @@ export const updateAnnouncement = async (
 
     // Only whitelisted fields can change. Authorship, views and ids never do.
     const updateData: any = pickFields(req.body, ANNOUNCEMENT_EDITABLE_FIELDS);
+
+    if (typeof updateData.content === "string") {
+      updateData.content = sanitizeRichText(updateData.content);
+      if (isBlankRichText(updateData.content)) {
+        res.status(400).json({ success: false, message: "Content cannot be empty" });
+        return;
+      }
+    }
 
     if (
       requestWantsPublish &&

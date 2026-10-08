@@ -4,6 +4,7 @@ import { canManagePost } from "../utils/ownership";
 import { escapeHtml } from "../utils/html";
 import { listVisibility, canViewItem } from "../utils/visibility";
 import { pickFields } from "../utils/pick";
+import { sanitizeRichText, isBlankRichText } from "../utils/rich-text";
 
 const EVENT_EDITABLE_FIELDS = [
   "title", "description", "content", "tags", "priority", "targetAudience",
@@ -206,7 +207,7 @@ export const createEvent = async (
     }
 
     // Validate required fields
-    if (!title || !description || !content || !eventDate) {
+    if (!title || !description || !content || !eventDate || isBlankRichText(String(content))) {
       res.status(400).json({
         success: false,
         message:
@@ -218,7 +219,7 @@ export const createEvent = async (
     const eventData: any = {
       title,
       description,
-      content,
+      content: sanitizeRichText(String(content)),
       author,
       tags: parsedTags,
       priority,
@@ -517,6 +518,14 @@ export const updateEvent = async (
 
     // Only whitelisted fields can change. Authorship, views and ids never do.
     const updateData: any = pickFields(req.body, EVENT_EDITABLE_FIELDS);
+
+    if (typeof updateData.content === "string") {
+      updateData.content = sanitizeRichText(updateData.content);
+      if (isBlankRichText(updateData.content)) {
+        res.status(400).json({ success: false, message: "Content cannot be empty" });
+        return;
+      }
+    }
 
     if (
       requestWantsPublish &&

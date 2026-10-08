@@ -1,15 +1,5 @@
-import DOMPurify from "isomorphic-dompurify";
 import { Event } from "../utils/event";
-
-// Event content is written by officers in a rich-text editor, and anyone who can
-// post can put a script in it. Strip everything but basic formatting before it
-// is rendered as HTML.
-const sanitizeContent = (html: string) =>
-  DOMPurify.sanitize(html, {
-    ALLOWED_TAGS: ["p", "br", "strong", "b", "em", "i", "u", "s", "ul", "ol", "li", "h1", "h2", "h3", "h4", "blockquote", "a", "img", "span"],
-    ALLOWED_ATTR: ["href", "target", "rel", "src", "alt"],
-    ALLOWED_URI_REGEXP: /^(?:https?:|mailto:)/i,
-  });
+import RichContent from "@/app/components/rich-content";
 
 interface Props {
   title: string;
@@ -37,16 +27,10 @@ export default function EventDetails({
           <section className="mt-6 space-y-3">
             <h3 className="font-rubik font-semibold text-lg">Content</h3>
 
-            {/<\/?[a-z][\s\S]*>/i.test(content) ? (
-              <div
-                className="font-raleway text-bodytext leading-relaxed space-y-3"
-                dangerouslySetInnerHTML={{ __html: sanitizeContent(content) }}
-              />
-            ) : (
-              <div className="font-raleway whitespace-pre-wrap leading-relaxed">
-                {content}
-              </div>
-            )}
+            <RichContent
+              value={content}
+              className="font-raleway text-bodytext leading-relaxed"
+            />
           </section>
         )}
       </div>
