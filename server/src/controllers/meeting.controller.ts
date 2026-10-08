@@ -290,9 +290,11 @@ export const getMeetings = async (req: Request, res: Response) => {
 
 export const getMeetingById = async (req: Request, res: Response) => {
   try {
+    // Student numbers are for staff only; other members just see who set the meeting up.
+    const isStaff = ["council-officer", "committee-officer", "faculty", "admin"].includes(req.user?.role ?? "");
     const meeting = await Meeting.findById(req.params.id).populate(
       "createdBy",
-      "firstName lastName studentNumber"
+      isStaff ? "firstName lastName studentNumber" : "firstName lastName"
     );
     if (!meeting) {
       res.status(404).json({ success: false, message: "Meeting not found" });

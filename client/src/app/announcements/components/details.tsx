@@ -1,4 +1,5 @@
 import { getTypeColor, formatDate } from "../utils/announcements";
+import RichContent from "@/app/components/rich-content";
 
 type AnnouncementLike = {
   _id?: string;
@@ -79,9 +80,10 @@ export default function AnnouncementDetails({
       </div>
 
       <div>
-        <p className="font-raleway text-gray-700 leading-relaxed text-base mb-8">
-          {announcement.content ?? announcement.description}
-        </p>
+        <RichContent
+          value={announcement.content ?? announcement.description ?? ""}
+          className="font-raleway text-gray-700 leading-relaxed text-base mb-8"
+        />
       </div>
 
       {showAgenda && (

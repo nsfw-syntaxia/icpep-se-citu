@@ -1,4 +1,5 @@
 import { Event } from "../utils/event";
+import RichContent from "@/app/components/rich-content";
 
 interface Props {
   title: string;
@@ -26,16 +27,10 @@ export default function EventDetails({
           <section className="mt-6 space-y-3">
             <h3 className="font-rubik font-semibold text-lg">Content</h3>
 
-            {/<\/?[a-z][\s\S]*>/i.test(content) ? (
-              <div
-                className="font-raleway text-bodytext leading-relaxed space-y-3"
-                dangerouslySetInnerHTML={{ __html: content }}
-              />
-            ) : (
-              <div className="font-raleway whitespace-pre-wrap leading-relaxed">
-                {content}
-              </div>
-            )}
+            <RichContent
+              value={content}
+              className="font-raleway text-bodytext leading-relaxed"
+            />
           </section>
         )}
       </div>

@@ -29,6 +29,8 @@ import {
 } from "lucide-react";
 import eventService from "../../services/event";
 import { LoadingIndicator } from "@/app/components/loading";
+import RichTextEditor from "@/app/components/rich-text-editor";
+import { plainLength } from "@/app/components/rich-content";
 
 // Custom time picker constants
 const timeHours = Array.from({ length: 12 }, (_, i) =>
@@ -1823,17 +1825,16 @@ export default function EventsPage() {
                               Contents <span className="text-red-400">*</span>
                             </label>
                             <span className="text-[11px] text-gray-300 font-raleway">
-                              {formData.body.length} chars
+                              {plainLength(formData.body)} chars
                             </span>
                           </div>
-                          <textarea
-                            id="body"
-                            name="body"
+                          <RichTextEditor
                             value={formData.body}
-                            onChange={handleInputChange}
-                            rows={7}
+                            onChange={(html) =>
+                              setFormData((prev) => ({ ...prev, body: html }))
+                            }
                             placeholder="Agenda / program highlights..."
-                            className={`${inputCls(errors.body)} resize-y min-h-45`}
+                            invalid={errors.body}
                           />
                           {errors.body && (
                             <p className="text-xs text-red-400 font-raleway flex items-center gap-1">

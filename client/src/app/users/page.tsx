@@ -52,6 +52,7 @@ interface ApiUser {
     _id: string;
     firstName: string;
     lastName: string;
+    role?: string;
   };
   createdAt: string;
   updatedAt: string;
@@ -431,6 +432,7 @@ export default function UsersListPage() {
                 fullName: toTitleCase(
                   `${user.registeredBy.firstName} ${user.registeredBy.lastName}`,
                 ),
+                role: user.registeredBy.role,
               }
             : null,
           createdAt: user.createdAt,

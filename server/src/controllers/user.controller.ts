@@ -78,18 +78,24 @@ export const getAllUsers = async (
     }
 
     // Build sort object
+    // Only fields that are safe to order by. Sorting on a hidden field (e.g. a
+    // password hash or reset code) would leak its order even without the value.
+    const SORTABLE = ["createdAt", "updatedAt", "studentNumber", "lastName", "firstName", "role", "yearLevel", "isActive"];
     const sort: any = {};
-    sort[sortBy as string] = sortOrder === "asc" ? 1 : -1;
+    sort[SORTABLE.includes(String(sortBy)) ? String(sortBy) : "createdAt"] = sortOrder === "asc" ? 1 : -1;
 
     // Pagination
-    const pageNum = parseInt(page as string);
-    const limitNum = parseInt(limit as string);
+    // Cap page size: staff get up to 10000 (the users page loads everyone at once),
+    // everyone else 500. Pages are never below 1.
+    const pageNum = Math.max(1, parseInt(page as string) || 1);
+    const maxLimit = canSeeEveryone ? 10000 : 500;
+    const limitNum = Math.min(maxLimit, Math.max(1, parseInt(limit as string) || 50));
     const skip = (pageNum - 1) * limitNum;
 
     // Execute query
     let query = User.find(filter);
     query = canSeeEveryone
-      ? query.populate("registeredBy", "firstName lastName middleName")
+      ? query.populate("registeredBy", "firstName lastName middleName role")
       : query.select(PUBLIC_DIRECTORY_FIELDS);
     const users = await query.sort(sort).skip(skip).limit(limitNum).lean();
 
@@ -133,7 +139,7 @@ export const getUserById = async (
 
     const user = await User.findById(id).populate(
       "registeredBy",
-      "firstName lastName middleName",
+      "firstName lastName middleName role",
     );
 
     if (!user) {
@@ -314,7 +320,7 @@ export const createUser = async (
     });
 
     // Populate registeredBy before sending response
-    await newUser.populate("registeredBy", "firstName lastName middleName");
+    await newUser.populate("registeredBy", "firstName lastName middleName role");
 
     res.status(201).json({
       success: true,
@@ -816,7 +822,7 @@ export const updateUser = async (
       id,
       { ...updates, updatedAt: new Date() },
       { new: true, runValidators: true },
-    ).populate("registeredBy", "firstName lastName middleName");
+    ).populate("registeredBy", "firstName lastName middleName role");
 
     if (!updatedUser) {
       res.status(404).json({
@@ -922,7 +928,7 @@ export const toggleUserStatus = async (
     user.isActive = !user.isActive;
     await user.save();
 
-    await user.populate("registeredBy", "firstName lastName middleName");
+    await user.populate("registeredBy", "firstName lastName middleName role");
 
     res.status(200).json({
       success: true,
@@ -1087,7 +1093,7 @@ export const searchUsers = async (
         { middleName: searchRegex },
       ],
     })
-      .populate("registeredBy", "firstName lastName middleName")
+      .populate("registeredBy", "firstName lastName middleName role")
       .limit(20);
 
     res.status(200).json({

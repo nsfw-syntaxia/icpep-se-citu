@@ -54,6 +54,8 @@ import announcementService, {
   AnnouncementData,
 } from "../../services/announcement";
 import { LoadingIndicator } from "@/app/components/loading";
+import RichTextEditor from "@/app/components/rich-text-editor";
+import { plainLength } from "@/app/components/rich-content";
 
 type FormErrors = {
   date: boolean;
@@ -1398,17 +1400,16 @@ export default function AnnouncementsPage() {
                               Body <span className="text-red-500">*</span>
                             </label>
                             <span className="text-[11px] text-gray-400 font-raleway">
-                              {formData.body.length} chars
+                              {plainLength(formData.body)} chars
                             </span>
                           </div>
-                          <textarea
-                            id="body"
-                            name="body"
+                          <RichTextEditor
                             value={formData.body}
-                            onChange={handleInputChange}
-                            rows={7}
+                            onChange={(html) =>
+                              setFormData((prev) => ({ ...prev, body: html }))
+                            }
                             placeholder="Add full details, links, and information..."
-                            className={`${inputCls(errors.body)} resize-y min-h-45`}
+                            invalid={errors.body}
                           />
                           {errors.body && (
                             <p className="text-red-500 text-xs mt-1 ml-2 font-raleway">Body is required</p>

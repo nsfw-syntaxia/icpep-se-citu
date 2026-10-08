@@ -282,7 +282,7 @@ const Header = () => {
   }: any) => (
     <button
       onClick={onClick}
-      className={`w-full flex items-center gap-4 px-5 py-3 text-left transition-all duration-200 group cursor-pointer
+      className={`w-full flex items-center gap-4 px-3 py-2.5 rounded-xl text-left transition-all duration-200 group cursor-pointer
         ${isDestructive ? "hover:bg-red-50" : "hover:bg-[#f0f9ff]"}`}
     >
       <div
@@ -621,7 +621,7 @@ const Header = () => {
                           {role.replace("-", " ")}
                         </p>
                       </div>
-                      <div className="py-2">
+                      <div className="p-2">
                         <DropdownItem
                           onClick={() => router.push("/profile")}
                           text="My Profile"
@@ -647,7 +647,7 @@ const Header = () => {
                         />
                       </div>
                       <div className="h-px bg-gray-100 mx-3"></div>
-                      <div className="py-2">
+                      <div className="p-2">
                         <DropdownItem
                           onClick={handleLogout}
                           text="Sign Out"

@@ -6,7 +6,6 @@ import {
   Mail,
   Phone,
   Calendar,
-  Shield,
   Award,
 } from "lucide-react";
 import { User } from "../utils/user";
@@ -30,11 +29,25 @@ export default function ViewUserModal({
 
   const formatDate = (dateString: string) => {
     try {
-      return format(new Date(dateString), "MMMM dd, yyyy 'at' hh:mm a");
+      return format(new Date(dateString), "MMMM dd, yyyy");
     } catch {
       return "N/A";
     }
   };
+
+  const formatTime = (dateString: string) => {
+    try {
+      return format(new Date(dateString), "hh:mm a");
+    } catch {
+      return "";
+    }
+  };
+
+  const formatRole = (role: string) =>
+    role
+      .split("-")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
 
   const getRoleBadgeColor = (role: string) => {
     switch (role) {
@@ -86,19 +99,19 @@ export default function ViewUserModal({
         </div>
 
         {/* Content — the only part that scrolls */}
-        <div className="overflow-y-auto themed-scrollbar px-6 sm:px-7 py-5 flex-1">
+        <div className="overflow-y-auto themed-scrollbar px-6 sm:px-7 py-4 flex-1">
           {/* Profile Section */}
-          <div className="mb-5 text-center pb-5 border-b border-gray-200">
-            <div className="w-20 h-20 mx-auto mb-3 rounded-full bg-linear-to-br from-primary1 to-primary1/70 flex items-center justify-center">
-              <span className="font-rubik text-3xl font-bold text-white">
+          <div className="mb-4 text-center pb-4 border-b border-gray-200">
+            <div className="w-16 h-16 mx-auto mb-2 rounded-full bg-linear-to-br from-primary3 via-[#0055AA] to-primary3 border-4 border-white ring-4 ring-primary1/25 shadow-md flex items-center justify-center">
+              <span className="font-rubik text-2xl font-bold text-white">
                 {user.firstName.charAt(0)}
                 {user.lastName.charAt(0)}
               </span>
             </div>
-            <h3 className="font-rubik text-2xl font-bold text-gray-900 mb-1">
+            <h3 className="font-rubik text-xl font-bold text-gray-900">
               {user.fullName}
             </h3>
-            <p className="font-raleway text-gray-600 text-lg mb-3">
+            <p className="font-raleway text-gray-600 text-base mb-2">
               {user.studentNumber}
             </p>
             <div className="flex items-center justify-center gap-3">
@@ -130,41 +143,47 @@ export default function ViewUserModal({
           </div>
 
           {/* Personal Information */}
-          <div className="mb-5">
-            <h4 className="font-rubik text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
-              <UserIcon className="w-5 h-5 text-primary1" />
-              Personal Information
-            </h4>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <div className="bg-gray-50 p-3.5 rounded-lg">
-                <p className="font-raleway text-sm text-gray-500 mb-1">
+          <div className="mb-4">
+            <div className="flex items-center gap-2.5 mb-2">
+              <div className="p-1.5 bg-primary1/10 rounded-lg text-primary1 shrink-0">
+                <UserIcon className="w-4 h-4" />
+              </div>
+              <div>
+                <h4 className="font-rubik text-base font-bold text-primary3 leading-tight">
+                  Personal Information
+                </h4>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+              <div className="bg-gray-50 px-3 py-2.5 rounded-xl">
+                <p className="font-raleway text-xs text-gray-500 mb-0.5">
                   First Name
                 </p>
-                <p className="font-raleway text-base font-semibold text-gray-900">
+                <p className="font-raleway text-sm font-semibold text-gray-900">
                   {user.firstName}
                 </p>
               </div>
-              <div className="bg-gray-50 p-3.5 rounded-lg">
-                <p className="font-raleway text-sm text-gray-500 mb-1">
+              <div className="bg-gray-50 px-3 py-2.5 rounded-xl">
+                <p className="font-raleway text-xs text-gray-500 mb-0.5">
                   Last Name
                 </p>
-                <p className="font-raleway text-base font-semibold text-gray-900">
+                <p className="font-raleway text-sm font-semibold text-gray-900">
                   {user.lastName}
                 </p>
               </div>
-              <div className="bg-gray-50 p-3.5 rounded-lg">
-                <p className="font-raleway text-sm text-gray-500 mb-1">
+              <div className="bg-gray-50 px-3 py-2.5 rounded-xl">
+                <p className="font-raleway text-xs text-gray-500 mb-0.5">
                   Middle Name
                 </p>
-                <p className="font-raleway text-base font-semibold text-gray-900">
+                <p className="font-raleway text-sm font-semibold text-gray-900">
                   {user.middleName || "N/A"}
                 </p>
               </div>
-              <div className="bg-gray-50 p-3.5 rounded-lg">
-                <p className="font-raleway text-sm text-gray-500 mb-1">
+              <div className="bg-gray-50 px-3 py-2.5 rounded-xl">
+                <p className="font-raleway text-xs text-gray-500 mb-0.5">
                   Year Level
                 </p>
-                <p className="font-raleway text-base font-semibold text-gray-900">
+                <p className="font-raleway text-sm font-semibold text-gray-900">
                   {user.yearLevel ? `Year ${user.yearLevel}` : "N/A"}
                 </p>
               </div>
@@ -172,12 +191,18 @@ export default function ViewUserModal({
           </div>
 
           {/* Membership Information */}
-          <div className="mb-5">
-            <h4 className="font-rubik text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
-              <Award className="w-5 h-5 text-primary1" />
-              Membership Information
-            </h4>
-            <div className="bg-gray-50 p-3.5 rounded-lg space-y-3">
+          <div className="mb-4">
+            <div className="flex items-center gap-2.5 mb-2">
+              <div className="p-1.5 bg-primary1/10 rounded-lg text-primary1 shrink-0">
+                <Award className="w-4 h-4" />
+              </div>
+              <div>
+                <h4 className="font-rubik text-base font-bold text-primary3 leading-tight">
+                  Membership Information
+                </h4>
+              </div>
+            </div>
+            <div className="bg-gray-50 px-3 py-2.5 rounded-xl space-y-2">
               <div className="flex items-center justify-between">
                 <p className="font-raleway text-sm text-gray-500">
                   Membership Status
@@ -194,7 +219,7 @@ export default function ViewUserModal({
               </div>
               {user.membershipStatus.isMember &&
                 user.membershipStatus.membershipType && (
-                  <div className="flex items-center justify-between pt-3 border-t border-gray-200">
+                  <div className="flex items-center justify-between pt-2 border-t border-gray-200">
                     <p className="font-raleway text-sm text-gray-500">
                       Membership Type
                     </p>
@@ -219,62 +244,56 @@ export default function ViewUserModal({
           </div>
 
           {/* Registration Information */}
-          <div className="mb-5">
-            <h4 className="font-rubik text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
-              <Calendar className="w-5 h-5 text-primary1" />
-              Registration Information
-            </h4>
-            <div className="space-y-3">
-              <div className="bg-gray-50 p-3.5 rounded-lg">
-                <p className="font-raleway text-sm text-gray-500 mb-1">
+          <div>
+            <div className="flex items-center gap-2.5 mb-2">
+              <div className="p-1.5 bg-primary1/10 rounded-lg text-primary1 shrink-0">
+                <Calendar className="w-4 h-4" />
+              </div>
+              <div>
+                <h4 className="font-rubik text-base font-bold text-primary3 leading-tight">
+                  Registration Information
+                </h4>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              <div className="bg-gray-50 px-3 py-2.5 rounded-xl">
+                <p className="font-raleway text-xs text-gray-500 mb-0.5">
                   Registered By
                 </p>
-                <p className="font-raleway text-base font-semibold text-gray-900">
+                <p className="font-raleway text-sm font-semibold text-gray-900">
                   {user.registeredBy?.fullName || "Self-registered"}
                 </p>
+                {user.registeredBy?.role && (
+                  <p className="font-raleway text-xs text-gray-500 mt-0.5">
+                    {formatRole(user.registeredBy.role)}
+                  </p>
+                )}
               </div>
-              <div className="bg-gray-50 p-3.5 rounded-lg">
-                <p className="font-raleway text-sm text-gray-500 mb-1">
+              <div className="bg-gray-50 px-3 py-2.5 rounded-xl">
+                <p className="font-raleway text-xs text-gray-500 mb-0.5">
                   Registration Date
                 </p>
-                <p className="font-raleway text-base font-semibold text-gray-900">
+                <p className="font-raleway text-sm font-semibold text-gray-900">
                   {formatDate(user.createdAt)}
                 </p>
+                <p className="font-raleway text-xs text-gray-500 mt-0.5">
+                  {formatTime(user.createdAt)}
+                </p>
               </div>
-              <div className="bg-gray-50 p-3.5 rounded-lg">
-                <p className="font-raleway text-sm text-gray-500 mb-1">
+              <div className="bg-gray-50 px-3 py-2.5 rounded-xl">
+                <p className="font-raleway text-xs text-gray-500 mb-0.5">
                   Last Updated
                 </p>
-                <p className="font-raleway text-base font-semibold text-gray-900">
+                <p className="font-raleway text-sm font-semibold text-gray-900">
                   {formatDate(user.updatedAt)}
+                </p>
+                <p className="font-raleway text-xs text-gray-500 mt-0.5">
+                  {formatTime(user.updatedAt)}
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Account Status */}
-          <div>
-            <h4 className="font-rubik text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
-              <Shield className="w-5 h-5 text-primary1" />
-              Account Status
-            </h4>
-            <div className="bg-gray-50 p-3.5 rounded-lg">
-              <div className="flex items-center justify-between">
-                <p className="font-raleway text-sm text-gray-500">
-                  Current Status
-                </p>
-                <span
-                  className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold font-raleway border ${
-                    user.isActive
-                      ? "bg-green-100 text-green-700 border-green-200"
-                      : "bg-gray-100 text-gray-600 border-gray-200"
-                  }`}
-                >
-                  {user.isActive ? "Active Account" : "Inactive Account"}
-                </span>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>

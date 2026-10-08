@@ -8,6 +8,17 @@ import {
 } from "../utils/cloudinary";
 import mongoose from "mongoose";
 import { notifyTargetAudience } from "../utils/notification";
+import { listVisibility, canViewItem } from "../utils/visibility";
+import { pickFields } from "../utils/pick";
+import { sanitizeRichText, isBlankRichText } from "../utils/rich-text";
+
+const ANNOUNCEMENT_EDITABLE_FIELDS = [
+  "title", "description", "content", "type", "priority", "targetAudience",
+  "isPublished", "publishDate", "date", "expiryDate", "time", "location",
+  "organizer", "contact", "attendees", "agenda", "awardees", "attachments",
+  "galleryImages", "imageUrl",
+] as const;
+
 
 // Local Multer file shape (avoid relying on global Express.Multer augmentation)
 type MulterFile = MulterLocal.MulterFile;
@@ -156,7 +167,7 @@ export const createAnnouncement = async (
 
 
     // Validate required fields
-    if (!title || !description || !content) {
+    if (!title || !description || !content || isBlankRichText(String(content))) {
       res.status(400).json({
         success: false,
         message: "Missing required fields: title, description, or content",
@@ -172,7 +183,7 @@ export const createAnnouncement = async (
     const announcementData: any = {
       title,
       description,
-      content,
+      content: sanitizeRichText(String(content)),
       author,
       type,
       priority,
@@ -285,16 +296,20 @@ export const getAnnouncements = async (
     const query: AnnouncementQuery = {};
 
     if (type) query.type = type as string;
-    if (isPublished !== undefined) query.isPublished = isPublished === "true";
     if (targetAudience)
       query.targetAudience = { $in: [targetAudience as string] };
     if (priority) query.priority = priority as string;
 
-    // Don't show expired announcements by default
-    query.$or = [
-      { expiryDate: { $exists: false } },
-      { expiryDate: null },
-      { expiryDate: { $gt: new Date() } },
+    // Visibility (drafts) and expiry must both hold
+    (query as any).$and = [
+      listVisibility(req.user, isPublished as string | undefined),
+      {
+        $or: [
+          { expiryDate: { $exists: false } },
+          { expiryDate: null },
+          { expiryDate: { $gt: new Date() } },
+        ],
+      },
     ];
 
     const pageNum = parseInt(page as string);
@@ -343,7 +358,7 @@ export const getAnnouncementById = async (
       "firstName lastName studentNumber"
     );
 
-    if (!announcement) {
+    if (!announcement || !canViewItem(req.user, announcement)) {
       res.status(404).json({ message: "Announcement not found" });
       return;
     }
@@ -442,8 +457,16 @@ export const updateAnnouncement = async (
       : null;
     const requestWantsPublish = String(req.body.isPublished) === "true";
 
-    // Create a clean update object
-    const updateData: any = { ...req.body };
+    // Only whitelisted fields can change. Authorship, views and ids never do.
+    const updateData: any = pickFields(req.body, ANNOUNCEMENT_EDITABLE_FIELDS);
+
+    if (typeof updateData.content === "string") {
+      updateData.content = sanitizeRichText(updateData.content);
+      if (isBlankRichText(updateData.content)) {
+        res.status(400).json({ success: false, message: "Content cannot be empty" });
+        return;
+      }
+    }
 
     if (
       requestWantsPublish &&

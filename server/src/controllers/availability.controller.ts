@@ -3,12 +3,17 @@ import mongoose from "mongoose";
 import Availability from "../models/availability";
 import Meeting from "../models/meeting";
 
+// Attendee student numbers and roles are for staff planning meetings; anyone
+// else only gets names.
+const STAFF_ROLES = ["council-officer", "committee-officer", "faculty", "admin"];
+
 export const getMeetingAvailability = async (req: Request, res: Response) => {
   try {
     const { meetingId } = req.params;
+    const isStaff = STAFF_ROLES.includes(req.user?.role ?? "");
     const list = await Availability.find({ meeting: meetingId }).populate(
       "user",
-      "firstName lastName studentNumber role"
+      isStaff ? "firstName lastName studentNumber role" : "firstName lastName"
     );
     res.json({ success: true, data: list });
   } catch (error) {

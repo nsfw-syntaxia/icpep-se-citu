@@ -57,7 +57,7 @@ type Meeting = {
 
 // Unified Avatar Gradient
 const AVATAR_GRADIENT =
-  "bg-linear-to-br from-blue-500 to-sky-400 shadow-sky-200";
+  "bg-linear-to-br from-primary3 via-[#0055AA] to-primary3";
 
 const AvailabilityPage: FunctionComponent = () => {
   const router = useRouter();
@@ -959,7 +959,7 @@ const AvailabilityPage: FunctionComponent = () => {
                                                   }`}
                             >
                               <div
-                                className={`w-10 h-10 rounded-full ${AVATAR_GRADIENT} flex items-center justify-center text-white font-bold text-sm shadow-md shrink-0`}
+                                className={`w-10 h-10 rounded-full ${AVATAR_GRADIENT} flex items-center justify-center text-white font-bold text-sm border-2 border-white ring-2 ring-primary1/25 shadow-md shrink-0`}
                               >
                                 {responder.initials}
                               </div>

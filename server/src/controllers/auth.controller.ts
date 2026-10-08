@@ -336,11 +336,19 @@ const generateResetCode = () => {
 // @desc    Forgot Password
 // @route   POST /api/auth/forgot-password
 // @access  Public
+// Every outcome answers the same way, so this endpoint can't be used to find
+// out which student numbers exist, or which of them have an email on file.
+const RESET_REQUEST_RESPONSE = {
+  success: true,
+  message:
+    "If an account with that student number exists, a reset code has been sent to its email.",
+};
+
 export const forgotPassword = async (req: Request, res: Response) => {
   try {
     const { studentNumber } = req.body;
 
-    if (!studentNumber) {
+    if (!studentNumber || typeof studentNumber !== "string") {
       return res.status(400).json({
         success: false,
         message: "Please provide your student number",
@@ -349,18 +357,8 @@ export const forgotPassword = async (req: Request, res: Response) => {
 
     const user = await User.findOne({ studentNumber: studentNumber.toUpperCase() });
 
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found",
-      });
-    }
-
-    if (!user.email) {
-      return res.status(400).json({
-        success: false,
-        message: "No email address associated with your account. Please contact an administrator.",
-      });
+    if (!user || !user.email) {
+      return res.status(200).json(RESET_REQUEST_RESPONSE);
     }
 
     // Generate reset code
@@ -384,27 +382,19 @@ export const forgotPassword = async (req: Request, res: Response) => {
     try {
       await sendEmail({
         email: user.email,
-        subject: 'Password Reset Code - ICpEP SE',
+        subject: "Password Reset Code - ICpEP SE",
         message: message,
-        html: html
-      });
-
-      res.status(200).json({
-        success: true,
-        message: "Email sent",
-        email: user.email // sending back partially masked email could be good for UX if needed
+        html: html,
       });
     } catch {
+      // Don't leave a code behind that the person never received.
       user.resetPasswordCode = undefined;
       user.resetPasswordExpire = undefined;
       await user.save({ validateBeforeSave: false });
-
-      return res.status(500).json({
-        success: false,
-        message: "Email could not be sent",
-      });
     }
 
+    // Same answer on success or failed delivery, so a mail outage can't be used as a probe either.
+    return res.status(200).json(RESET_REQUEST_RESPONSE);
   } catch {
     res.status(500).json({
       success: false,
