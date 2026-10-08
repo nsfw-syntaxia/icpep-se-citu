@@ -3,6 +3,11 @@ import multer from 'multer';
 // Configure multer to store files in memory
 const storage = multer.memoryStorage();
 
+// Only these formats are accepted. SVG is left out on purpose: it can carry
+// script. The bytes are checked again before anything is uploaded (see
+// utils/cloudinary.ts), since the declared type is just what the client claims.
+const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+
 // File filter for images only. Use a permissive type for `file` to avoid
 // relying on external Multer typings during production builds.
 const fileFilter = (
@@ -11,10 +16,10 @@ const fileFilter = (
     cb: multer.FileFilterCallback
 ) => {
     // Accept images only
-    if (file && typeof file.mimetype === 'string' && file.mimetype.startsWith('image/')) {
+    if (file && typeof file.mimetype === 'string' && ALLOWED_IMAGE_TYPES.includes(file.mimetype)) {
         cb(null, true);
     } else {
-        cb(new Error('Only image files are allowed!'));
+        cb(new Error('Only JPEG, PNG, WebP or GIF images are allowed.'));
     }
 };
 

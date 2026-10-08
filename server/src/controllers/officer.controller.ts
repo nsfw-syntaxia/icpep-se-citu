@@ -47,7 +47,7 @@ export const getOfficers = async (req: Request, res: Response) => {
 
     res.status(200).json({ success: true, data: officers });
   } catch (error: any) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
 
@@ -88,7 +88,7 @@ export const getPublicOfficers = async (req: Request, res: Response) => {
 
     res.status(200).json({ success: true, data: officers });
   } catch (error: any) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
 
@@ -112,19 +112,36 @@ export const updateOfficer = async (req: Request, res: Response) => {
         .json({ success: false, message: "User not found" });
     }
 
-    // Handle Base64 Image Upload
-    if (profilePicture && profilePicture.startsWith("data:image")) {
-      try {
-        const matches = profilePicture.match(
-          /^data:([A-Za-z-+/]+);base64,(.+)$/
-        );
-        if (matches && matches.length === 3) {
-          const buffer = Buffer.from(matches[2], "base64");
-          const uploadResult = await uploadToCloudinary(buffer, "officers");
+    if (user.role === "admin" && req.user?.role !== "admin") {
+      return res.status(403).json({
+        success: false,
+        message: "Only admins can change an admin's officer details",
+      });
+    }
+
+    // A picture is either a fresh upload (base64, re-checked and re-hosted) or
+    // an image already hosted by us; any other URL is refused.
+    if (typeof profilePicture === "string" && profilePicture) {
+      if (profilePicture.startsWith("data:image")) {
+        const matches = profilePicture.match(/^data:([A-Za-z-+/]+);base64,(.+)$/);
+        try {
+          if (!matches) throw new Error("Invalid image");
+          const uploadResult = await uploadToCloudinary(Buffer.from(matches[2], "base64"), "officers");
           profilePicture = uploadResult.secure_url;
+        } catch {
+          return res.status(400).json({
+            success: false,
+            message: "That image could not be used. Please upload a JPEG, PNG, WebP or GIF.",
+          });
         }
-      } catch {
+      } else if (!profilePicture.startsWith("https://res.cloudinary.com/")) {
+        return res.status(400).json({
+          success: false,
+          message: "Profile pictures must be uploaded, not linked.",
+        });
       }
+    } else {
+      profilePicture = undefined;
     }
 
     const isRemoving = remove === true || remove === "true";
@@ -143,7 +160,9 @@ export const updateOfficer = async (req: Request, res: Response) => {
       updateData.department = isRemoving ? null : department;
     } else {
       // Legacy call shape (no assignmentType) — behave as before for compatibility.
-      updateData.role = req.body.role;
+      if (["student", "council-officer", "committee-officer"].includes(req.body.role)) {
+        updateData.role = req.body.role;
+      }
       updateData.position = position;
       updateData.department = department;
       updateData.yearLevel = yearLevel;
@@ -224,7 +243,7 @@ export const updateOfficer = async (req: Request, res: Response) => {
 
     res.status(200).json({ success: true, data: updated });
   } catch (error: any) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
 
@@ -279,6 +298,6 @@ export const searchNonOfficers = async (req: Request, res: Response) => {
 
     res.status(200).json({ success: true, data: users });
   } catch (error: any) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: "Internal server error" });
   }
 };

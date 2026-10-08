@@ -22,6 +22,24 @@ if (CLOUDINARY_ENABLED) {
     });
 }
 
+// Folders this app uploads into; deletes are limited to these.
+const UPLOAD_FOLDERS = [
+    'announcements', 'events', 'merch', 'advisors', 'faculty',
+    'officers', 'officer-terms', 'sponsors', 'testimonials',
+];
+
+// Looks at the file's own bytes rather than the type the client declared.
+export const isSupportedImage = (buffer: Buffer): boolean => {
+    if (buffer.length < 12) return false;
+    const isJpeg = buffer[0] === 0xff && buffer[1] === 0xd8 && buffer[2] === 0xff;
+    const isPng = buffer.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]));
+    const isGif = buffer.subarray(0, 4).toString('ascii') === 'GIF8';
+    const isWebp =
+        buffer.subarray(0, 4).toString('ascii') === 'RIFF' &&
+        buffer.subarray(8, 12).toString('ascii') === 'WEBP';
+    return isJpeg || isPng || isGif || isWebp;
+};
+
 /**
  * Upload buffer to Cloudinary
  * @param buffer - File buffer from multer
@@ -32,6 +50,10 @@ export const uploadToCloudinary = (
     buffer: Buffer,
     folder: string
 ): Promise<UploadApiResponse> => {
+    if (!isSupportedImage(buffer)) {
+        return Promise.reject(new Error('Unsupported image type'));
+    }
+
     // If Cloudinary isn't configured, return a placeholder response to avoid 500s during local dev
     if (!CLOUDINARY_ENABLED) {
         return Promise.resolve({ secure_url: 'https://via.placeholder.com/1200x630.png?text=No+Image' } as any);
@@ -42,7 +64,7 @@ export const uploadToCloudinary = (
             const uploadStream = cloudinary.uploader.upload_stream(
                 {
                     folder,
-                    resource_type: 'auto',
+                    resource_type: 'image',
                     transformation: [
                         { width: 1200, height: 630, crop: 'limit' },
                         { quality: 'auto' },
@@ -83,11 +105,17 @@ export const uploadToCloudinary = (
 export const deleteFromCloudinary = async (url: string): Promise<void> => {
     if (!CLOUDINARY_ENABLED) return;
 
-    // .../upload/v1699999999/folder/sub/name.jpg -> folder/sub/name
-    const match = url.match(/\/upload\/(?:v\d+\/)?(.+?)(?:\.[A-Za-z0-9]+)?(?:\?.*)?$/);
-    if (!match) return;
+    // Only our own uploads can be deleted, whatever URL a request stored on a record.
+    // https://res.cloudinary.com/<cloud>/image/upload/v1699999999/folder/sub/name.jpg -> folder/sub/name
+    const match = url.match(
+        /^https:\/\/res\.cloudinary\.com\/([^/]+)\/image\/upload\/(?:v\d+\/)?(.+?)(?:\.[A-Za-z0-9]+)?(?:\?.*)?$/
+    );
+    if (!match || match[1] !== CLOUDINARY_CLOUD_NAME) return;
 
-    await cloudinary.uploader.destroy(decodeURIComponent(match[1]));
+    const publicId = decodeURIComponent(match[2]);
+    if (publicId.includes('..') || !UPLOAD_FOLDERS.some((folder) => publicId.startsWith(`${folder}/`))) return;
+
+    await cloudinary.uploader.destroy(publicId);
 };
 
 /**
